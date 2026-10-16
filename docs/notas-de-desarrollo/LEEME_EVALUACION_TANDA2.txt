@@ -1,0 +1,40 @@
+SERENA - Tanda 2 del sistema academico (evaluacion)
+===================================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos.
+2. Ejecutar sql/migraciones/035_evaluacion.sql (reejecutable). Requiere 034 (anios lectivos y periodos).
+3. Subir los archivos.
+
+CONFIGURACION INICIAL (una vez por colegio) - Administrador / Rector / Secretaria academica
+ 1. Evaluacion (administrador/evaluacion_config.php):
+      a) Crear una escala: "Escala numerica 1.0-5.0 con 4 desempenos" o "descriptiva". Ajustar rangos si el SIEE usa otros.
+      b) Elegir la ESTRUCTURA y la ESCALA EN USO.  c) Si la estructura usa procesos: crearlos (cognitivo 40, procedimental 30, actitudinal 30).
+ 2. Plan academico (administrador/plan_academico.php): crear asignaturas y asignarlas (por grupo o a todo un grado) con su docente.
+ 3. Anios lectivos: el anio con sus periodos (Tanda 1).
+
+ESTRUCTURAS DE EVALUACION (se pueden cambiar; cada planilla se recalcula al guardarla de nuevo)
+ - actividades:      promedio ponderado de las actividades.
+ - procesos:         actividades dentro de procesos; nota = suma(peso del proceso x promedio del proceso).
+ - logros:           actividades dentro de logros; nota = promedio ponderado de los logros (peso 0 = todos iguales).
+ - procesos_logros:  primero procesos (peso institucional) y, dentro de cada uno, logros.
+ - logros_procesos:  primero logros y, dentro de cada uno, procesos.
+ Regla general: peso 0 en todos = todos valen igual. Lo que no tiene nota aun no cuenta: el peso se reparte entre lo calificado.
+
+FLUJO DEL DOCENTE   docente/planilla.php
+ Elegir grupo+asignatura y periodo > agregar actividades (y logros) > escribir notas > "Guardar planilla".
+ Las observaciones por estudiante admiten dictado por voz. Hay boton de imprimir.
+
+PUBLICACION Y BOLETIN
+ - Estudiantes y acudientes SOLO ven periodos con boletin PUBLICADO (secretaria_academica/boletines.php > Publicar).
+ - Boletin: /boletin.php (estudiante: "Mis notas"; acudiente: "Boletines"). Imprimir o "Guardar como PDF" desde el navegador.
+ - Consolidado por grupo y periodo con descarga CSV (Excel).
+ - Definitiva de la asignatura = promedio de los periodos con nota, ponderado por el peso de cada periodo.
+ - Promedio general: ponderado por la intensidad horaria SI todas las asignaturas la tienen; si no, promedio simple.
+
+DECISIONES A REVISAR
+ - No hay "puesto" ni ranking en el boletin (a proposito).
+ - Escala descriptiva: se guarda un valor equivalente por nivel para poder promediar; solo se muestra el desempeno.
+ - Recuperaciones / nivelaciones y notas definitivas con regla de aprobacion del ano: NO incluidas todavia.
+ - Un estudiante sin matricula en el anio actual se califica por su grupo actual (para no dejar fuera a los antiguos).
+ - Las notas se editan aunque el periodo este publicado (queda en auditoria con la marca "publicado").

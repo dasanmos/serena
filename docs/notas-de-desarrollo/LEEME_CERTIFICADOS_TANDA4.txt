@@ -1,0 +1,42 @@
+SERENA - Tanda 4: certificados con QR
+=====================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos.
+2. Ejecutar sql/migraciones/037_certificados.sql (reejecutable). Requiere 034 y 035 (y 036 para el certificado de horas).
+3. Subir los archivos.
+
+CONFIGURAR (administrador o rector)  >  Institucion
+ - Nombre oficial, naturaleza, caracter, niveles, jornadas, calendario.
+ - Codigo DANE (10-12 digitos), NIT, ICFES.
+ - Resolucion de reconocimiento (numero, fecha, entidad) y otras resoluciones o licencias.
+ - Direccion, municipio, departamento, telefono, correo, sitio web, ciudad de expedicion.
+ - Firmantes (rector y un segundo firmante opcional) con su cargo.
+ - Logo y firmas (JPG/PNG/WEBP hasta 3 MB; se reducen y convierten a JPEG; con GD; sin GD solo JPG de menos de 500 KB).
+ - Color de los titulos, dias de vigencia (vacio = sin vencimiento).
+ - "Direccion publica del sitio": es la que se imprime en el QR. DEBE ser la direccion real de internet (ej. https://colegio.edu.co/serena/public).
+   Si se deja vacia se usa la de la peticion actual: en localhost el QR no sirve para nadie mas.
+ - Boton "Ver certificado de ejemplo (PDF)" para revisar logo, firmas y resoluciones sin emitir nada.
+ - Textos editables de cada certificado: Institucion > "Editar los textos" (con {{variables}}).
+
+EMITIR (secretaria academica, administrador o rector)  >  Certificados
+ Tipos: constancia de matricula, certificado de estudio, certificado de calificaciones, certificado de servicio social y Constitucion Politica.
+ Requisitos: institucion configurada (nombre, DANE, firmante y resolucion) y documento del estudiante en su hoja de vida.
+
+VERIFICACION PUBLICA (sin iniciar sesion)
+ - El QR lleva a  <sitio>/verificar.php?c=CODIGO  : dice VALIDO / VENCIDO / ANULADO / NO SE PUDO VERIFICAR / NO EXISTE.
+ - Si es valido ofrece "Descargar certificado en PDF" (certificado_pdf.php).
+ - Tambien se puede escribir el codigo a mano en verificar.php.
+ - Cada certificado guarda una COPIA INMUTABLE de lo que dice (institucion, rector, logo, firmas) y una huella HMAC: si cambias
+   la configuracion despues, los ya emitidos no cambian. Si alguien edita el registro en la base, se detecta y se marca "no se pudo verificar".
+ - Anular un certificado lo invalida al instante en la verificacion.
+ - Frenos: 40 consultas / 10 min y 20 descargas / 10 min por sesion. Los codigos son de 12 caracteres al azar.
+
+TECNICO
+ - Sin librerias: src/helpers/QrCode.php (QR modo byte, correccion M, versiones 1-10) y src/helpers/CertificadoPDF.php (PDF con Helvetica).
+ - La pagina publica de verificacion muestra el documento del estudiante enmascarado (solo ultimos 3 digitos); el PDF si lo trae completo.
+   Quien tenga el codigo/QR puede descargar el PDF: tratalo como se trata el papel.
+
+PENDIENTE
+ - Solicitud de certificados por parte de acudientes y estudiantes (hoy los emite la secretaria y ellos los ven en el expediente).
+ - Paz y salvo y otros tipos. - Informes y graficas.

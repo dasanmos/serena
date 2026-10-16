@@ -1,0 +1,876 @@
+/* ============================================================
+   SERENA — panel.css
+   Layout de panel autenticado: barra superior, nav, tarjetas,
+   tablas, formularios. Compartido por los 7 roles.
+   ============================================================ */
+
+.panel-body { min-height: 100vh; min-height: 100dvh; }
+
+/* --- Botón disparador + panel desplegable de identidad/navegación: se abre al
+   pasar el mouse o hacer clic sobre la barrita dorada de arriba, y se cierra
+   solo después de unos segundos sin interacción (ver base.js). --- */
+.barra-acento-superior {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 22px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 101;
+    cursor: pointer;
+}
+.barra-acento-superior:hover,
+.barra-acento-superior:focus-visible { transform: translateX(-50%); box-shadow: none; }
+.barra-acento-superior:active { transform: translateX(-50%); box-shadow: none; }
+.barra-acento-superior::after { display: none; }
+
+.barra-acento-visual {
+    width: 96px;
+    height: 5px;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(90deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    box-shadow: 0 2px 10px rgba(232, 185, 35, 0.35);
+    transition: width var(--velocidad-rapida) var(--curva-suave), box-shadow var(--velocidad-rapida) var(--curva-suave);
+}
+.barra-acento-superior[aria-expanded="true"] .barra-acento-visual,
+.barra-acento-superior:hover .barra-acento-visual {
+    width: 130px;
+    box-shadow: 0 2px 16px rgba(232, 185, 35, 0.55);
+}
+
+@media (max-width: 640px) {
+    .barra-acento-superior { width: 110px; }
+    .barra-acento-visual { width: 64px; height: 4px; }
+    .barra-acento-superior[aria-expanded="true"] .barra-acento-visual,
+    .barra-acento-superior:hover .barra-acento-visual { width: 90px; }
+}
+
+/* Telón de fondo detrás del panel: oscurece el resto de la página mientras el
+   panel está abierto, para que se sienta como una cortina que baja al frente
+   (no un elemento más flotando encima sin jerarquía). Clic afuera lo cierra. */
+.panel-acento-fondo {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 18, 10, 0.28);
+    backdrop-filter: blur(2px);
+    z-index: 95;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--velocidad-media) var(--curva-suave);
+}
+.panel-acento-fondo.visible { opacity: 1; pointer-events: auto; }
+
+/* El panel "baja como una cortina": arranca oculto por completo arriba del
+   viewport (translateY negativo grande, no solo unos píxeles) y desciende a
+   su posición final — igual al cerrar, sube y desaparece, en vez de solo
+   desvanecerse en el sitio. */
+.panel-acento-superior {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    width: min(94vw, 1000px);
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde-lg, 20px);
+    border-top: 3px solid transparent;
+    background-image:
+        linear-gradient(var(--color-superficie), var(--color-superficie)),
+        linear-gradient(90deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 24px 60px rgba(43, 43, 43, 0.28), 0 4px 16px rgba(232, 185, 35, 0.15);
+    padding: 22px var(--espacio-xl) var(--espacio-lg);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-160%);
+    transition: opacity 0.3s var(--curva-suave), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.panel-acento-superior.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+.panel-acento-contenido {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.panel-acento-marca {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--espacio-md);
+}
+.panel-acento-logo-insignia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    box-shadow: 0 6px 16px rgba(232, 185, 35, 0.35);
+}
+.panel-acento-logo-insignia img { width: 32px; height: 32px; object-fit: contain; }
+.panel-acento-marca h2 {
+    font-size: var(--texto-lg, 1.5rem);
+    letter-spacing: 0.06em;
+    margin: 0;
+    background: linear-gradient(135deg, var(--color-dorado-oscuro), var(--color-dorado-texto));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.panel-acento-marca p {
+    margin: 0;
+    font-size: var(--texto-sm);
+    color: var(--color-texto-suave);
+}
+.panel-acento-marca .panel-acento-caption {
+    font-size: 0.78rem;
+    margin-top: 2px;
+    opacity: 0.8;
+}
+
+.panel-acento-sesion {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 12px var(--espacio-md);
+    margin-bottom: var(--espacio-md);
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde);
+    font-size: var(--texto-sm);
+}
+.panel-acento-sesion .indicador-vista { display: inline; }
+.panel-acento-boton-salir {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    font-weight: 600;
+    font-size: var(--texto-sm);
+    box-shadow: var(--sombra-sm);
+    transition: background var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-suave);
+}
+.panel-acento-boton-salir:hover {
+    background: var(--color-peligro-fondo, var(--color-fondo-alterno));
+    color: var(--color-peligro, var(--color-texto));
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.panel-acento-fila {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    padding: 10px 0;
+}
+.panel-acento-fila + .panel-acento-fila { border-top: 1px solid var(--color-borde); }
+
+.etiqueta-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-texto-suave);
+    flex-shrink: 0;
+    min-width: 72px;
+}
+.etiqueta-categoria::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    flex-shrink: 0;
+}
+
+.pestanas-categoria {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pestana {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: var(--color-texto-suave);
+    background: var(--color-fondo-alterno);
+    transition: background var(--velocidad-rapida) var(--curva-suave), color var(--velocidad-rapida) var(--curva-suave),
+        transform var(--velocidad-rapida) var(--curva-suave), box-shadow var(--velocidad-rapida) var(--curva-suave);
+}
+.pestana:hover {
+    background: var(--color-superficie);
+    color: var(--color-dorado-texto);
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-sm);
+}
+.pestana.activa {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--color-texto);
+    box-shadow: 0 4px 12px rgba(232, 185, 35, 0.4);
+}
+.pestana img { width: 15px; height: 15px; object-fit: contain; }
+
+@media (max-width: 640px) {
+    .panel-acento-fila { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .etiqueta-categoria { min-width: 0; }
+    .panel-acento-boton-salir { margin-left: 0; }
+}
+
+/* --- Barra "viendo como otro usuario" (función administrador: Ver como usuario) --- */
+.barra-viendo-como {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    background: var(--color-aviso-fondo);
+    color: var(--color-aviso);
+    padding: var(--espacio-sm) var(--espacio-md);
+    font-size: var(--texto-sm, 0.9rem);
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    border-bottom: 1px solid var(--color-aviso);
+}
+
+.barra-viendo-como form { margin: 0; }
+
+.barra-viendo-como button {
+    background: var(--color-aviso);
+    color: var(--color-superficie);
+    border: none;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: var(--texto-sm, 0.85rem);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.barra-viendo-como button:hover { opacity: 0.9; }
+
+/* Oculto por defecto (móvil): es información secundaria de escritorio, se
+   reactiva dentro del media query de 900px+ más abajo, junto con el sidebar. */
+.indicador-vista { display: none; }
+@media (min-width: 900px) { .indicador-vista { display: inline; font-size: var(--texto-sm); color: var(--color-texto-suave); white-space: nowrap; } .indicador-vista strong { color: var(--color-texto); } }
+
+/* Barra de menú horizontal: ver menu_barra.css */
+
+.insignia-rol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--color-texto);
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* --- Barra superior --- */
+.barra-superior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-superficie);
+    padding: 12px 24px;
+    box-shadow: var(--sombra-sm);
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+/* Filete de marca: un hilo dorado constante en cada página, sutil pero
+   presente — refuerzo de identidad visual sin agregar peso ni ruido. */
+.barra-superior::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-dorado-medio) 20%, var(--color-dorado-oscuro) 50%, var(--color-dorado-medio) 80%, transparent);
+    opacity: 0.7;
+}
+
+.logo-barra {
+    height: 40px;
+    transition: transform var(--velocidad-media) var(--curva-rebote);
+}
+.logo-barra:hover { transform: scale(1.06) rotate(-2deg); }
+
+.usuario-barra {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: var(--texto-sm);
+}
+
+.boton-sonido, .boton-tema {
+    background: none;
+    box-shadow: none;
+    padding: 6px;
+    font-size: 1.1rem;
+    line-height: 1;
+    border-radius: 50%;
+    color: var(--color-texto-suave);
+}
+.boton-sonido:hover, .boton-tema:hover { background: var(--color-fondo-alterno); transform: none; box-shadow: none; }
+/* Oculto por defecto: solo lo revela el JS cuando prefers-reduced-motion está
+   activo, para no ensuciarle la barra a la inmensa mayoría que no lo necesita. */
+.boton-animacion-oculto { display: none; }
+/* .boton-campana es un <a>, no un <button> — sin esto heredaría el subrayado y el
+   color de enlace del a:hover global de base.css en vez del estilo de botón-ícono. */
+a.boton-campana:hover { color: var(--color-texto-suave); text-decoration: none; }
+
+/* --- Mapa de calor del ánimo (estadísticas del estudiante) --- */
+.mapa-calor-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--texto-sm);
+    color: var(--color-texto-suave);
+    margin-bottom: var(--espacio-md);
+    flex-wrap: wrap;
+}
+.muestra-calor {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: inline-block;
+}
+.mapa-calor-grilla {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.mapa-calor-encabezado {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-texto-suave);
+    padding-bottom: 4px;
+}
+.mapa-calor-vacio { visibility: hidden; }
+.mapa-calor-dia {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radio-borde-sm);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: var(--color-texto);
+    cursor: default;
+}
+.mapa-calor-dia.sin-dato, .muestra-calor.sin-dato {
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto-suave);
+}
+.mapa-calor-dia.nivel-1, .muestra-calor.nivel-1 { background: #E27B6E; color: #2B2B2B; }
+.mapa-calor-dia.nivel-2, .muestra-calor.nivel-2 { background: #F0A868; color: #2B2B2B; }
+.mapa-calor-dia.nivel-3, .muestra-calor.nivel-3 { background: var(--color-dorado-claro); color: #2B2B2B; }
+.mapa-calor-dia.nivel-4, .muestra-calor.nivel-4 { background: #B5D98A; color: #2B2B2B; }
+.mapa-calor-dia.nivel-5, .muestra-calor.nivel-5 { background: #6FBF73; color: #2B2B2B; }
+
+@media (max-width: 480px) {
+    .mapa-calor-dia { font-size: 0.75rem; }
+}
+
+
+.tarjeta-analisis {
+    /* Tinta oscura sobre dorado: el blanco anterior daba ~1.9:1 de contraste en la parte clara del degradado. */
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: #2B2B2B;
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    margin-bottom: var(--espacio-xl);
+    box-shadow: var(--sombra-lg);
+}
+.tarjeta-analisis h2 {
+    font-size: var(--texto-md);
+    margin-bottom: var(--espacio-sm);
+    color: #2B2B2B;
+}
+.tarjeta-analisis p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    /* Alto mínimo para que el texto no "salte" el layout mientras el efecto de
+       escritura todavía está completando la frase letra por letra. */
+    min-height: 1.6em;
+}
+
+/* Variante compacta: mismo espíritu (fondo dorado suave, no el gradiente fuerte
+   de la tarjeta principal), pensada para repetirse varias veces en una misma
+   página — por ejemplo, una por pregunta de encuesta con respuestas abiertas. */
+.tarjeta-analisis-mini {
+    background: var(--color-fondo-alterno);
+    border-left: 3px solid var(--color-dorado-oscuro);
+    border-radius: var(--radio-borde-sm);
+    padding: var(--espacio-md);
+    margin: var(--espacio-sm) 0;
+}
+.tarjeta-analisis-mini strong {
+    display: block;
+    font-size: var(--texto-sm);
+    color: var(--color-dorado-texto);
+    margin-bottom: 4px;
+}
+.tarjeta-analisis-mini p {
+    margin: 0;
+    font-size: var(--texto-sm);
+    line-height: 1.5;
+    color: var(--color-texto);
+}
+
+.contenido-panel {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--espacio-xl) var(--espacio-md);
+    animation: deslizar-arriba var(--velocidad-lenta) var(--curva-suave);
+}
+
+.contenido-panel h1 { margin-bottom: var(--espacio-lg); }
+
+/* --- Saludo de bienvenida (dashboard): un poco más de presencia que un <h1>
+   suelto, sin volverse un banner pesado. --- */
+.cabecera-saludo { margin-bottom: var(--espacio-xl); }
+.cabecera-saludo h1 { margin-bottom: 4px; }
+.cabecera-saludo p { margin-bottom: 0; }
+
+/* El degradado dorado va en el propio .efecto-escritura (no en el h1 padre):
+   background-clip:text necesita aplicarse al mismo elemento que pinta el
+   texto. Si se aplica al h1 y el texto vive en un <span> anidado, el
+   navegador puede no tener ningún texto propio del h1 que recortar y el
+   saludo completo desaparecería. */
+.efecto-escritura-dorado {
+    color: var(--color-texto);
+    background: linear-gradient(120deg, var(--color-texto) 55%, var(--color-dorado-texto));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- Tarjetas de resumen (dashboard) --- */
+.tarjetas-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--espacio-md);
+    margin-bottom: var(--espacio-xl);
+}
+
+.tarjeta {
+    background-color: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    text-align: center;
+    box-shadow: var(--sombra-md);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--velocidad-media) var(--curva-suave), box-shadow var(--velocidad-media) var(--curva-suave), border-color var(--velocidad-media) var(--curva-suave);
+}
+/* Filete superior de acento — aparece siempre, muy sutil en reposo y se
+   intensifica en hover, para que la fila de tarjetas no se sienta como
+   cuatro cajas blancas idénticas sin ningún acento de marca. */
+.tarjeta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    opacity: 0.5;
+    transition: opacity var(--velocidad-media) var(--curva-suave);
+}
+.tarjeta:hover::before { opacity: 1; }
+
+.tarjeta:hover {
+    border-color: rgba(232, 185, 35, 0.35);
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-lg);
+}
+
+/* Ícono opcional arriba del número — uso: <div class="tarjeta">
+   <span class="tarjeta-icono">🔥</span><span class="tarjeta-numero">3</span>...
+   Sin este span la tarjeta se ve exactamente igual que antes (nada se rompe
+   en las páginas que todavía no lo usan). */
+.tarjeta-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto var(--espacio-sm);
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-fondo-alterno));
+    font-size: 1.3rem;
+}
+
+.tarjeta-numero {
+    display: block;
+    font-size: var(--texto-xl);
+    font-family: var(--fuente-titulos);
+    color: var(--color-dorado-texto);
+    animation: aparecer-rebote var(--velocidad-lenta) var(--curva-rebote);
+}
+
+.tarjeta-etiqueta {
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.accesos-rapidos { display: flex; gap: var(--espacio-sm); flex-wrap: wrap; }
+
+.boton-acceso {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--color-texto);
+    padding: 10px 18px;
+    border-radius: var(--radio-borde);
+    font-weight: 600;
+    font-size: var(--texto-sm);
+    box-shadow: 0 2px 6px rgba(232, 185, 35, 0.25);
+    transition: transform var(--velocidad-rapida) var(--curva-suave), box-shadow var(--velocidad-rapida) var(--curva-suave);
+}
+.boton-acceso::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -60%;
+    width: 40%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+}
+.boton-acceso:hover::after { animation: destello-boton 0.7s var(--curva-suave); }
+.boton-acceso:hover { text-decoration: none; transform: translateY(-2px); box-shadow: var(--sombra-dorada); }
+
+.boton-secundario {
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto);
+    padding: 6px 12px;
+    font-size: var(--texto-xs);
+    border-radius: var(--radio-borde-sm);
+    display: inline-block;
+    transition: background var(--velocidad-rapida) var(--curva-suave);
+}
+.boton-secundario:hover { background: var(--color-borde); text-decoration: none; }
+
+.columnas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--espacio-lg);
+    margin-bottom: var(--espacio-xl);
+}
+
+.panel-seccion {
+    background-color: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    box-shadow: var(--sombra-md);
+    margin-bottom: var(--espacio-lg);
+    transition: box-shadow var(--velocidad-media) var(--curva-suave);
+}
+.panel-seccion:hover { box-shadow: var(--sombra-lg); }
+.panel-seccion h2 { margin-bottom: var(--espacio-sm); font-size: var(--texto-md); }
+
+.respaldo-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    margin: var(--espacio-md) 0;
+}
+.respaldo-info strong { display: block; margin-bottom: 2px; }
+
+.formulario-panel { max-width: 420px; }
+
+/* --- Tablas --- */
+.tabla-datos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    overflow: hidden;
+    box-shadow: var(--sombra-md);
+}
+.tabla-datos th, .tabla-datos td {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: var(--texto-sm);
+    border-bottom: 1px solid var(--color-fondo-alterno);
+}
+.tabla-datos th {
+    background-color: var(--color-fondo-alterno);
+    color: var(--color-texto-suave);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: var(--texto-xs);
+    letter-spacing: 0.4px;
+}
+.tabla-datos tbody tr { transition: background var(--velocidad-rapida) var(--curva-suave); }
+.tabla-datos tbody tr:hover { background-color: var(--color-fondo-alterno); }
+.tabla-datos tbody tr:last-child td { border-bottom: none; }
+
+.filtro-rol {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: var(--espacio-lg);
+    max-width: 220px;
+}
+.filtro-rol select { margin: 0; }
+
+.barra-acciones { margin-bottom: var(--espacio-lg); }
+
+/* --- Responsive: tablet y escritorio, además del breakpoint móvil original --- */
+@media (max-width: 600px) {
+    .barra-superior { flex-wrap: nowrap; }
+
+    .contenido-panel { padding: var(--espacio-lg) var(--espacio-sm); }
+    .tarjetas-resumen { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: var(--texto-lg); }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    .contenido-panel { padding: var(--espacio-lg); }
+    .columnas { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1200px) {
+    .contenido-panel { max-width: 1280px; padding: var(--espacio-2xl) var(--espacio-lg); }
+    .tarjetas-resumen { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Barra de búsqueda en la barra superior
+   ============================================================ */
+.buscador-barra { position: relative; flex: 1; min-width: 140px; max-width: 320px; }
+.buscador-barra input {
+    padding-left: 36px;
+    background-color: var(--color-fondo-alterno);
+    border-color: transparent;
+}
+.buscador-barra input:focus { background-color: var(--color-superficie); }
+.icono-buscador {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--color-texto-suave); pointer-events: none; font-size: 0.9rem;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Menú de usuario (avatar + nombre, con desplegable de
+   "Mi perfil / Cerrar sesión") usando el desplegable genérico de base.css
+   ============================================================ */
+.menu-usuario-boton {
+    background: none; box-shadow: none; padding: 4px 6px 4px 4px;
+    display: flex; align-items: center; gap: 8px;
+    border-radius: var(--radio-pill);
+    color: var(--color-texto);
+}
+.menu-usuario-boton:hover { background: var(--color-fondo-alterno); transform: none; box-shadow: none; }
+.menu-usuario-boton .nombre-usuario-barra { font-size: var(--texto-sm); font-weight: 600; }
+.menu-usuario-boton .rol-usuario-barra { font-size: var(--texto-xs); color: var(--color-texto-suave); display: block; text-align: left; }
+
+/* ============================================================
+   AMPLIACIÓN — Barra de filtros/acciones más completa que .barra-acciones
+   ============================================================ */
+.barra-filtros {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-bottom: var(--espacio-lg);
+}
+.barra-filtros select, .barra-filtros input { width: auto; min-width: 140px; }
+.barra-filtros .separador-filtros { flex: 1; }
+.contador-resultados { font-size: var(--texto-sm); color: var(--color-texto-suave); }
+
+/* ============================================================
+   AMPLIACIÓN — Tabla que se convierte en tarjetas apiladas en móvil,
+   para no depender solo del scroll horizontal en tablas con muchas
+   columnas (listas de estudiantes, auditoría, aprobaciones).
+   Requiere que cada <td> tenga data-etiqueta="Nombre de columna".
+   ============================================================ */
+@media (max-width: 700px) {
+    .tabla-adaptable thead { display: none; }
+    .tabla-adaptable, .tabla-adaptable tbody, .tabla-adaptable tr, .tabla-adaptable td {
+        display: block; width: 100%;
+    }
+    .tabla-adaptable tr {
+        background: var(--color-superficie);
+        border-radius: var(--radio-borde);
+        box-shadow: var(--sombra-sm);
+        margin-bottom: var(--espacio-sm);
+        padding: var(--espacio-sm) var(--espacio-md);
+    }
+    .tabla-adaptable td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--espacio-md);
+        text-align: right;
+        border-bottom: 1px solid var(--color-fondo-alterno);
+        padding: 8px 0;
+    }
+    .tabla-adaptable td:last-child { border-bottom: none; }
+    .tabla-adaptable td::before {
+        content: attr(data-etiqueta);
+        font-weight: 600;
+        font-size: var(--texto-xs);
+        color: var(--color-texto-suave);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        text-align: left;
+    }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Tarjeta con acento lateral (para estados / prioridad)
+   ============================================================ */
+.tarjeta-acento { border-left: 4px solid var(--color-dorado-oscuro); }
+.tarjeta-acento-error { border-left-color: var(--color-error); }
+.tarjeta-acento-exito { border-left-color: var(--color-exito); }
+.tarjeta-acento-aviso { border-left-color: var(--color-aviso); }
+
+/* ============================================================
+   AMPLIACIÓN — Pie de panel (versión, enlaces legales, soporte)
+   ============================================================ */
+.pie-panel {
+    max-width: 1100px;
+    margin: var(--espacio-2xl) auto var(--espacio-lg);
+    padding: var(--espacio-lg) var(--espacio-md) 0;
+    border-top: 1px solid var(--color-borde);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    justify-content: space-between;
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+}
+.pie-panel a { color: var(--color-texto-suave); }
+.pie-panel a:hover { color: var(--color-dorado-texto); }
+
+/* ============================================================
+   AMPLIACIÓN — Layout de dos columnas asimétrico (contenido + panel
+   lateral de contexto, ej. detalle de estudiante junto a alertas activas)
+   ============================================================ */
+.diseno-con-lateral {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--espacio-lg);
+}
+@media (min-width: 900px) {
+    .diseno-con-lateral { grid-template-columns: 2fr 1fr; align-items: start; }
+    .diseno-con-lateral .columna-lateral { position: sticky; top: calc(var(--espacio-xl) + 70px); }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Ajustes responsivos adicionales de la barra superior
+   ============================================================ */
+@media (max-width: 600px) {
+    .buscador-barra { order: 3; max-width: none; flex-basis: 100%; }
+    .usuario-barra { gap: 6px; }
+    .menu-usuario-boton .rol-usuario-barra { display: none; }
+}
+
+@media (min-width: 1440px) {
+    .contenido-panel { max-width: 1400px; }
+}
+
+/* Reduce el salto de layout al cargar contenido dinámico dentro de una tarjeta */
+.panel-seccion:has(.esqueleto) { min-height: 80px; }
+
+/* ============================================================
+   AMPLIACIÓN — Pulso de grupo (public/estudiante/dashboard.php,
+   public/docente/pulso.php, public/parciales/resultado_pulso.php).
+   Deliberadamente sin colores rojo/verde de semáforo emocional: es
+   una escala neutra de 1 a 5, igual de tranquila que el resto de la
+   experiencia del estudiante.
+   ============================================================ */
+.tarjeta-pulso-grupo .escala-pulso { margin-top: var(--espacio-sm); }
+.botones-escala-pulso { display: flex; gap: var(--espacio-sm); }
+.boton-escala-pulso {
+    flex: 1;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--color-borde);
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-md);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: none;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.boton-escala-pulso:hover {
+    border-color: var(--color-dorado-oscuro);
+    transform: translateY(-2px);
+}
+.rotulos-escala-pulso { display: flex; justify-content: space-between; margin-top: 4px; font-size: var(--texto-xs); }
+
+.barras-pulso { display: flex; flex-direction: column; gap: 6px; margin-top: var(--espacio-sm); }
+.fila-barra-pulso { display: flex; align-items: center; gap: var(--espacio-sm); }
+.etiqueta-barra-pulso { width: 1.2em; font-weight: 700; text-align: center; }
+.pista-barra-pulso { flex: 1; height: 10px; border-radius: var(--radio-pill); background: var(--color-fondo-alterno); overflow: hidden; }
+.relleno-barra-pulso { height: 100%; border-radius: var(--radio-pill); background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); }
+.numero-barra-pulso { width: 2em; text-align: right; font-size: var(--texto-sm); color: var(--color-texto-suave); }
+
+.lista-historial-pulso { list-style: none; display: flex; flex-direction: column; gap: var(--espacio-md); }
+.lista-historial-pulso li { padding: var(--espacio-md); border-radius: var(--radio-borde); background: var(--color-fondo-alterno); }
+
+/* ============================================================
+   AMPLIACIÓN — Tanda 5: historial de respaldos, insignias sin ícono
+   todavía (emoji de reemplazo) y panel de salud del sistema.
+   ============================================================ */
+.lista-respaldos { list-style: none; display: flex; flex-direction: column; gap: var(--espacio-sm); }
+.insignia .insignia-emoji { display: block; font-size: 2.4rem; line-height: 1; text-align: center; }
+
+.lista-salud { list-style: none; display: flex; flex-direction: column; gap: var(--espacio-sm); }
+.lista-salud li { display: flex; justify-content: space-between; align-items: center; gap: var(--espacio-md); flex-wrap: wrap; padding: var(--espacio-sm) var(--espacio-md); border-radius: var(--radio-borde); background: var(--color-fondo-alterno); }
+.lista-salud .detalle-salud { color: var(--color-texto-suave); font-size: var(--texto-sm); }
+.pill-salud-ok { background: var(--color-exito-fondo); color: var(--color-exito); }
+.pill-salud-aviso { background: var(--color-aviso-fondo); color: var(--color-aviso); }
+.pill-salud-mal { background: var(--color-peligro-fondo); color: var(--color-peligro); }
+.pill-salud-info { background: var(--color-info-fondo); color: var(--color-info); }
+
+/* Barra superior del modo demostración */
+.barra-demo { flex-wrap: wrap; gap: 8px 14px; }
+.barra-demo form { display: flex; gap: 10px; align-items: center; }
+.barra-demo select { max-width: 220px; }
+.barra-demo a { font-weight: 600; }

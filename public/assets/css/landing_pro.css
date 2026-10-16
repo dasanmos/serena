@@ -1,0 +1,99 @@
+/* ============================================================
+   SERENA — landing_pro.css
+   Mejoras de la portada (index.php). Se carga DESPUÉS de landing.css.
+   ============================================================ */
+
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ---------- Menú ---------- */
+.nav-publica { transition: box-shadow .2s ease, background .2s ease; }
+.nav-publica.con-sombra { box-shadow: 0 6px 24px rgba(43, 43, 43, .10); }
+.anclas-nav-publica { display: none; gap: 4px; margin-inline: auto; }
+.anclas-nav-publica a {
+    padding: 8px 12px; border-radius: var(--radio-pill);
+    color: var(--color-texto-suave); font-size: .9rem; font-weight: 500; text-decoration: none;
+    transition: background .15s ease, color .15s ease;
+}
+.anclas-nav-publica a:hover { background: var(--color-fondo-alterno); color: var(--color-texto); }
+@media (min-width: 1000px) { .anclas-nav-publica { display: flex; } }
+
+/* ---------- Héroe ---------- */
+.hero-landing { position: relative; }
+.hero-landing::before {
+    content: ""; position: absolute; inset: -40px 0 auto 0; height: 560px; z-index: -1; pointer-events: none;
+    background:
+        radial-gradient(520px 320px at 12% 20%, rgba(249, 217, 118, .45), transparent 70%),
+        radial-gradient(480px 300px at 88% 10%, rgba(232, 185, 35, .28), transparent 70%);
+}
+.hero-landing h1 { text-wrap: balance; }
+.eslogan-hero {
+    display: inline-flex; padding: 6px 14px; border-radius: var(--radio-pill);
+    background: rgba(232, 185, 35, .18); border: 1px solid rgba(232, 185, 35, .5);
+}
+.chips-confianza { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: var(--espacio-lg) 0 0; padding: 0; }
+.chips-confianza li {
+    padding: 6px 12px; border-radius: var(--radio-pill); font-size: .8rem; font-weight: 500;
+    background: var(--color-superficie); border: 1px solid var(--color-borde); color: var(--color-texto-suave);
+}
+@media (max-width: 860px) { .chips-confianza { justify-content: center; } }
+
+/* ---------- Cifras ---------- */
+.franja-cifras {
+    max-width: 960px; margin: 0 auto var(--espacio-xl);
+    padding: 0 clamp(16px, 5vw, 48px);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--espacio-md);
+}
+.cifra-landing {
+    text-align: center; padding: var(--espacio-lg) var(--espacio-md);
+    background: var(--color-superficie); border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-lg); box-shadow: var(--sombra-sm);
+}
+.cifra-landing strong { display: block; font-family: var(--fuente-titulos); font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1; color: var(--color-dorado-texto); }
+.cifra-landing span { display: block; margin-top: 6px; font-size: .85rem; color: var(--color-texto-suave); }
+
+/* ---------- Tarjetas con más vida ---------- */
+.bloque-bento, .paso-camino, .tarjeta-secretaria { transition: transform .2s ease, box-shadow .2s ease; }
+.bloque-bento:hover, .tarjeta-secretaria:hover { transform: translateY(-4px); box-shadow: var(--sombra-md); }
+.item-faq { transition: box-shadow .2s ease; }
+.item-faq[open] { box-shadow: var(--sombra-sm); }
+
+/* ---------- Sección Secretarías ---------- */
+.seccion-secretarias {
+    position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #2B2B2B 0%, #1F1D18 100%);
+    color: #F5F3EC; max-width: none;
+}
+.seccion-secretarias > * { position: relative; z-index: 1; max-width: 1100px; margin-inline: auto; }
+.seccion-secretarias::before {
+    content: ""; position: absolute; width: 520px; height: 520px; right: -160px; top: -200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 185, 35, .35), transparent 70%); pointer-events: none;
+}
+.seccion-secretarias .cabecera-seccion-landing h2 { color: #F5F3EC; text-wrap: balance; }
+.seccion-secretarias .cabecera-seccion-landing p { color: rgba(245, 243, 236, .72); }
+.etiqueta-seccion {
+    display: inline-block; margin-bottom: var(--espacio-sm); padding: 5px 14px; border-radius: var(--radio-pill);
+    background: rgba(249, 217, 118, .16); border: 1px solid rgba(249, 217, 118, .45);
+    color: #F9D976; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+}
+.grid-secretarias { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--espacio-md); }
+.tarjeta-secretaria {
+    padding: var(--espacio-lg); border-radius: var(--radio-borde-lg);
+    background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
+}
+.tarjeta-secretaria h3 { color: #F9D976; font-size: 1.05rem; margin: var(--espacio-sm) 0 6px; }
+.tarjeta-secretaria p { color: rgba(245, 243, 236, .78); font-size: .9rem; line-height: 1.55; margin: 0; }
+.icono-secretaria { font-size: 1.8rem; line-height: 1; }
+
+/* ---------- Pestaña del rol nuevo (mismo comportamiento que las demás) ---------- */
+#rol-secretaria:checked ~ .pestanas-rol label[for="rol-secretaria"] { background: var(--color-secundario); color: #fff; }
+#rol-secretaria:checked ~ .paneles-rol .panel-rol[data-rol="secretaria"] { display: block; }
+
+/* ---------- Pie ---------- */
+.pie-emergencia { margin: var(--espacio-sm) 0; font-size: .88rem; }
+
+/* ---------- Aparición al hacer scroll (la agrega el JS; sin JS todo se ve) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+    .revelar { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .revelar.visible { opacity: 1; transform: none; }
+}

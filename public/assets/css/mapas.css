@@ -1,0 +1,79 @@
+/* ============================================================
+   SERENA — mapas.css
+   Mapas (Leaflet + OpenStreetMap): colegios, selector de ubicación y lugares de ayuda.
+   Usa solo tokens de base.css, así que sigue el modo oscuro.
+   ============================================================ */
+
+.mapa-bloque { margin: var(--espacio-md, 16px) 0; }
+.mapa-lienzo {
+    position: relative; z-index: 0;            /* z-index 0: los controles de Leaflet no tapan el menú ni los modales */
+    height: 380px; max-height: 70vh; width: 100%;
+    border-radius: var(--radio-borde, 12px);
+    border: 1px solid var(--color-borde, #E0DCCB);
+    background: var(--color-fondo-alterno, #FAF7EE);
+    overflow: hidden;
+}
+.mapa-picker .mapa-lienzo { height: 300px; }
+
+/* Aviso previo a cargar el mapa (servicio externo) */
+.mapa-lienzo.mapa-bloqueado {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--espacio-sm, 8px);
+    padding: var(--espacio-md, 16px); text-align: center; color: var(--color-texto, #2B2B2B);
+}
+.mapa-aviso { margin: 0; max-width: 46ch; color: var(--color-texto-suave, #6B6B6B); }
+.mapa-enlace { font-size: .85rem; color: var(--color-dorado-texto, #8A6A00); }
+
+.mapa-estado { margin: var(--espacio-sm, 8px) 0 0; font-size: .875rem; color: var(--color-texto-suave, #6B6B6B); min-height: 1.3em; }
+.mapa-estado-error { color: var(--color-peligro, #C0392B); }
+.mapa-coords { margin: 4px 0 0; font-size: .8rem; color: var(--color-texto-suave, #6B6B6B); }
+
+.mapa-picker-barra { display: flex; flex-wrap: wrap; gap: var(--espacio-sm, 8px); align-items: center; margin-bottom: var(--espacio-sm, 8px); }
+.mapa-alternativas { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.mapa-alt-titulo { font-size: .8rem; color: var(--color-texto-suave, #6B6B6B); }
+.mapa-alt {
+    padding: 4px 10px; font-size: .8rem; border-radius: 999px; cursor: pointer;
+    background: var(--color-superficie, #fff); color: var(--color-texto, #2B2B2B);
+    border: 1px solid var(--color-borde, #E0DCCB); box-shadow: none; max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mapa-alt:hover { border-color: var(--color-dorado-oscuro, #E8B923); }
+
+/* Popups de Leaflet */
+.mapa-popup { font-family: var(--fuente-base, inherit); line-height: 1.4; color: #2B2B2B; }
+.mapa-popup-suave { color: #6B6B6B; font-size: .85em; }
+
+/* "Cómo llegar": menú de apps de mapas (tarjetas y globos del mapa) */
+.como-llegar summary { cursor: pointer; color: var(--color-dorado-texto, #8A6A00); font-weight: 600; list-style-position: inside; }
+.como-llegar-lista, .mapa-popup-ruta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.como-llegar-lista a, .mapa-popup-ruta a {
+    padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; text-decoration: none;
+    background: var(--color-superficie, #fff); color: var(--color-dorado-texto, #8A6A00);
+    border: 1px solid var(--color-borde, #E0DCCB);
+}
+.como-llegar-lista a:hover, .mapa-popup-ruta a:hover { border-color: var(--color-dorado-oscuro, #E8B923); }
+.mapa-popup-ruta a { background: #fff; color: #6E5400; }   /* el globo de Leaflet es siempre claro */
+
+/* Modo oscuro: teselas un poco atenuadas para que no deslumbren */
+html[data-tema="oscuro"] .mapa-lienzo .leaflet-tile-pane { filter: brightness(.82) contrast(1.05) saturate(.85); }
+
+/* ---- Lugares de ayuda (estudiante) ---- */
+.lugares-barra { display: flex; flex-wrap: wrap; gap: var(--espacio-sm, 8px); align-items: center; margin-bottom: var(--espacio-sm, 8px); }
+.lugares-lista { list-style: none; margin: var(--espacio-md, 16px) 0 0; padding: 0; display: grid; gap: var(--espacio-sm, 8px); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.lugar-tarjeta {
+    padding: var(--espacio-md, 16px); border-radius: var(--radio-borde, 12px);
+    background: var(--color-superficie, #fff); border: 1px solid var(--color-borde, #E0DCCB);
+    display: flex; flex-direction: column; gap: 4px;
+}
+.lugar-tarjeta h3 { margin: 0; font-size: 1.05rem; }
+.lugar-tipo { align-self: flex-start; font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 999px; background: var(--color-info-fondo, #E7F1F6); color: var(--color-info, #2E6E8E); }
+.lugar-dato { margin: 0; font-size: .9rem; color: var(--color-texto-suave, #6B6B6B); }
+.lugar-distancia { font-weight: 700; color: var(--color-dorado-texto, #8A6A00); }
+.lugar-acciones { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 6px; font-size: .875rem; }
+.lugar-acciones a, .lugar-acciones button.enlace-boton { color: var(--color-dorado-texto, #8A6A00); }
+.lugar-acciones button.enlace-boton { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; text-decoration: underline; box-shadow: none; }
+
+@media (max-width: 600px) {
+    .mapa-lienzo { height: 300px; }
+}
+@media print { .mapa-bloque { display: none; } }

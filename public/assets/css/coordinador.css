@@ -1,0 +1,75 @@
+/* ============================================================
+   SERENA — coordinador.css
+   Rol coordinador (body.rol-coordinador, lo pone encabezado.php; se carga
+   solo para este rol). Trabaja con cifras agrupadas y las lleva a reuniones:
+   la pantalla debe leerse de un vistazo, imprimirse limpia y no sugerir
+   nunca que hay datos de personas concretas. Los reportes viven en
+   psicologo/reportes.php (coordinador entra por un redireccionamiento), por
+   eso estos estilos apuntan a esa página también.
+   ============================================================ */
+
+/* --- Panel: cifras alineadas a la izquierda, etiquetas en minúscula normal --- */
+.rol-coordinador .tarjetas-resumen .tarjeta { text-align: left; padding: var(--espacio-md) var(--espacio-lg); }
+.rol-coordinador .tarjetas-resumen .tarjeta-icono { margin-left: 0; }
+.rol-coordinador .tarjeta-numero { font-variant-numeric: tabular-nums; }
+.rol-coordinador .tarjeta-etiqueta { text-transform: none; letter-spacing: 0; font-size: var(--texto-sm); }
+.rol-coordinador .tarjeta:hover { transform: none; }
+.rol-coordinador .panel-seccion:hover { box-shadow: var(--sombra-md); }
+
+/* --- Texto del análisis e informe: largo de línea cómodo --- */
+.rol-coordinador .tarjeta-analisis p,
+.rol-coordinador .tarjeta-analisis h2 { max-width: 72ch; }
+.rol-coordinador .tarjeta-analisis p { font-size: var(--texto-base); line-height: 1.65; }
+
+/* --- Filtros del reporte (desde, hasta, grado, grupo) --- */
+.rol-coordinador form[action="reportes.php"] label {
+    display: block;
+    margin: 0 0 var(--espacio-xs);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+}
+.rol-coordinador form[action="reportes.php"] input,
+.rol-coordinador form[action="reportes.php"] select { min-height: 42px; }
+.rol-coordinador form[action="reportes.php"] button,
+.rol-coordinador form[action="reportes.php"] .boton-acceso,
+.rol-coordinador form[action="reportes.php"] .boton-secundario {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--texto-sm);
+}
+
+/* --- Tablas de tendencia: encabezado en minúscula normal, cifras alineadas --- */
+.rol-coordinador .tabla-datos th { text-transform: none; letter-spacing: 0; font-size: var(--texto-sm); }
+.rol-coordinador .tabla-datos td { font-variant-numeric: tabular-nums; }
+.rol-coordinador .barra-progreso { height: 10px; }
+
+/* --- Gráficos: aire alrededor y que no desborden en celular --- */
+.rol-coordinador canvas { max-width: 100%; }
+.rol-coordinador .panel-seccion canvas { margin-top: var(--espacio-sm); }
+
+/* --- Menos movimiento innecesario --- */
+.rol-coordinador .lista-simple li,
+.rol-coordinador .tarjeta-comparativa { animation: none; }
+
+/* --- Impresión: es el uso principal de este rol ---
+   El informe de análisis pierde el fondo dorado (no se imprime bien) y queda
+   como un recuadro de texto negro sobre blanco. */
+@media print {
+    .rol-coordinador .tarjeta-analisis {
+        background: none !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        border: 1px solid #999;
+    }
+    .rol-coordinador .tarjeta-analisis h2,
+    .rol-coordinador .tarjeta-analisis p { color: #000 !important; max-width: none; }
+    .rol-coordinador .tabla-wrapper { box-shadow: none; }
+    .rol-coordinador .tabla-datos th { background: #eee !important; color: #000 !important; }
+    .rol-coordinador canvas { break-inside: avoid; }
+}
+
+@media (max-width: 600px) {
+    .rol-coordinador .tarjetas-resumen { grid-template-columns: repeat(2, 1fr); gap: var(--espacio-sm); }
+    .rol-coordinador .tarjetas-resumen .tarjeta { padding: var(--espacio-md); }
+}

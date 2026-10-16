@@ -1,0 +1,126 @@
+/* ============================================================
+   SERENA — menu_barra.css
+   Barra de menú HORIZONTAL (estilo GIA) bajo la barra superior.
+   Cada categoría del rol es un botón; al pasar el mouse, tocar o
+   enfocar se despliega una lista VERTICAL con ícono + texto.
+   · Escritorio (≥ 900px): barra en fila + desplegables.
+   · Celular/tableta (< 900px): la barra pasa a un cajón con acordeón,
+     que se abre con el botón «Menú» de la barra superior.
+   La barrita dorada (panel-acento-*) vive en panel.css y no se toca.
+   Solo usa tokens de base.css.
+   ============================================================ */
+
+.menubar {
+    position: relative;
+    z-index: 60;
+    background: var(--color-fondo-alterno);
+    border-bottom: 1px solid var(--color-borde);
+    box-shadow: var(--sombra-sm);
+}
+.menubar-lista { list-style: none; margin: 0; padding: 0 clamp(8px, 2vw, 24px); display: flex; flex-wrap: wrap; gap: 2px; }
+.menubar-grupo { position: relative; }
+.menubar-cabecera-movil, .menubar-sesion { display: none; }
+
+.menubar-boton {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 16px; min-height: 44px;
+    background: none; border: 0; box-shadow: none; border-radius: 0;
+    color: var(--color-texto); font: inherit; font-size: var(--texto-sm); font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+    border-bottom: 3px solid transparent;
+}
+.menubar-boton:hover, .menubar-grupo.abierto > .menubar-boton { background: var(--color-superficie); transform: none; box-shadow: none; color: var(--color-dorado-oscuro-texto); }
+.menubar-grupo.activo > .menubar-boton { border-bottom-color: var(--color-dorado-oscuro); }
+.menubar-chevron {
+    width: 6px; height: 6px; flex-shrink: 0;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform var(--velocidad-rapida) var(--curva-suave);
+}
+.menubar-grupo.abierto > .menubar-boton .menubar-chevron { transform: rotate(-135deg) translateY(-2px); }
+
+/* Desplegable vertical con íconos */
+.menubar-submenu {
+    list-style: none; margin: 0; padding: 6px;
+    display: none;
+    position: absolute; top: 100%; left: 0;
+    min-width: 230px; max-width: min(320px, 92vw);
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde); border-radius: 0 0 var(--radio-borde) var(--radio-borde);
+    box-shadow: var(--sombra-lg);
+}
+.menubar-grupo.abierto > .menubar-submenu { display: block; animation: menubar-bajar var(--velocidad-rapida) var(--curva-suave); }
+.menubar-grupo.alinear-der > .menubar-submenu { left: auto; right: 0; }
+@keyframes menubar-bajar { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.menubar-enlace {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px; min-height: 42px;
+    border-radius: var(--radio-borde-sm);
+    color: var(--color-texto); text-decoration: none;
+    font-size: var(--texto-sm); font-weight: 500; line-height: 1.25;
+}
+.menubar-enlace:hover { background: var(--color-fondo-alterno); color: var(--color-dorado-oscuro-texto); text-decoration: none; }
+.menubar-enlace.activo { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); color: var(--color-texto); font-weight: 700; }
+.menubar-icono { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; }
+.menubar-icono img { width: 22px; height: 22px; object-fit: contain; }
+
+.menubar-boton:focus-visible, .menubar-enlace:focus-visible, .menubar-cerrar:focus-visible, .boton-menu-movil:focus-visible {
+    outline: 3px solid var(--color-dorado-oscuro-texto, #6E5400); outline-offset: -3px;
+}
+
+.menubar-fondo { display: none; position: fixed; inset: 0; z-index: 75; background: rgba(43, 43, 43, .4); opacity: 0; transition: opacity var(--velocidad-media) var(--curva-suave); }
+.menubar-fondo.visible { display: block; opacity: 1; }
+
+/* Botón «Menú» de la barra superior (solo celular/tableta) */
+.boton-menu-movil {
+    display: none; align-items: center; gap: 8px;
+    padding: 8px 14px; min-height: 40px;
+    background: var(--color-fondo-alterno); color: var(--color-texto);
+    border: 1px solid var(--color-borde); border-radius: var(--radio-pill);
+    box-shadow: none; font-size: var(--texto-sm); font-weight: 600;
+}
+.boton-menu-movil:hover { transform: none; box-shadow: none; background: var(--color-borde); }
+.boton-menu-movil svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ============================================================
+   Celular y tableta: cajón con acordeón
+   ============================================================ */
+@media (max-width: 899.98px) {
+    .menubar {
+        position: fixed; inset: 0 auto 0 0; z-index: 80;
+        width: min(86vw, 320px);
+        display: flex; flex-direction: column;
+        background: var(--color-superficie);
+        border-right: 1px solid var(--color-borde); border-bottom: 0;
+        transform: translateX(-102%); visibility: hidden;
+        transition: transform var(--velocidad-media) var(--curva-suave), visibility 0s linear var(--velocidad-media);
+        overflow-y: auto; overscroll-behavior: contain;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .menubar.abierto { transform: none; visibility: visible; transition-delay: 0s; box-shadow: var(--sombra-lg); }
+    .menubar-cabecera-movil {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: calc(var(--espacio-md) + env(safe-area-inset-top, 0px)) var(--espacio-sm) var(--espacio-sm) 18px;
+        font-family: var(--fuente-titulos); font-size: 1.45rem; font-weight: 700; letter-spacing: .06em;
+    }
+    .menubar-cerrar { width: 44px; height: 44px; padding: 0; background: none; box-shadow: none; color: var(--color-texto-suave); border-radius: 50%; font-size: 1.6rem; line-height: 1; }
+    .menubar-cerrar:hover { background: var(--color-fondo-alterno); transform: none; box-shadow: none; }
+    .menubar-lista { flex-direction: column; flex-wrap: nowrap; padding: 0 10px; gap: 0; flex: 1; }
+    .menubar-grupo + .menubar-grupo { border-top: 1px solid var(--color-borde); }
+    .menubar-boton { width: 100%; justify-content: space-between; padding: 14px 10px; border-bottom: 0; font-size: var(--texto-base); }
+    .menubar-grupo.activo > .menubar-boton { box-shadow: inset 3px 0 0 var(--color-dorado-oscuro); }
+    .menubar-submenu, .menubar-grupo.alinear-der > .menubar-submenu {
+        position: static; min-width: 0; max-width: none; border: 0; box-shadow: none; border-radius: 0; padding: 0 0 8px; background: none;
+    }
+    .menubar-grupo.abierto > .menubar-submenu { animation: none; }
+    .menubar-enlace { min-height: 48px; padding-left: 14px; font-size: var(--texto-base); }
+    .menubar-sesion { display: flex; align-items: center; gap: 10px; padding: var(--espacio-md) 18px; border-top: 1px solid var(--color-borde); }
+    .menubar-sesion .insignia-rol { flex-shrink: 0; }
+    .menubar-sesion-nombre { flex: 1; min-width: 0; font-size: var(--texto-sm); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .menubar-sesion a { font-size: var(--texto-sm); font-weight: 600; white-space: nowrap; }
+    .boton-menu-movil { display: inline-flex; }
+}
+
+@media print { .menubar, .menubar-fondo, .boton-menu-movil { display: none !important; } }
+@media (prefers-reduced-motion: reduce) { .menubar, .menubar-fondo, .menubar-chevron { transition: none; } .menubar-grupo.abierto > .menubar-submenu { animation: none; } }

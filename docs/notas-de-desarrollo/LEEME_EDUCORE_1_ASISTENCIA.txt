@@ -1,0 +1,35 @@
+SERENA - Funciones EDUCORE, Tanda 1: ASISTENCIA
+================================================
+ORDEN: 1) Respaldo de la base de datos y de los archivos que se reemplazan.
+       2) Ejecutar en phpMyAdmin: sql/migraciones/036_asistencia.sql (una vez; es reejecutable).
+       3) Subir los archivos respetando rutas. 4) Ctrl+F5.
+Requiere las migraciones 034 y 035 (ya existentes) y haber subido las tandas de estetica 1 a 5.
+
+QUE HACE
+ - Docente: "Tomar lista" por clase y fecha (Presente / Llego tarde / Ausente / Excusa / Permiso),
+   con "marcar a todos presentes", nota opcional por estudiante, conteo en vivo y aviso de cambios sin guardar.
+   Re-guardar la misma fecha actualiza (no duplica). No admite fechas futuras ni fuera del anio lectivo.
+ - Estudiante y acudiente: "Mi asistencia" (resumen + incidencias). El estudiante solo ve la suya; el acudiente,
+   la de sus hijos; el personal, la de cualquier estudiante de su colegio (misma regla del boletin).
+ - Coordinacion, rectoria, administracion, secretaria academica (y docente, solo sus grupos): "Reporte de
+   asistencia" por grupo y rango de fechas, con descarga CSV (Excel) e impresion.
+ - Alerta de ausentismo: 3 o mas DIAS con ausencia sin justificar en 2 semanas (un dia con varias clases perdidas
+   cuenta como 1). Se muestra a coordinacion en el reporte y al DIRECTOR DE GRUPO en su panel.
+   (No se usan notificaciones porque en Serena solo el estudiante las ve.)
+ - Los umbrales estan en src/modelos/Asistencia.php: UMBRAL_DIAS y VENTANA_DIAS.
+
+DEFINICIONES (aparecen en pantalla): % inasistencia = (ausente + excusa) / clases registradas;
+ % sin justificar = ausente / clases registradas. No se afirma ningun porcentaje legal de perdida.
+
+ARCHIVOS NUEVOS: 036_asistencia.sql, src/modelos/Asistencia.php, public/asistencia.php,
+ public/asistencia_reporte.php, public/docente/asistencia.php, public/assets/css/asistencia.css
+ARCHIVOS MODIFICADOS: src/helpers/navegacion.php (enlaces por rol), public/docente/panel.php
+ (alerta + botones; reemplaza el de la Tanda 5 de estetica).
+
+PRUEBAS REALIZADAS (MariaDB + servidor PHP local, modo ONLY_FULL_GROUP_BY como MySQL 8):
+ 19 pruebas del modelo y 22 de integracion HTTP: guardado y actualizacion, validaciones de fecha, CSRF,
+ permisos por rol y por colegio, escape de HTML, CSV con BOM, panel del director.
+ NO se vio en navegador ni se probo con tus datos reales: revisa "Tomar lista" en celular y en modo oscuro.
+
+NO INCLUYE (siguientes pasos naturales): excusas enviadas por el acudiente, asistencia por jornada,
+ aviso por WhatsApp/correo a la familia, relacion con la nota de comportamiento.

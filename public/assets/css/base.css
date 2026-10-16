@@ -1,0 +1,1404 @@
+/* ============================================================
+   SERENA — base.css
+   Tokens globales, tipografía, reset, animaciones compartidas.
+   Se carga en TODAS las páginas — cualquier token/animación
+   que deba estar disponible en todo el sitio va aquí.
+   ============================================================ */
+
+:root {
+    /* --- Color: paleta dorada cálida del logo --- */
+    --color-fondo: #F5F3EC;
+    --color-fondo-alterno: #FAF7EE;
+    --color-superficie: #FFFFFF;
+    --color-dorado-claro: #F9D976;
+    --color-dorado-medio: #F0C63E;
+    --color-dorado-oscuro: #E8B923;
+    /* Variante más oscura, solo para texto/enlaces sobre fondo claro (WCAG AA, 4.5:1+) */
+    --color-dorado-texto: #8A6A00;
+    /* Aún más oscura, para :hover sobre --color-dorado-texto — el hover anterior usaba
+       --color-dorado-oscuro directamente (contraste real 1.66:1–1.84:1, reprobado incluso
+       para el umbral de 3:1 de componentes gráficos, no solo el de 4.5:1 de texto). */
+    --color-dorado-oscuro-texto: #6E5400;
+    --color-texto: #2B2B2B;
+    --color-texto-suave: #6B6B6B;
+    --color-borde: #E0DCCB;
+    --color-error: #C0392B;
+    --color-error-fondo: #FBEAE8;
+    /* Verde 5.32:1 sobre --color-exito-fondo (antes #3A7D44 = 4.46:1, reprobaba el
+       umbral WCAG AA de 4.5:1 para texto normal — mensajes de éxito en toda la app
+       usan este color como texto, no solo como acento). Ver accessibility.md › Vision. */
+    --color-exito: #337038;
+    --color-exito-fondo: #E9F5EA;
+    /* Ámbar 5.05:1 sobre --color-aviso-fondo (antes #9C6B0A = 4.20:1, reprobaba el
+       umbral WCAG AA de 4.5:1 — usado como texto en .mensaje-aviso y en el aviso de
+       bloqueo por intentos fallidos del login). Ver accessibility.md › Vision. */
+    --color-aviso: #8C5F09;
+    --color-aviso-fondo: #FCF3DA;
+    --color-peligro: #C0392B;
+    --color-peligro-fondo: #FBEAE8;
+    --color-info: #2E6E8E;
+    --color-info-fondo: #E7F1F6;
+    /* Texto sobre fondos de estado: blanco en modo claro (colores oscuros); tinta oscura en modo
+       oscuro, donde esos mismos fondos se aclaran y el blanco quedaba entre 2.2:1 y 2.9:1. */
+    --color-sobre-peligro: #FFFFFF;
+    --color-sobre-info: #FFFFFF;
+    --color-sobre-exito: #FFFFFF;
+
+    /* --- Alias semánticos: mismos valores de arriba, nombres estándar de sistema
+       de diseño, para quien prefiera pensar en "primary/secondary/accent" en vez
+       de "dorado-claro/medio/oscuro". No son colores nuevos — son otro nombre
+       para los mismos tokens, así que cambiarlos aquí cambia todo el sitio a la vez. --- */
+    --color-primario: var(--color-dorado-medio);
+    --color-primario-oscuro: var(--color-dorado-oscuro);
+    --color-primario-claro: var(--color-dorado-claro);
+    --color-secundario: var(--color-info);
+    --color-secundario-fondo: var(--color-info-fondo);
+    --color-acento: var(--color-dorado-texto);
+    --color-superficie-alterna: var(--color-fondo-alterno);
+    --color-texto-mutado: var(--color-texto-suave);
+
+    /* --- Espaciado: escala de 4px --- */
+    --espacio-xs: 4px;
+    --espacio-sm: 8px;
+    --espacio-md: 16px;
+    --espacio-lg: 24px;
+    --espacio-xl: 32px;
+    --espacio-2xl: 48px;
+
+    /* --- Tipografía ---
+       Cormorant Garamond (títulos) + Poppins (texto/UI) vía Google Fonts,
+       cargadas con font-display:swap desde encabezado.php/login.php/etc.
+       Si el CDN de fuentes no carga, cae de inmediato en Georgia/Segoe UI. */
+    --fuente-titulos: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --fuente-base: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    --texto-xs: 0.78rem;
+    --texto-sm: 0.875rem;
+    --texto-base: 1rem;
+    --texto-md: 1.15rem;
+    --texto-lg: 1.5rem;
+    --texto-xl: 2rem;
+    --texto-2xl: 2.75rem;
+
+    /* --- Forma --- */
+    --radio-borde: 12px;
+    --radio-borde-sm: 8px;
+    --radio-borde-lg: 20px;
+    --radio-pill: 999px;
+
+    /* --- Elevación --- */
+    --sombra-sm: 0 2px 8px rgba(43, 43, 43, 0.06);
+    --sombra-md: 0 4px 14px rgba(43, 43, 43, 0.08);
+    --sombra-lg: 0 10px 30px rgba(43, 43, 43, 0.10);
+    --sombra-dorada: 0 6px 20px rgba(232, 185, 35, 0.28);
+
+    /* --- Movimiento --- */
+    --velocidad-rapida: 0.15s;
+    --velocidad-media: 0.25s;
+    --velocidad-lenta: 0.5s;
+    --curva-suave: cubic-bezier(0.4, 0, 0.2, 1);
+    --curva-rebote: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================================
+   Modo oscuro — mismas variables, valores distintos. Todo el resto del CSS
+   (panel.css, estudiante.css, mensajes.css, etc.) cambia de tema solo con esto,
+   porque nunca usan colores hardcodeados, siempre var(--color-...).
+   ============================================================ */
+html[data-tema="oscuro"] {
+    --color-fondo: #1C1A16;
+    --color-fondo-alterno: #262319;
+    --color-superficie: #24211C;
+    --color-dorado-claro: #E8C558;
+    --color-dorado-medio: #D9AE33;
+    --color-dorado-oscuro: #C79A1E;
+    --color-dorado-texto: #F0C63E;
+    --color-dorado-oscuro-texto: #FCE49A;
+    --color-texto: #EDE8DC;
+    --color-texto-suave: #A79E8C;
+    --color-borde: #3A362C;
+    --color-error: #E27B6E;
+    --color-error-fondo: #3A2420;
+    --color-exito: #6FBE7A;
+    --color-exito-fondo: #1F3323;
+    --color-aviso: #E0B24F;
+    --color-aviso-fondo: #3A2E14;
+    --color-peligro: #E27B6E;
+    --color-peligro-fondo: #3A2420;
+    --color-info: #6FB2D9;
+    --color-info-fondo: #1C2E36;
+    --color-sobre-peligro: #1C1A16;
+    --color-sobre-info: #1C1A16;
+    --color-sobre-exito: #1C1A16;
+    --sombra-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --sombra-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+    --sombra-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Íconos con fondo blanco sólido (no transparente) se ven como un cuadro blanco
+   feo en modo oscuro sobre tarjetas oscuras — se atenúan un poco para disimular
+   hasta que se reemplacen por versiones con fondo transparente. */
+html[data-tema="oscuro"] .menubar-icono img,
+html[data-tema="oscuro"] .logo-barra {
+    filter: brightness(0.92);
+}
+
+/* ============================================================
+   Accesibilidad — Preferencias (public/preferencias.php)
+   ============================================================ */
+
+/* Tamaño del texto: todo el CSS usa rem sobre --texto-* (ver arriba), así que
+   escalar el font-size de <html> escala la tipografía de toda la plataforma
+   de forma proporcional, sin tocar ninguna otra regla. */
+html[data-tamano="grande"] { font-size: 112.5%; }     /* ~18px base en vez de 16px */
+html[data-tamano="muy_grande"] { font-size: 131.25%; } /* ~21px base en vez de 16px */
+
+/* Alto contraste: mismas variables que el resto del sitio usa siempre
+   (nunca colores sueltos), así que basta con redefinirlas aquí — funciona
+   igual en modo claro y en modo oscuro, y se combina con ambos. */
+html[data-contraste="alto"] {
+    --color-texto: #000000;
+    --color-texto-suave: #000000;
+    --color-borde: #000000;
+    --color-dorado-texto: #5C4600;
+    --color-dorado-oscuro-texto: #3D2F00;
+    --color-error: #8B0000;
+    --color-error-fondo: #FFFFFF;
+    --color-exito: #0B4D14;
+    --color-exito-fondo: #FFFFFF;
+    --color-aviso: #5C4600;
+    --color-aviso-fondo: #FFFFFF;
+    --color-peligro: #8B0000;
+    --color-peligro-fondo: #FFFFFF;
+    --color-info: #00305C;
+    --color-info-fondo: #FFFFFF;
+}
+html[data-tema="oscuro"][data-contraste="alto"] {
+    --color-texto: #FFFFFF;
+    --color-texto-suave: #FFFFFF;
+    --color-borde: #FFFFFF;
+    --color-dorado-texto: #FFE38A;
+    --color-dorado-oscuro-texto: #FFF3C4;
+    --color-error: #FF9B8D;
+    --color-error-fondo: #000000;
+    --color-exito: #8FE39B;
+    --color-exito-fondo: #000000;
+    --color-aviso: #FFD873;
+    --color-aviso-fondo: #000000;
+    --color-peligro: #FF9B8D;
+    --color-peligro-fondo: #000000;
+    --color-info: #9BCFF0;
+    --color-info-fondo: #000000;
+}
+/* Bordes más marcados y foco más visible: la paleta de colores por sí sola
+   no basta para "alto contraste" si los bordes siguen siendo de 1px sutiles. */
+html[data-contraste="alto"] {
+    --sombra-sm: none;
+    --sombra-md: none;
+    --sombra-lg: none;
+}
+html[data-contraste="alto"] .panel-seccion,
+html[data-contraste="alto"] .tarjeta,
+html[data-contraste="alto"] input,
+html[data-contraste="alto"] select,
+html[data-contraste="alto"] textarea,
+html[data-contraste="alto"] button,
+html[data-contraste="alto"] .boton-acceso,
+html[data-contraste="alto"] .boton-secundario {
+    border-width: 2px !important;
+    border-color: var(--color-borde) !important;
+}
+html[data-contraste="alto"] :focus-visible {
+    outline: 3px solid var(--color-dorado-oscuro-texto);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--fuente-base);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.55;
+    font-size: var(--texto-base);
+    animation: fundido-entrada var(--velocidad-lenta) var(--curva-suave);
+    transition: background-color var(--velocidad-media) var(--curva-suave), color var(--velocidad-media) var(--curva-suave);
+}
+
+h1, h2, h3 { font-family: var(--fuente-titulos); letter-spacing: 0.5px; line-height: 1.25; }
+h1 { font-size: var(--texto-xl); }
+h2 { font-size: var(--texto-md); }
+h3 { font-size: var(--texto-base); }
+p { margin-bottom: var(--espacio-sm); }
+
+a {
+    color: var(--color-dorado-texto);
+    text-decoration: none;
+    transition: color var(--velocidad-rapida) var(--curva-suave);
+}
+a:hover { color: var(--color-dorado-oscuro-texto); text-decoration: underline; }
+
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid var(--color-dorado-oscuro);
+    outline-offset: 2px;
+    border-radius: var(--radio-borde-sm);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radio-borde);
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--color-texto);
+    font-weight: 600;
+    padding: 12px 20px;
+    font-size: var(--texto-base);
+    font-family: var(--fuente-base);
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--velocidad-rapida) var(--curva-suave),
+                box-shadow var(--velocidad-rapida) var(--curva-suave),
+                opacity var(--velocidad-rapida) var(--curva-suave);
+    box-shadow: 0 2px 6px rgba(232, 185, 35, 0.25);
+}
+/* Destello diagonal al pasar el mouse — un solo barrido, no un loop; se ve
+   "premium" sin ser ruidoso. Respeta prefers-reduced-motion vía la regla
+   global de arriba (animation-duration se fuerza a ~0). */
+button::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -60%;
+    width: 40%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+}
+button:hover::after { animation: destello-boton 0.7s var(--curva-suave); }
+@keyframes destello-boton { from { left: -60%; } to { left: 130%; } }
+button:hover { transform: translateY(-2px); box-shadow: var(--sombra-dorada); }
+button:active { transform: translateY(0) scale(0.96); box-shadow: 0 1px 3px rgba(232, 185, 35, 0.25); }
+button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+button:disabled::after { display: none; }
+
+button.boton-peligro, .boton-peligro {
+    background: linear-gradient(135deg, #E9847A, var(--color-peligro));
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(192, 57, 43, 0.25);
+}
+button.boton-peligro:hover, .boton-peligro:hover { box-shadow: 0 6px 20px rgba(192, 57, 43, 0.3); }
+
+button.boton-fantasma, .boton-fantasma {
+    background: none; border: 1px solid var(--color-borde); color: var(--color-texto-suave); box-shadow: none;
+}
+button.boton-fantasma:hover { background: var(--color-fondo-alterno); transform: none; box-shadow: none; }
+button.boton-fantasma::after { display: none; }
+
+input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    font-size: var(--texto-base);
+    font-family: var(--fuente-base);
+    background-color: var(--color-superficie);
+    transition: border-color var(--velocidad-rapida) var(--curva-suave), box-shadow var(--velocidad-rapida) var(--curva-suave);
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-dorado-oscuro);
+    box-shadow: 0 0 0 3px rgba(232, 185, 35, 0.18);
+}
+
+/* --- Sliders (type="range") --- */
+/* accent-color solo no basta en todos los Windows/Chrome — algunos combos ignoran
+   el color y muestran el azul del sistema. Se controla el thumb y el track a mano
+   para garantizar el dorado en cualquier navegador/sistema operativo. */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-pill);
+    accent-color: var(--color-dorado-oscuro);
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: var(--radio-pill);
+    background: var(--color-fondo-alterno);
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border: 2px solid #fff;
+    box-shadow: var(--sombra-sm);
+    margin-top: -7px;
+    transition: transform var(--velocidad-rapida) var(--curva-suave);
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+input[type="range"]::-moz-range-track {
+    height: 6px;
+    border-radius: var(--radio-pill);
+    background: var(--color-fondo-alterno);
+}
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border: 2px solid #fff;
+    box-shadow: var(--sombra-sm);
+    cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: none; }
+input[type="range"]:focus-visible::-webkit-slider-thumb { outline: 3px solid var(--color-dorado-oscuro); outline-offset: 2px; }
+
+/* Etiqueta con el número en vivo, para usar junto a cualquier slider:
+   <label>Intensidad <span class="valor-slider" data-para="nivel">3</span></label>
+   <input type="range" id="nivel" oninput="actualizarValorSlider(this)"> */
+.valor-slider {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: var(--radio-pill);
+    background: var(--color-dorado-claro);
+    color: var(--color-texto);
+    font-weight: 700;
+    font-size: var(--texto-xs);
+    margin-left: 6px;
+}
+
+/* --- Selects --- */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A6A00' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+input.campo-error, select.campo-error, textarea.campo-error {
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+}
+
+label {
+    display: block;
+    font-size: var(--texto-sm);
+    color: var(--color-texto-suave);
+    margin-top: 14px;
+    margin-bottom: 4px;
+}
+
+/* --- BUGFIX: neutralizar el label global de arriba en los <label> que en
+   realidad envuelven un radio/checkbox "pill" (selector de emoción, horas de
+   sueño, calidad de sueño, días de la semana, interruptor, opción de encuesta).
+   Sin esto, cada uno de esos labels heredaba display:block + margin-top:14px +
+   color:var(--color-texto-suave) del label global, lo que rompía su alineación
+   horizontal dentro del contenedor flex (cada "pill" quedaba con un margen
+   superior distinto según la fila en que cayera al envolver) y les dejaba el
+   texto en gris apagado en vez del color correcto — nunca llegaban a verse
+   realmente doradas ni alineadas, sin importar lo que dijera el resto del CSS. */
+label.btn-emocion,
+label.btn-calidad-sueno,
+.selector-horas-sueno label,
+.selector-dias-semana label,
+.escala-likert label {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: inherit;
+    font-size: inherit;
+}
+/* Estos dos ya traían su propio display/align-items correcto (bloque completo,
+   alineados arriba para texto de varias líneas) — solo hace falta quitarles el
+   margen y el color heredados, sin tocar el resto. */
+label.interruptor,
+label.opcion-casilla {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+.mensaje {
+    padding: 12px 16px;
+    border-radius: var(--radio-borde);
+    font-size: var(--texto-sm);
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: deslizar-abajo var(--velocidad-media) var(--curva-suave);
+}
+.mensaje-error { background-color: var(--color-error-fondo); color: var(--color-error); }
+.mensaje-exito {
+    background-color: var(--color-exito-fondo);
+    color: var(--color-exito);
+    animation: deslizar-abajo var(--velocidad-media) var(--curva-suave), destello-exito 0.6s var(--velocidad-media);
+}
+.mensaje-aviso { background-color: var(--color-aviso-fondo); color: var(--color-aviso); }
+.mensaje-info { background-color: var(--color-info-fondo); color: var(--color-info); }
+
+.pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: var(--radio-pill);
+    font-size: var(--texto-xs); font-weight: 600; line-height: 1.6;
+}
+.pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.pill-exito { background: var(--color-exito-fondo); color: var(--color-exito); }
+.pill-error { background: var(--color-error-fondo); color: var(--color-error); }
+.pill-aviso { background: var(--color-aviso-fondo); color: var(--color-aviso); }
+.pill-info  { background: var(--color-info-fondo); color: var(--color-info); }
+.pill-neutro { background: var(--color-fondo-alterno); color: var(--color-texto-suave); }
+.pill-nueva { animation: pulso-suave 1.8s ease-in-out infinite; }
+
+.barra-progreso {
+    width: 100%; height: 10px; background: var(--color-fondo-alterno);
+    border-radius: var(--radio-pill); overflow: hidden; border: 1px solid var(--color-borde);
+}
+.barra-progreso-relleno {
+    height: 100%; border-radius: var(--radio-pill);
+    background: linear-gradient(90deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    transition: width 0.8s var(--curva-suave);
+    animation: crecer-desde-cero 0.8s var(--curva-suave);
+}
+
+.estado-vacio {
+    text-align: center; padding: var(--espacio-2xl) var(--espacio-md);
+    color: var(--color-texto-suave); animation: fundido-entrada var(--velocidad-lenta) var(--curva-suave);
+}
+.estado-vacio img {
+    width: 140px; max-width: 60%; margin: 0 auto var(--espacio-md); display: block;
+    animation: flotar 4s ease-in-out infinite;
+}
+.estado-vacio p { font-size: var(--texto-sm); }
+
+.esqueleto {
+    background: linear-gradient(90deg, var(--color-fondo-alterno) 25%, #EFEADA 37%, var(--color-fondo-alterno) 63%);
+    background-size: 400% 100%;
+    animation: brillo-carga 1.4s ease infinite;
+    border-radius: var(--radio-borde-sm);
+    display: block;
+}
+
+.toast {
+    position: fixed; bottom: var(--espacio-lg); left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--color-texto); color: #fff;
+    padding: 12px 20px; border-radius: var(--radio-pill);
+    font-size: var(--texto-sm); box-shadow: var(--sombra-lg);
+    opacity: 0; pointer-events: none;
+    transition: opacity var(--velocidad-media) var(--curva-suave), transform var(--velocidad-media) var(--curva-suave);
+    z-index: 999;
+}
+.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+/* ============================================================
+   Animaciones compartidas
+   ============================================================ */
+@keyframes fundido-entrada { from { opacity: 0; } to { opacity: 1; } }
+@keyframes deslizar-abajo { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes deslizar-arriba { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes crecer-desde-cero { from { width: 0; } }
+@keyframes pulso-suave { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+@keyframes flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes brillo-carga { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+@keyframes destello-exito { 0% { box-shadow: 0 0 0 0 rgba(58, 125, 68, 0.35); } 100% { box-shadow: 0 0 0 12px rgba(58, 125, 68, 0); } }
+@keyframes aparecer-rebote { 0% { opacity: 0; transform: scale(0.85); } 60% { opacity: 1; transform: scale(1.04); } 100% { transform: scale(1); } }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   Efecto de escritura (typewriter) — para saludos personalizados
+   ("Buenos días, David"). Implementado en JS (ver base.js), no en CSS
+   puro: la versión anterior arrancaba en width:0 y solo se hacía visible
+   si la animación con steps()+var() llegaba a ejecutarse — si algo fallaba
+   (orden de carga, soporte del navegador), el saludo quedaba invisible
+   por completo en vez de solo "sin animar". Esta versión nunca puede
+   desaparecer: el texto completo ya está en el HTML desde el servidor:
+   JS lo borra y lo vuelve a escribir letra por letra como mejora
+   progresiva, así que sin JS (o si JS falla) el saludo se ve normal,
+   completo, de inmediato — el peor caso posible es "sin animación",
+   nunca "en blanco". */
+.efecto-escritura {
+    display: inline-block;
+    border-right: 3px solid transparent;
+}
+.efecto-escritura.escribiendo {
+    border-right-color: var(--color-dorado-oscuro);
+    animation: parpadeo-cursor-escritura 0.7s step-end infinite;
+}
+@keyframes parpadeo-cursor-escritura {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--color-dorado-oscuro); }
+}
+
+.animar-entrada { animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both; }
+.animar-rebote  { animation: aparecer-rebote var(--velocidad-lenta) var(--curva-rebote) both; }
+.animar-entrada:nth-child(1) { animation-delay: 0.02s; }
+.animar-entrada:nth-child(2) { animation-delay: 0.06s; }
+.animar-entrada:nth-child(3) { animation-delay: 0.10s; }
+.animar-entrada:nth-child(4) { animation-delay: 0.14s; }
+.animar-entrada:nth-child(5) { animation-delay: 0.18s; }
+.animar-entrada:nth-child(6) { animation-delay: 0.22s; }
+.animar-entrada:nth-child(n+7) { animation-delay: 0.26s; }
+
+/* --- Campo de contraseña con ojo (mostrar/ocultar) ---
+   Lo crea base.js sobre cada input[type="password"]:
+     <div class="campo-password-wrapper"> <input> <button class="boton-mostrar-password"> </div>
+   Reglas que evitan los fallos anteriores:
+   - El input es display:block: un inline-block deja un colchón de aire abajo y el ojo
+     quedaba pegado al borde inferior.
+   - El botón se estira de arriba a abajo del wrapper y centra el ícono con flex.
+   - Se anula TODO lo que hereda del botón global (relleno, degradado, destello, elevación al
+     pasar el mouse): sin transform:none el ojo "saltaba" 2 px al hacer hover.
+   - El ancho reservado vive en --ojo-ancho; los campos que lo compensan (PIN) lo reutilizan. */
+.campo-password-wrapper {
+    --ojo-ancho: 44px;
+    position: relative;
+    width: 100%;
+}
+.campo-password-wrapper input[type="password"],
+.campo-password-wrapper input[type="text"] {
+    display: block;
+    width: 100%;
+    padding-right: var(--ojo-ancho); /* el texto no queda debajo del ojo */
+}
+.boton-mostrar-password {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: var(--ojo-ancho);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    border-radius: 0 var(--radio-borde) var(--radio-borde) 0;
+    box-shadow: none;
+    overflow: visible;
+    transform: none;
+    color: var(--color-texto-suave);
+    cursor: pointer;
+    z-index: 2;
+}
+.boton-mostrar-password::after { display: none; }
+.boton-mostrar-password svg { display: block; pointer-events: none; }
+/* Estado: ojo abierto = contraseña oculta (pulsar para mostrar); ojo tachado = visible. */
+.boton-mostrar-password .icono-ojo-cerrado { display: none; }
+.boton-mostrar-password.es-visible .icono-ojo-abierto { display: none; }
+.boton-mostrar-password.es-visible .icono-ojo-cerrado { display: block; }
+.boton-mostrar-password:hover {
+    background: none;
+    box-shadow: none;
+    transform: none;
+    color: var(--color-dorado-texto);
+}
+.boton-mostrar-password:active { transform: scale(0.9); }
+.boton-mostrar-password:focus-visible {
+    outline: 2px solid var(--color-dorado-oscuro);
+    outline-offset: -3px;
+}
+@media (forced-colors: active) {
+    .boton-mostrar-password { color: ButtonText; }
+}
+/* ============================================================
+   AMPLIACIÓN — Tokens adicionales
+   ============================================================ */
+:root {
+    /* --- Anchos de contenedor, centralizados (antes repetidos como números sueltos) --- */
+    --contenedor-sm: 640px;
+    --contenedor-md: 900px;
+    --contenedor-lg: 1100px;
+    --contenedor-xl: 1280px;
+
+    /* --- Escala de z-index, para no volver a adivinar un número --- */
+    --z-elevado: 10;
+    --z-sticky: 50;
+    --z-menu: 60;
+    --z-overlay: 200;
+    --z-modal: 210;
+    --z-toast: 999;
+
+    /* --- Colores por rol: para insignias, avatares y filtros donde hay que
+       distinguir 7 roles de un vistazo (panel de administrador, auditoría,
+       listas de usuarios). Deliberadamente distintos del dorado de marca,
+       que queda reservado para acciones primarias y elementos de marca. --- */
+    --color-rol-estudiante: #2E6E8E;
+    --color-rol-estudiante-fondo: #E7F1F6;
+    --color-rol-psicologo: #6B4E9C;
+    --color-rol-psicologo-fondo: #EFE9F7;
+    --color-rol-orientador: #3A7D44;
+    --color-rol-orientador-fondo: #E9F5EA;
+    --color-rol-docente: #9C6B0A;
+    --color-rol-docente-fondo: #FCF3DA;
+    --color-rol-coordinador: #B5651D;
+    --color-rol-coordinador-fondo: #FBE9DC;
+    --color-rol-rector: #8A2E4E;
+    --color-rol-rector-fondo: #F7E6ED;
+    --color-rol-administrador: #4A4A4A;
+    --color-rol-administrador-fondo: #EAEAEA;
+
+    /* --- Severidad para alertas tempranas (uso del personal, no del estudiante:
+       aquí SÍ conviene una jerarquía visual clara de urgencia). --- */
+    --color-severidad-alta: #B23A2E;
+    --color-severidad-alta-fondo: #FBE4E1;
+    --color-severidad-media: #B5791D;
+    --color-severidad-media-fondo: #FCEFD9;
+    --color-severidad-baja: #2E6E8E;
+    --color-severidad-baja-fondo: #E7F1F6;
+}
+
+html[data-tema="oscuro"] {
+    --color-rol-estudiante: #6FB2D9; --color-rol-estudiante-fondo: #1C2E36;
+    --color-rol-psicologo: #B29BDE; --color-rol-psicologo-fondo: #2A2338;
+    --color-rol-orientador: #6FBE7A; --color-rol-orientador-fondo: #1F3323;
+    --color-rol-docente: #E0B24F; --color-rol-docente-fondo: #3A2E14;
+    --color-rol-coordinador: #E0A066; --color-rol-coordinador-fondo: #3A2818;
+    --color-rol-rector: #D98CAE; --color-rol-rector-fondo: #38222C;
+    --color-rol-administrador: #C9C4B8; --color-rol-administrador-fondo: #2E2B24;
+    --color-severidad-alta: #E27B6E; --color-severidad-alta-fondo: #3A2420;
+    --color-severidad-media: #E0B24F; --color-severidad-media-fondo: #3A2E14;
+    --color-severidad-baja: #6FB2D9; --color-severidad-baja-fondo: #1C2E36;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Accesibilidad de base
+   ============================================================ */
+
+/* Oculta visualmente pero deja disponible para lectores de pantalla —
+   para etiquetas de contexto que no hace falta mostrar (ej. "Menú de:") */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Respeta el modo de alto contraste del sistema operativo en vez de pelear
+   contra él con colores/sombras propios. */
+@media (forced-colors: active) {
+    .btn-emocion.activa, .check-habito.marcado, .pill, .badge-rol { forced-color-adjust: none; }
+    button, .boton-acceso { border: 1px solid transparent; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Tipografía y jerarquía
+   ============================================================ */
+h4 { font-family: var(--fuente-titulos); font-size: var(--texto-sm); font-weight: 700; line-height: 1.3; }
+h5, h6 { font-family: var(--fuente-base); font-size: var(--texto-sm); font-weight: 700; }
+small, .texto-pequeno { font-size: var(--texto-xs); color: var(--color-texto-suave); }
+.texto-suave { color: var(--color-texto-suave); }
+.texto-dorado { color: var(--color-dorado-texto); }
+.texto-error { color: var(--color-error); }
+.texto-exito { color: var(--color-exito); }
+strong, b { font-weight: 700; }
+.truncar { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.truncar-2-lineas {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Utilidades de layout (uso puntual, no reemplazan CSS
+   ya escrito a mano para cada componente; sirven para casos sueltos
+   en vistas nuevas sin tener que inventar una clase por página).
+   ============================================================ */
+.u-flex { display: flex; }
+.u-flex-col { display: flex; flex-direction: column; }
+.u-flex-wrap { flex-wrap: wrap; }
+.u-items-center { align-items: center; }
+.u-justify-between { justify-content: space-between; }
+.u-justify-center { justify-content: center; }
+.u-gap-xs { gap: var(--espacio-xs); }
+.u-gap-sm { gap: var(--espacio-sm); }
+.u-gap-md { gap: var(--espacio-md); }
+.u-gap-lg { gap: var(--espacio-lg); }
+.u-text-center { text-align: center; }
+.u-text-right { text-align: right; }
+.u-w-100 { width: 100%; }
+.u-mt-0 { margin-top: 0; }
+.u-mt-sm { margin-top: var(--espacio-sm); }
+.u-mt-md { margin-top: var(--espacio-md); }
+.u-mt-lg { margin-top: var(--espacio-lg); }
+.u-mb-0 { margin-bottom: 0; }
+.u-mb-sm { margin-bottom: var(--espacio-sm); }
+.u-mb-md { margin-bottom: var(--espacio-md); }
+.u-mb-lg { margin-bottom: var(--espacio-lg); }
+.u-oculto { display: none !important; }
+@media (max-width: 600px) {
+    .u-oculto-movil { display: none !important; }
+}
+@media (min-width: 601px) {
+    .u-solo-movil { display: none !important; }
+}
+
+.divisor {
+    border: none;
+    border-top: 1px solid var(--color-borde);
+    margin: var(--espacio-lg) 0;
+}
+.divisor-vertical { width: 1px; align-self: stretch; background: var(--color-borde); }
+
+/* ============================================================
+   AMPLIACIÓN — Insignia/badge de rol (7 roles distinguibles)
+   Uso: <span class="badge-rol badge-rol-psicologo">Psicólogo</span>
+   ============================================================ */
+.badge-rol {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    border-radius: var(--radio-pill);
+    font-size: var(--texto-xs);
+    font-weight: 700;
+}
+.badge-rol::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.badge-rol-estudiante { background: var(--color-rol-estudiante-fondo); color: var(--color-rol-estudiante); }
+.badge-rol-psicologo { background: var(--color-rol-psicologo-fondo); color: var(--color-rol-psicologo); }
+.badge-rol-orientador { background: var(--color-rol-orientador-fondo); color: var(--color-rol-orientador); }
+.badge-rol-docente { background: var(--color-rol-docente-fondo); color: var(--color-rol-docente); }
+.badge-rol-coordinador { background: var(--color-rol-coordinador-fondo); color: var(--color-rol-coordinador); }
+.badge-rol-rector { background: var(--color-rol-rector-fondo); color: var(--color-rol-rector); }
+.badge-rol-administrador { background: var(--color-rol-administrador-fondo); color: var(--color-rol-administrador); }
+
+/* ============================================================
+   AMPLIACIÓN — Avatar con iniciales (listas de usuarios, chat, grupos)
+   Uso: <span class="avatar avatar-md" style="--avatar-color:#2E6E8E">DS</span>
+   ============================================================ */
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--avatar-color, var(--color-dorado-medio));
+    color: #fff;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: var(--fuente-titulos);
+}
+.avatar-sm { width: 28px; height: 28px; font-size: var(--texto-xs); }
+.avatar-md { width: 40px; height: 40px; font-size: var(--texto-sm); }
+.avatar-lg { width: 64px; height: 64px; font-size: var(--texto-md); }
+.grupo-avatares { display: flex; }
+.grupo-avatares .avatar { margin-left: -10px; border: 2px solid var(--color-superficie); }
+.grupo-avatares .avatar:first-child { margin-left: 0; }
+
+/* ============================================================
+   AMPLIACIÓN — Migas de pan (breadcrumbs)
+   ============================================================ */
+.migas-pan {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: var(--texto-sm);
+    color: var(--color-texto-suave);
+    margin-bottom: var(--espacio-md);
+}
+.migas-pan a { color: var(--color-texto-suave); }
+.migas-pan a:hover { color: var(--color-dorado-texto); }
+.migas-pan .separador-miga { opacity: 0.6; }
+.migas-pan .miga-actual { color: var(--color-texto); font-weight: 600; }
+
+/* ============================================================
+   AMPLIACIÓN — Pestañas (tabs), para subsecciones dentro de un panel
+   Uso: <div class="tabs"><button class="tab-boton activo">...</button>...</div>
+   ============================================================ */
+.tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--color-borde);
+    margin-bottom: var(--espacio-lg);
+    overflow-x: auto;
+}
+.tab-boton {
+    background: none;
+    box-shadow: none;
+    border-radius: var(--radio-borde-sm) var(--radio-borde-sm) 0 0;
+    color: var(--color-texto-suave);
+    padding: 10px 16px;
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+.tab-boton:hover { color: var(--color-dorado-texto); transform: none; box-shadow: none; background: var(--color-fondo-alterno); }
+.tab-boton.activo { color: var(--color-dorado-texto); border-bottom-color: var(--color-dorado-oscuro); }
+
+/* ============================================================
+   AMPLIACIÓN — Acordeón genérico (basado en <details>, mismo patrón que
+   .historial-mensual pero reutilizable en cualquier vista)
+   ============================================================ */
+.acordeon-item {
+    border-bottom: 1px solid var(--color-fondo-alterno);
+}
+.acordeon-item summary {
+    cursor: pointer;
+    padding: var(--espacio-sm) 0;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+}
+.acordeon-item summary::-webkit-details-marker { display: none; }
+.acordeon-item summary::after {
+    content: '▾';
+    color: var(--color-texto-suave);
+    transition: transform var(--velocidad-media) var(--curva-suave);
+}
+.acordeon-item[open] summary::after { transform: rotate(180deg); }
+.acordeon-item .acordeon-contenido { padding-bottom: var(--espacio-md); color: var(--color-texto-suave); font-size: var(--texto-sm); }
+
+/* ============================================================
+   AMPLIACIÓN — Ventana modal genérica (confirmaciones, detalle rápido)
+   Uso: <div class="modal-fondo visible"><div class="modal" role="dialog"
+   aria-modal="true">...</div></div>
+   ============================================================ */
+.modal-fondo {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 18, 12, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espacio-md);
+    z-index: var(--z-overlay);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--velocidad-media) var(--curva-suave);
+}
+.modal-fondo.visible { opacity: 1; pointer-events: auto; }
+.modal {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde-lg);
+    padding: var(--espacio-lg);
+    max-width: 480px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--sombra-lg);
+    z-index: var(--z-modal);
+    transform: scale(0.92) translateY(10px);
+    transition: transform var(--velocidad-media) var(--curva-rebote);
+}
+.modal-fondo.visible .modal { transform: scale(1) translateY(0); }
+.modal-cabecera { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--espacio-md); }
+.modal-cabecera h2 { margin-bottom: 0; }
+.modal-cerrar { background: none; box-shadow: none; color: var(--color-texto-suave); padding: 4px; font-size: 1.3rem; line-height: 1; }
+.modal-cerrar:hover { color: var(--color-texto); transform: none; box-shadow: none; }
+.modal-acciones { display: flex; justify-content: flex-end; gap: var(--espacio-sm); margin-top: var(--espacio-lg); }
+@media (max-width: 480px) {
+    .modal { max-height: 90vh; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Menú desplegable genérico (campana de notificaciones,
+   menú de usuario en la barra superior)
+   ============================================================ */
+.desplegable-wrapper { position: relative; }
+.panel-desplegable {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-lg);
+    padding: var(--espacio-sm);
+    min-width: 280px;
+    max-width: min(360px, 90vw);
+    max-height: 70vh;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity var(--velocidad-media) var(--curva-suave), transform var(--velocidad-media) var(--curva-suave);
+    z-index: var(--z-menu);
+}
+.desplegable-wrapper.abierto .panel-desplegable { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.panel-desplegable-cabecera {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; font-size: var(--texto-sm); font-weight: 700;
+    border-bottom: 1px solid var(--color-fondo-alterno); margin-bottom: 4px;
+}
+.item-desplegable {
+    display: block; padding: 10px; border-radius: var(--radio-borde-sm);
+    font-size: var(--texto-sm); color: var(--color-texto);
+    transition: background var(--velocidad-rapida) var(--curva-suave);
+}
+.item-desplegable:hover { background: var(--color-fondo-alterno); text-decoration: none; }
+.item-desplegable.no-leido { border-left: 3px solid var(--color-dorado-oscuro); background: var(--color-fondo-alterno); }
+
+/* --- Campana con contador --- */
+.boton-campana { position: relative; }
+.contador-campana {
+    position: absolute; top: 2px; right: 2px;
+    background: var(--color-peligro); color: #fff;
+    font-size: 0.62rem; font-weight: 700;
+    min-width: 16px; height: 16px; padding: 0 3px;
+    border-radius: var(--radio-pill);
+    display: flex; align-items: center; justify-content: center;
+    animation: aparecer-rebote var(--velocidad-media) var(--curva-rebote);
+}
+
+/* ============================================================
+   AMPLIACIÓN — Paginación
+   ============================================================ */
+.paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: var(--espacio-lg);
+    flex-wrap: wrap;
+}
+.paginacion a, .paginacion span {
+    min-width: 34px; height: 34px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--radio-borde-sm);
+    font-size: var(--texto-sm);
+    color: var(--color-texto);
+}
+.paginacion a:hover { background: var(--color-fondo-alterno); text-decoration: none; }
+.paginacion .pagina-activa { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); font-weight: 700; }
+.paginacion .pagina-deshabilitada { color: var(--color-texto-suave); opacity: 0.4; pointer-events: none; }
+
+/* ============================================================
+   AMPLIACIÓN — Indicador de carga (spinner) y overlay de carga
+   ============================================================ */
+.spinner {
+    width: 22px; height: 22px;
+    border: 3px solid var(--color-fondo-alterno);
+    border-top-color: var(--color-dorado-oscuro);
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+    display: inline-block;
+}
+.spinner-grande { width: 44px; height: 44px; border-width: 4px; }
+.overlay-carga {
+    position: fixed; inset: 0;
+    background: rgba(245, 243, 236, 0.7);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--espacio-sm);
+    z-index: var(--z-overlay);
+    color: var(--color-texto-suave);
+    font-size: var(--texto-sm);
+}
+html[data-tema="oscuro"] .overlay-carga { background: rgba(28, 26, 22, 0.75); }
+
+/* ============================================================
+   AMPLIACIÓN — Interruptor (toggle switch), para preferencias tipo
+   "recibir notificaciones por correo", más claro que un checkbox suelto
+   ============================================================ */
+.interruptor { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.interruptor input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.interruptor-pista {
+    width: 42px; height: 24px;
+    background: var(--color-borde);
+    border-radius: var(--radio-pill);
+    position: relative;
+    transition: background var(--velocidad-rapida) var(--curva-suave);
+    flex-shrink: 0;
+}
+.interruptor-pista::after {
+    content: '';
+    position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; box-shadow: var(--sombra-sm);
+    transition: transform var(--velocidad-rapida) var(--curva-rebote);
+}
+.interruptor input:checked + .interruptor-pista { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); }
+.interruptor input:checked + .interruptor-pista::after { transform: translateX(18px); }
+.interruptor input:focus-visible + .interruptor-pista { outline: 3px solid var(--color-dorado-oscuro); outline-offset: 2px; }
+
+/* ============================================================
+   AMPLIACIÓN — Casillas y radios estilizados para listas de opciones
+   (encuestas, preferencias) sin perder la casilla nativa (accesible)
+   ============================================================ */
+.opcion-casilla {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radio-borde);
+    border: 1px solid var(--color-borde);
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color var(--velocidad-rapida) var(--curva-suave), background var(--velocidad-rapida) var(--curva-suave);
+}
+.opcion-casilla:hover { background: var(--color-fondo-alterno); }
+.opcion-casilla input { width: auto; margin-top: 2px; accent-color: var(--color-dorado-oscuro); }
+.opcion-casilla:has(input:checked) {
+    border-color: var(--color-dorado-oscuro);
+    border-width: 2px;
+    background: linear-gradient(135deg, rgba(249, 217, 118, 0.16), rgba(232, 185, 35, 0.10));
+    font-weight: 600;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Campo de archivo estilizado (evidencias, CSV, imágenes)
+   ============================================================ */
+.campo-archivo-wrapper { position: relative; }
+.campo-archivo-wrapper input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.etiqueta-archivo {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    border: 2px dashed var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    color: var(--color-texto-suave);
+    font-size: var(--texto-sm);
+    text-align: center;
+    transition: border-color var(--velocidad-rapida) var(--curva-suave), background var(--velocidad-rapida) var(--curva-suave);
+}
+.campo-archivo-wrapper:has(input:focus-visible) .etiqueta-archivo,
+.etiqueta-archivo:hover { border-color: var(--color-dorado-oscuro); background: var(--color-fondo-alterno); }
+
+/* ============================================================
+   AMPLIACIÓN — Texto de ayuda / error bajo un campo de formulario
+   ============================================================ */
+.texto-ayuda-campo { font-size: var(--texto-xs); color: var(--color-texto-suave); margin-top: 4px; }
+.texto-error-campo { font-size: var(--texto-xs); color: var(--color-error); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+
+/* ============================================================
+   AMPLIACIÓN — Tooltip simple (accesible: visible también con :focus,
+   no solo con :hover, para navegación por teclado)
+   Uso: <span class="tiene-tooltip" data-tooltip="Texto de ayuda">?</span>
+   ============================================================ */
+.tiene-tooltip { position: relative; cursor: help; }
+.tiene-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--color-texto);
+    color: #fff;
+    font-size: var(--texto-xs);
+    padding: 6px 10px;
+    border-radius: var(--radio-borde-sm);
+    white-space: nowrap;
+    max-width: 220px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-suave);
+    z-index: var(--z-menu);
+}
+.tiene-tooltip:hover::after, .tiene-tooltip:focus-visible::after {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   AMPLIACIÓN — Nota de requisitos de contraseña (estilo "comentario
+   de Excel"): globo con esquina de pico junto al campo, con checklist
+   que se marca en vivo. Ver assets/js/requisitosPassword.js.
+   ============================================================ */
+.envoltura-campo-password { position: relative; }
+.nota-requisitos-password {
+    position: absolute;
+    z-index: var(--z-menu);
+    top: 0;
+    left: calc(100% + 14px);
+    width: 240px;
+    background: #FFFBE0;
+    border: 1px solid #E0C84A;
+    border-radius: 2px;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.22);
+    padding: 10px 12px;
+    font-size: var(--texto-xs);
+    color: var(--color-texto);
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-suave);
+}
+/* Pico triangular apuntando al campo, como el globo de un comentario de Excel */
+.nota-requisitos-password::before {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: -8px;
+    border: 8px solid transparent;
+    border-right-color: #E0C84A;
+}
+.nota-requisitos-password::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: -7px;
+    border: 7px solid transparent;
+    border-right-color: #FFFBE0;
+}
+.nota-requisitos-password.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.nota-requisitos-password ul { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.nota-requisitos-password li { display: flex; align-items: center; gap: 6px; color: var(--color-texto-suave); }
+.nota-requisitos-password li::before {
+    content: "○";
+    font-size: 10px;
+    color: var(--color-texto-suave);
+    width: 12px;
+    flex-shrink: 0;
+}
+.nota-requisitos-password li.cumplido { color: var(--color-exito); }
+.nota-requisitos-password li.cumplido::before { content: "●"; color: var(--color-exito); }
+.nota-requisitos-password strong { display: block; color: var(--color-texto); font-size: var(--texto-xs); }
+/* En pantallas angostas no hay espacio a la derecha: la nota cae debajo del campo */
+@media (max-width: 640px) {
+    .nota-requisitos-password { left: 0; top: calc(100% + 8px); width: 100%; }
+    .nota-requisitos-password::before, .nota-requisitos-password::after { display: none; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Botón "volver arriba"
+   ============================================================ */
+.boton-volver-arriba {
+    position: fixed;
+    bottom: var(--espacio-lg);
+    right: var(--espacio-lg);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity var(--velocidad-media) var(--curva-suave), transform var(--velocidad-media) var(--curva-suave);
+    z-index: var(--z-sticky);
+}
+.boton-volver-arriba.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+/* ============================================================
+   AMPLIACIÓN — Tarjeta de estado/error de página completa (404, 500,
+   sin permiso). Reutiliza .login-body como fondo si se necesita centrado.
+   ============================================================ */
+.pagina-estado {
+    max-width: 480px;
+    margin: var(--espacio-2xl) auto;
+    text-align: center;
+    padding: var(--espacio-lg);
+}
+.pagina-estado .codigo-estado {
+    font-family: var(--fuente-titulos);
+    font-size: 4.5rem;
+    color: var(--color-dorado-texto);
+    line-height: 1;
+    margin-bottom: var(--espacio-md);
+}
+.pagina-estado p { color: var(--color-texto-suave); margin-bottom: var(--espacio-lg); }
+
+/* ============================================================
+   AMPLIACIÓN — Wrapper de tabla responsiva: en vez de reventar el layout,
+   permite scroll horizontal contenido en pantallas angostas.
+   Uso: <div class="tabla-wrapper"><table class="tabla-datos">...
+   ============================================================ */
+.tabla-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-md);
+    -webkit-overflow-scrolling: touch;
+}
+.tabla-wrapper .tabla-datos { box-shadow: none; }
+
+/* Encabezado de columna ordenable */
+.th-ordenable { cursor: pointer; user-select: none; white-space: nowrap; }
+.th-ordenable:hover { color: var(--color-dorado-texto); }
+.th-ordenable .icono-orden { display: inline-block; margin-left: 4px; opacity: 0.5; font-size: 0.7em; }
+.th-ordenable.orden-activo .icono-orden { opacity: 1; }
+
+@media print {
+    .solo-impresion { display: block !important; }
+    a[href]::after { content: none !important; }
+}
+.solo-impresion { display: none; }
+
+/* ============================================================
+   AMPLIACIÓN — Impresión / "exportar a PDF" general. El proyecto no usa
+   ninguna librería de PDF en el servidor (nada que instalar, nada que
+   pueda fallar en hosting compartido): el botón "Descargar PDF" solo
+   llama a window.print(), y el navegador ofrece "Guardar como PDF" de
+   forma nativa en cualquier sistema operativo. Estas reglas limpian la
+   página para que ese PDF se vea como un reporte, no como una captura
+   de pantalla con menú y botones.
+   ============================================================ */
+@media print {
+    .barra-superior, .menubar, .menubar-fondo, .barra-acento-superior, .panel-acento-superior, .pie-panel,
+    .boton-volver-arriba, .no-imprimir, button, .boton-acceso, .boton-secundario,
+    .boton-peligro, form, .banner-ayuda-inmediata, .recordatorio-criterio-humano {
+        display: none !important;
+    }
+    body { background: #fff; color: #000; }
+    .contenido-panel { max-width: 100%; padding: 0; margin: 0; animation: none; }
+    .panel-seccion, .tarjeta, .tarjeta-comparativa, .tarjeta-resumen-alerta {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+    }
+    h1, h2, h3 { color: #000; }
+    a { color: #000; text-decoration: none; }
+    /* Encabezado de reporte: solo existe en el DOM para impresión, oculto en pantalla
+       (ver .solo-impresion arriba). Uso: <div class="encabezado-impresion solo-impresion">
+       <img src="...logo_negro.png" class="logo-impresion">Serena — Reporte de X — fecha</div> */
+    .encabezado-impresion {
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        font-family: var(--fuente-titulos);
+        font-size: 1.1rem;
+        border-bottom: 2px solid #000;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+    }
+    .encabezado-impresion .logo-impresion { height: 40px; width: auto; }
+}
+.encabezado-impresion { display: none; }
+
+/* ============================================================
+   Insignia de colegio (barra superior) y selector de contexto
+   Superadmin y Secretaría la usan para "entrar" al colegio que
+   quieren mirar; el resto de roles ve solo el nombre de su colegio.
+   Antes vivía en un <style> dentro de encabezado.php.
+   ============================================================ */
+.insignia-colegio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 4px 12px;
+    border-radius: var(--radio-pill);
+    background: rgba(232, 185, 35, 0.18);
+    border: 1px solid rgba(232, 185, 35, 0.55);
+    color: var(--color-texto);
+    font-size: 0.85rem;
+    font-weight: 600;
+    max-width: 240px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* Selector de contexto: el <select> se funde con la insignia (sin caja propia) */
+.insignia-colegio.selector-contexto { overflow: visible; max-width: min(100%, 280px); }
+.insignia-colegio.selector-contexto select {
+    width: auto;
+    max-width: 200px;
+    padding: 2px 4px;
+    border: 0;
+    border-radius: var(--radio-borde-sm);
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    box-shadow: none;
+}
+.insignia-colegio.selector-contexto select option { background: var(--color-superficie); color: var(--color-texto); }
+.insignia-colegio.selector-contexto:focus-within {
+    outline: 3px solid var(--color-dorado-oscuro);
+    outline-offset: 2px;
+}
+.insignia-colegio.selector-contexto select:focus,
+.insignia-colegio.selector-contexto select:focus-visible { outline: none; box-shadow: none; }
+/* Dentro del contexto de un colegio: más visible, para no confundir la vista global con la de un colegio */
+.insignia-colegio.en-contexto {
+    background: var(--color-dorado-medio);
+    border-color: var(--color-dorado-oscuro);
+    color: #2B2B2B;
+}
+.insignia-colegio.en-contexto select option { color: var(--color-texto); }
+@media (max-width: 480px) {
+    .insignia-colegio.selector-contexto select { max-width: 130px; }
+}
+
+/* ============================================================
+   Aviso de cookies (assets/js/cookies.js)
+   ============================================================ */
+.aviso-cookies {
+    position: fixed; z-index: 1100;
+    left: var(--espacio-md); right: var(--espacio-md);
+    bottom: calc(var(--espacio-md) + env(safe-area-inset-bottom, 0px));
+    max-width: 760px; margin: 0 auto;
+    display: flex; align-items: center; gap: var(--espacio-md); flex-wrap: wrap;
+    padding: var(--espacio-md) var(--espacio-lg);
+    background: var(--color-superficie); color: var(--color-texto);
+    border: 1px solid var(--color-borde); border-radius: var(--radio-borde, 14px);
+    box-shadow: var(--sombra-lg);
+}
+.aviso-cookies-texto { flex: 1 1 340px; min-width: 0; }
+.aviso-cookies-titulo { margin: 0 0 4px; font-size: 1.05rem; }
+.aviso-cookies p { margin: 0; font-size: .875rem; line-height: 1.5; color: var(--color-texto-suave); }
+.aviso-cookies a { color: var(--color-dorado-texto); font-weight: 600; }
+.aviso-cookies-acciones { display: flex; gap: var(--espacio-sm); flex-wrap: wrap; flex: 0 0 auto; }
+.aviso-cookies button { padding: 10px 18px; border-radius: 12px; font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.aviso-cookies-pri { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); color: #2B2B2B; border: 1px solid transparent; }
+.aviso-cookies-sec { background: transparent; color: var(--color-texto); border: 1.5px solid var(--color-borde); box-shadow: none; }
+.aviso-cookies-sec:hover { border-color: var(--color-dorado-oscuro); }
+@media (max-width: 560px) {
+    .aviso-cookies { left: var(--espacio-sm); right: var(--espacio-sm); padding: var(--espacio-md); }
+    .aviso-cookies-acciones { width: 100%; }
+    .aviso-cookies-acciones button { flex: 1 1 0; }
+}
+@media print { .aviso-cookies { display: none; } }
+
+/* ============================================================
+   Dictado por voz (assets/js/voz.js)
+   ============================================================ */
+.voz-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; margin: 4px 0 8px auto; padding: 0;
+    border-radius: 50%; font-size: 1rem; line-height: 1; cursor: pointer;
+    background: var(--color-superficie); color: var(--color-texto);
+    border: 1.5px solid var(--color-borde); box-shadow: none;
+}
+.voz-btn:hover, .voz-btn:focus-visible { border-color: var(--color-dorado-oscuro); }
+.voz-btn.voz-escuchando { background: var(--color-peligro); border-color: var(--color-peligro); color: var(--color-sobre-peligro); animation: voz-pulso 1.2s ease-in-out infinite; }
+@keyframes voz-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, .45); } 50% { box-shadow: 0 0 0 8px rgba(192, 57, 43, 0); } }
+.voz-aviso {
+    position: fixed; z-index: 1200; left: 50%; transform: translateX(-50%);
+    bottom: calc(var(--espacio-lg) + env(safe-area-inset-bottom, 0px));
+    max-width: min(92vw, 520px); padding: 10px 16px; border-radius: 999px; font-size: .9rem; text-align: center;
+    background: var(--color-superficie); color: var(--color-texto); border: 1px solid var(--color-borde); box-shadow: var(--sombra-lg);
+}
+.voz-aviso-error { border-color: var(--color-peligro); color: var(--color-peligro); }
+.voz-dialogo { max-width: min(92vw, 460px); padding: var(--espacio-lg); border-radius: var(--radio-borde); border: 1px solid var(--color-borde);
+    background: var(--color-superficie); color: var(--color-texto); box-shadow: var(--sombra-lg); }
+.voz-dialogo::backdrop { background: rgba(0, 0, 0, .45); }
+.voz-dialogo h2 { margin: 0 0 var(--espacio-sm); font-size: 1.15rem; }
+.voz-dialogo p { margin: 0 0 var(--espacio-md); font-size: .9rem; line-height: 1.5; color: var(--color-texto-suave); }
+.voz-dialogo-acciones { display: flex; justify-content: flex-end; gap: var(--espacio-sm); flex-wrap: wrap; }
+.voz-dialogo-acciones button { padding: 10px 18px; border-radius: 12px; font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.voz-dialogo-pri { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); color: #2B2B2B; border: 1px solid transparent; }
+.voz-dialogo-sec { background: transparent; color: var(--color-texto); border: 1.5px solid var(--color-borde); box-shadow: none; }
+@media print { .voz-btn, .voz-aviso { display: none; } }

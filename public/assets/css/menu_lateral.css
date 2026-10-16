@@ -1,0 +1,82 @@
+/* ============================================================
+   SERENA — menu_lateral.css
+   Menú lateral vertical, minimalista, agrupado por categorías (todos los roles).
+   Reemplaza al menú hamburguesa, al sidebar de íconos y a la barrita dorada con pestañas.
+   Solo usa tokens de base.css (claro, oscuro y alto contraste funcionan solos).
+   ============================================================ */
+:root { --menu-lat-ancho: 232px; }
+
+.menu-lat {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 60;
+    width: var(--menu-lat-ancho);
+    display: flex; flex-direction: column;
+    background: var(--color-superficie);
+    border-right: 1px solid var(--color-borde);
+    overflow-y: auto; overscroll-behavior: contain;
+    transform: translateX(-100%); visibility: hidden;
+    transition: transform var(--velocidad-media, .25s) var(--curva-suave, ease), visibility 0s linear var(--velocidad-media, .25s);
+}
+.menu-lat.abierto { transform: none; visibility: visible; transition-delay: 0s; box-shadow: var(--sombra-md); }
+
+.menu-lat-marca {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 18px 12px; text-decoration: none;
+    color: var(--color-texto); font-weight: 700; font-size: 1.05rem; letter-spacing: .02em;
+}
+.menu-lat-marca img { border-radius: 8px; }
+
+.menu-lat-nav { padding: 4px 10px 24px; display: flex; flex-direction: column; gap: 2px; }
+
+.menu-lat-grupo > summary {
+    list-style: none; cursor: pointer; user-select: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 8px 6px;
+    font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--color-texto-suave);
+}
+.menu-lat-grupo > summary::-webkit-details-marker { display: none; }
+.menu-lat-grupo > summary::after {
+    content: ''; width: 6px; height: 6px; margin-right: 4px;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg); transition: transform var(--velocidad-rapida, .15s) ease;
+}
+.menu-lat-grupo[open] > summary::after { transform: rotate(45deg); }
+.menu-lat-grupo > summary:hover { color: var(--color-texto); }
+.menu-lat-grupo > summary:focus-visible, .menu-lat a:focus-visible, .menu-lat-boton:focus-visible { outline: 3px solid var(--color-dorado-oscuro-texto, #6E5400); outline-offset: 2px; border-radius: 6px; }
+
+.menu-lat ul { list-style: none; margin: 0; padding: 0; }
+.menu-lat li a {
+    display: block; padding: 7px 10px 7px 12px; margin: 1px 0;
+    border-left: 3px solid transparent; border-radius: 0 var(--radio-borde-sm, 8px) var(--radio-borde-sm, 8px) 0;
+    text-decoration: none; font-size: .9rem; color: var(--color-texto);
+    transition: background var(--velocidad-rapida, .15s) ease;
+}
+.menu-lat li a:hover { background: var(--color-fondo-alterno); }
+.menu-lat li a.activo {
+    background: var(--color-fondo-alterno); border-left-color: var(--color-dorado-oscuro);
+    font-weight: 700; color: var(--color-dorado-oscuro-texto, #6E5400);
+}
+
+.menu-lat-fondo { position: fixed; inset: 0; z-index: 55; background: rgba(0, 0, 0, .4); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.menu-lat-fondo.visible { opacity: 1; pointer-events: auto; }
+
+/* Botón «Menú» (texto, sin ícono): solo en pantallas chicas */
+.menu-lat-boton {
+    background: var(--color-fondo-alterno); color: var(--color-texto); box-shadow: none;
+    border: 1px solid var(--color-borde); border-radius: var(--radio-borde-sm, 8px);
+    padding: 8px 14px; font-weight: 600; font-size: .9rem;
+}
+.menu-lat-boton:hover { transform: none; box-shadow: none; background: var(--color-borde); }
+
+/* Escritorio: el menú queda fijo a la izquierda y el contenido se corre a su derecha */
+@media (min-width: 900px) {
+    .menu-lat { transform: none; visibility: visible; box-shadow: none; }
+    .area-principal { margin-left: var(--menu-lat-ancho); }
+    .menu-lat-boton, .menu-lat-fondo { display: none; }
+}
+
+/* Lo viejo ya no se dibuja (por si alguna página lo trae en caché) */
+.sidebar-serena, .menu-nav-wrapper, .fondo-menu-movil, .barra-acento-superior, .panel-acento-superior, .panel-acento-fondo { display: none !important; }
+
+@media print { .menu-lat, .menu-lat-fondo, .menu-lat-boton { display: none !important; } .area-principal { margin-left: 0 !important; } }
+@media (prefers-reduced-motion: reduce) { .menu-lat, .menu-lat-fondo, .menu-lat-grupo > summary::after { transition: none; } }

@@ -1,0 +1,95 @@
+/* ============================================================
+   SERENA — seguimiento.css
+   Página «Seguimiento» (docente/seguimiento.php). Solo usa tokens de base.css (sigue el modo oscuro).
+   ============================================================ */
+
+/* ---- Barra de acciones: Actualizar · Imprimir · Confirmar ---- */
+.seg-barra { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--espacio-md, 16px); margin: var(--espacio-md, 16px) 0 var(--espacio-sm, 8px); }
+.seg-accion { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; min-width: 76px; padding: 6px 10px; border: 0; border-radius: var(--radio-borde, 12px);
+    background: transparent; color: var(--color-texto, #2B2B2B); font: inherit; font-size: .78rem; font-weight: 600; text-decoration: none; cursor: pointer; }
+.seg-accion svg { width: 26px; height: 26px; fill: currentColor; }
+.seg-accion:hover:not([disabled]), .seg-accion:focus-visible { background: var(--color-fondo-alterno, #FAF7EE); }
+.seg-accion[disabled] { opacity: .45; cursor: not-allowed; }
+#seg-confirmar svg { fill: var(--color-exito, #337038); }
+.seg-pendiente { box-shadow: 0 0 0 2px var(--color-dorado-oscuro, #E8B923); background: var(--color-fondo-alterno, #FAF7EE); }
+
+/* ---- Selectores ---- */
+.seg-filtros { display: flex; flex-wrap: wrap; gap: var(--espacio-sm, 8px) var(--espacio-md, 16px); align-items: flex-end; margin: 0 0 var(--espacio-md, 16px);
+    padding: var(--espacio-sm, 8px) var(--espacio-md, 16px) var(--espacio-md, 16px); border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px);
+    background: var(--color-fondo-alterno, #FAF7EE); }
+.seg-filtros label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 700; }
+.seg-filtros select { min-width: 150px; max-width: 100%; }
+.seg-enlaces { margin-left: auto; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; font-size: .8rem; }
+
+/* ---- Cuerpo: tabla a la izquierda, panel a la derecha ---- */
+.seg-cuerpo { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: var(--espacio-md, 16px); align-items: start; }
+.seg-tabla-caja { max-height: 380px; overflow: auto; border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); background: var(--color-superficie, #fff); }
+.seg-tabla { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.seg-tabla th { position: sticky; top: 0; z-index: 1; padding: 6px 10px; text-align: center; font-size: .78rem; background: var(--color-fondo-alterno, #FAF7EE); border-bottom: 1px solid var(--color-borde, #E0DCCB); }
+.seg-tabla td { padding: 5px 10px; border-bottom: 1px solid var(--color-borde, #E0DCCB); }
+.seg-tabla tbody tr { cursor: pointer; }
+.seg-tabla tbody tr:hover { background: var(--color-fondo-alterno, #FAF7EE); }
+.seg-tabla tbody tr:focus-visible { outline: 2px solid var(--color-dorado-oscuro, #E8B923); outline-offset: -2px; }
+.seg-tabla tbody tr.seg-fila-sel { background: var(--color-fondo-alterno, #FAF7EE); box-shadow: inset 3px 0 0 var(--color-dorado-oscuro, #E8B923); font-weight: 600; }
+.seg-c-codigo { width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
+.seg-c-escala { width: 130px; }
+.seg-c-nota { width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
+.seg-oculto { display: none; }
+.seg-total { margin: 6px 0 0; font-size: .82rem; }
+
+/* ---- Panel derecho ---- */
+.seg-panel { border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); background: var(--color-superficie, #fff); overflow: hidden; }
+.seg-panel-titulo { margin: 0; padding: 6px 12px; font-size: .8rem; font-weight: 700; background: var(--color-fondo-alterno, #FAF7EE); border-bottom: 1px solid var(--color-borde, #E0DCCB); border-top: 1px solid var(--color-borde, #E0DCCB); }
+.seg-panel-titulo:first-child { border-top: 0; }
+.seg-panel-eval { display: flex; gap: var(--espacio-md, 16px); padding: 12px; }
+.seg-foto-caja { flex: 0 0 120px; width: 120px; height: 120px; border-radius: var(--radio-borde, 12px); overflow: hidden; background: var(--color-fondo-alterno, #FAF7EE); border: 1px solid var(--color-borde, #E0DCCB); }
+.seg-foto-caja img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.seg-panel-datos { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.seg-nombre { margin: 0; font-size: .82rem; font-weight: 700; word-break: break-word; }
+.seg-dato { display: flex; flex-direction: column; gap: 3px; margin: 0; font-size: .8rem; font-weight: 700; }
+.seg-dato strong { font-weight: 400; }
+.seg-dato input, .seg-dato select, .seg-dato textarea { width: 100%; max-width: 100%; }
+.seg-invalido { border-color: var(--color-peligro, #C0392B) !important; outline-color: var(--color-peligro, #C0392B); }
+.seg-ayuda { margin: 0; font-size: .75rem; color: var(--color-texto-suave, #6B6B6B); }
+.seg-foto-form, .seg-copiar { display: flex; flex-direction: column; gap: 8px; padding: 12px; }
+.seg-foto-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+.seg-check { display: flex; align-items: center; gap: 6px; font-size: .8rem; }
+.seg-panel > .seg-dato { padding: 10px 12px 12px; }
+.seg-solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- Celular: el panel pasa debajo de la tabla ---- */
+@media (max-width: 860px) {
+    .seg-cuerpo { grid-template-columns: 1fr; }
+    .seg-enlaces { margin-left: 0; align-items: flex-start; }
+    .seg-filtros label, .seg-filtros select { width: 100%; }
+}
+
+/* ---- Impresión: solo el encabezado y la tabla ---- */
+@media print {
+    .seg-barra, .seg-filtros, .seg-panel { display: none !important; }
+    .seg-cuerpo { display: block; }
+    .seg-tabla-caja { max-height: none; overflow: visible; border: 0; }
+    .seg-tabla tbody tr.seg-fila-sel { background: transparent; box-shadow: none; font-weight: 400; }
+}
+
+/* ---- Columna de documento ---- */
+.seg-c-doc { width: 130px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* ---- Dictado de notas ---- */
+.seg-voz { margin: 0 0 var(--espacio-md, 16px); padding: var(--espacio-sm, 8px) var(--espacio-md, 16px); border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); background: var(--color-superficie, #fff); }
+.seg-voz-fila { display: flex; flex-wrap: wrap; gap: var(--espacio-sm, 8px); align-items: center; }
+.seg-voz-btn { font-weight: 700; }
+.seg-voz-btn.seg-escuchando { background: var(--color-peligro, #C0392B); color: #fff; animation: seg-pulso 1.2s ease-in-out infinite; }
+@keyframes seg-pulso { 50% { opacity: .7; } }
+@media (prefers-reduced-motion: reduce) { .seg-voz-btn.seg-escuchando { animation: none; } }
+.seg-voz-texto { flex: 1 1 220px; min-width: 0; }
+.seg-voz-log { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 3px; font-size: .82rem; }
+.seg-voz-log:empty { display: none; }
+.seg-voz-log li { padding: 3px 8px; border-radius: 8px; background: var(--color-fondo-alterno, #FAF7EE); }
+.seg-voz-log li.seg-ok { border-left: 3px solid var(--color-exito, #337038); }
+.seg-voz-log li.seg-mal { border-left: 3px solid var(--color-peligro, #C0392B); }
+.seg-voz-log li.seg-aviso { border-left: 3px solid var(--color-dorado-oscuro, #E8B923); }
+.seg-tabla tbody tr.seg-fila-nueva { animation: seg-resalte 1.6s ease-out; }
+@keyframes seg-resalte { from { background: var(--color-dorado-oscuro, #E8B923); } }
+@media (prefers-reduced-motion: reduce) { .seg-tabla tbody tr.seg-fila-nueva { animation: none; } }
+.seg-tabla .seg-c-nota.seg-guardada::after { content: ' ✓'; color: var(--color-exito, #337038); }

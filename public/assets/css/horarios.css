@@ -1,0 +1,53 @@
+/* ============================================================
+   SERENA — horarios.css
+   Editor de horarios (coordinación) y vista de horario (estudiante, familia, docente).
+   Solo tokens de base.css: sigue el modo oscuro. La columna de hoy se marca con texto, no solo con color.
+   ============================================================ */
+
+.horario-envoltura { overflow-x: auto; border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); background: var(--color-superficie, #fff); }
+.horario-tabla { width: 100%; border-collapse: collapse; min-width: 640px; }
+.horario-tabla caption { text-align: left; }
+.horario-tabla th, .horario-tabla td { padding: 10px 12px; border-bottom: 1px solid var(--color-borde, #E0DCCB); border-right: 1px solid var(--color-borde, #E0DCCB); vertical-align: top; font-size: var(--texto-sm, .9rem); }
+.horario-tabla th:last-child, .horario-tabla td:last-child { border-right: 0; }
+.horario-tabla thead th { background: var(--color-fondo-alterno, #FAF7EE); text-align: center; font-weight: 700; }
+.horario-tabla tbody th { text-align: left; white-space: nowrap; font-weight: 600; background: var(--color-fondo-alterno, #FAF7EE); position: sticky; left: 0; z-index: 1; }
+.horario-tabla tbody th small { display: block; font-weight: 400; color: var(--color-texto-suave, #6B6B6B); }
+.horario-tabla tr:last-child th, .horario-tabla tr:last-child td { border-bottom: 0; }
+.horario-tabla th.hoy { box-shadow: inset 0 -3px 0 var(--color-dorado-oscuro-texto, #6E5400); }
+.horario-tabla th.hoy .marca-hoy { display: block; font-size: .7rem; font-weight: 700; color: var(--color-dorado-oscuro-texto, #6E5400); }
+.horario-tabla td.hoy { background: var(--color-fondo-alterno, #FAF7EE); }
+.horario-tabla tr.franja-descanso td { text-align: center; font-style: italic; color: var(--color-texto-suave, #6B6B6B); background: var(--color-fondo-alterno, #FAF7EE); }
+.horario-celda strong { display: block; }
+.horario-celda span { display: block; color: var(--color-texto-suave, #6B6B6B); font-size: var(--texto-xs, .8rem); }
+.horario-nota { font-size: var(--texto-sm, .9rem); color: var(--color-texto-suave, #6B6B6B); margin-top: var(--espacio-sm, 8px); }
+.horario-libre { color: var(--color-texto-suave, #6B6B6B); }
+
+/* ---- Editor ---- */
+.horario-editor td { min-width: 150px; }
+.horario-editor select, .horario-editor input[type="text"] { width: 100%; margin: 0; min-height: 40px; }
+.horario-editor input[type="text"] { margin-top: 6px; font-size: var(--texto-sm, .9rem); }
+.horario-editor td.celda-descanso { text-align: center; font-style: italic; color: var(--color-texto-suave, #6B6B6B); background: var(--color-fondo-alterno, #FAF7EE); min-width: 0; }
+.lista-conflictos { list-style: none; margin: var(--espacio-sm, 8px) 0 var(--espacio-md, 16px); padding: 0; display: grid; gap: 6px; }
+.lista-conflictos li { padding: 10px 14px; border-radius: var(--radio-borde, 12px); border: 1px solid var(--color-peligro, #C0392B); background: var(--color-peligro-fondo, #FBEAE8); color: var(--color-texto, #2B2B2B); }
+.horas-asignatura { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 6px 16px; list-style: none; margin: var(--espacio-sm, 8px) 0; padding: 0; font-size: var(--texto-sm, .9rem); }
+.horas-asignatura li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 10px; border-radius: var(--radio-borde-sm, 8px); background: var(--color-fondo-alterno, #FAF7EE); }
+.horas-asignatura .aviso-horas { font-weight: 700; color: var(--color-aviso, #8C5F09); }
+.filas-franjas { display: grid; gap: 8px; margin: var(--espacio-sm, 8px) 0 var(--espacio-md, 16px); }
+.fila-franja { display: grid; grid-template-columns: 2.5em minmax(8em, 1.4fr) 7.5em 7.5em auto; gap: 8px; align-items: end; }
+.fila-franja label { margin: 0; font-size: var(--texto-xs, .8rem); }
+.fila-franja input[type="text"], .fila-franja input[type="time"] { width: 100%; margin: 0; }
+.fila-franja .numero-franja { align-self: center; font-weight: 700; text-align: center; }
+.fila-franja .check-descanso { display: flex; gap: 6px; align-items: center; min-height: 44px; }
+.pestanas-horario { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--espacio-sm, 8px) 0 var(--espacio-md, 16px); }
+.pestanas-horario a { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--color-borde, #E0DCCB); text-decoration: none; }
+.pestanas-horario a[aria-current="page"] { border-color: var(--color-dorado-oscuro-texto, #6E5400); font-weight: 700; }
+
+@media (max-width: 600px) {
+    .fila-franja { grid-template-columns: 2em 1fr 1fr; }
+    .fila-franja .campo-nombre { grid-column: 2 / -1; }
+}
+@media print {
+    .pestanas-horario, .acad-filtros, .acad-acciones { display: none !important; }
+    .horario-envoltura { overflow: visible; border: 0; }
+    .horario-tabla { min-width: 0; font-size: 11px; }
+}

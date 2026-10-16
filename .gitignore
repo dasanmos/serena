@@ -1,0 +1,33 @@
+# Credenciales reales — nunca subir al repositorio. Copiar .env.example a .env
+# y completar los valores locales (ver README.md / INSTALACION.md).
+src/config/.env
+src/config/.clave_2fa
+
+# Respaldos de base de datos y archivos subidos por usuarios reales: contienen
+# datos personales de estudiantes protegidos por la Ley 1581. Cada carpeta tiene
+# además su propio .gitignore por si se copian fuera de este árbol.
+src/respaldos/*
+!src/respaldos/.gitignore
+!src/respaldos/.gitkeep
+src/uploads/diario/*
+!src/uploads/diario/.gitignore
+!src/uploads/diario/.gitkeep
+
+# Archivos de sistema operativo / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.perfil_capturas/
+
+# Cualquier variante de .env con credenciales (solo .env.example se sube)
+src/config/*.env
+src/config/.env.*
+!src/config/.env.example
+src/uploads/fotos_estudiantes/*
+!src/uploads/fotos_estudiantes/.gitignore
+!src/uploads/fotos_estudiantes/.htaccess
+!src/uploads/fotos_estudiantes/.gitkeep
+src/uploads/evidencias/*
+!src/uploads/evidencias/.gitignore
+!src/uploads/evidencias/.gitkeep

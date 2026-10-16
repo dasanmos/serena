@@ -1,0 +1,92 @@
+SERENA · SIMAT Y SIMPADE + SEGUIMIENTO UNIFICADO
+================================================
+
+1) BASE DE DATOS (obligatorio, una sola vez)
+   Hacer respaldo y ejecutar en phpMyAdmin:  sql/migraciones/041_simat_simpade.sql
+   Solo crea 6 tablas nuevas (simat_datos, simat_novedades, simat_reportes,
+   simpade_riesgos, simpade_seguimientos, simpade_retiros). No toca las existentes.
+   Requiere las migraciones 034, 036, 038 y 040 ya aplicadas.
+
+2) QUÉ CAMBIÓ EN EL DOCENTE
+   - Se ELIMINÓ public/docente/planilla.php (Planilla de notas).
+   - Seguimiento (public/docente/seguimiento.php) quedó como único lugar de notas.
+     Al final de la página tiene «Actividades y logros»: crear/editar/borrar actividades
+     (con peso, proceso y logro) y logros del período. Recalcula la nota del período.
+   - Los enlaces viejos a planilla.php redirigen (301) a seguimiento.php (public/.htaccess).
+   - Quitado del menú, la demo y la ayuda.
+
+3) SIMAT  (menú: Informes → SIMAT; roles: secretaría académica, administrador, rector)
+   Archivos: public/simat.php, public/simat_exportar.php, src/modelos/Simat.php
+   - Resumen: verificaciones del establecimiento (DANE, sede, jornada, matrículas pendientes).
+   - Revisión: errores y avisos por estudiante (documento, nombres, nacimiento, género,
+     grado/grupo, extraedad, estrato, zona, EPS...) con enlace al expediente.
+   - Datos SIMAT: procedencia, subsidio condicionado, internado, matrícula contratada.
+   - Exportar CSV (todos o solo sin errores). Columnas, orden, separador y fecha configurables.
+   - Conciliar: sube el CSV descargado del SIMAT y compara contra la matrícula activa.
+   - Novedades: retiros (automáticos al retirar una matrícula), traslados, ingresos, cambios.
+   - Ajustes: sede, DANE sede, jornada, metodología, códigos de grado (manuales si no se reconocen).
+
+4) SIMPADE  (menú: Informes → SIMPADE; roles: admin, rector, coordinador, psicología,
+   orientación, secretaría académica)
+   Archivos: public/simpade.php, public/simpade_exportar.php, src/modelos/Simpade.php
+   - Detección: sugiere estudiantes en riesgo con puntaje y el detalle de cada factor.
+     Una persona confirma; nada se marca solo.
+   - Casos: nivel, estado, responsable y bitácora de acciones de permanencia.
+   - Retiros: causa, destino, estrategia intentada; opcionalmente retira la matrícula
+     (y deja la novedad SIMAT). Exportables a CSV.
+   - Panel: tasa de retiro, casos abiertos, casos sin seguimiento (+30 días), retiros por causa.
+
+5) LÍMITES HONESTOS
+   - Serena NO se conecta al SIMAT ni al SIMPADE (no hay API pública para colegios):
+     prepara, valida y exporta. El cargue lo hace el colegio o la secretaría.
+   - Los catálogos (tipos de documento, códigos de grado, causas de retiro, factores) y los
+     nombres de columnas del CSV son ORIENTATIVOS: verifícalos contra la guía/plantilla vigente
+     de tu Secretaría de Educación y ajusta SIMAT → Ajustes o las constantes en
+     src/modelos/Simat.php y Simpade.php.
+   - Primer paso al estrenar: SIMAT → Ajustes, luego Datos SIMAT, luego Revisión.
+
+6) MEJORAS (15 oct 2026)
+   Sin migración nueva: no hay que tocar la base de datos.
+   - SIMPADE · Detección: corregido el error fatal «Evaluacion::minimoAprobatorio» (el método no existía).
+   - SIMPADE · Retiros: ahora se retira primero la matrícula y luego se guarda el retiro (antes podía quedar a medias).
+     La novedad automática de SIMAT hereda causa, destino y detalle del retiro.
+   - SIMPADE · Casos: un caso «superado» se reabre al volver a abrirlo; se marca el «contacto vencido» y el panel lo cuenta.
+   - SIMAT · Datos: guardado todo o nada y conserva el filtro «Solo a quienes les falta algo».
+   - SIMAT · Revisión: filtro por grupo. Resumen: barra de avance. Conciliar: tarjeta de retirados en el SIMAT.
+   - Exportaciones: novedades con la fecha en el formato de Ajustes y protegidas contra fórmulas de Excel.
+   - CSS: public/assets/css/simat.css reescrito con los tokens del sistema (modo oscuro, contraste alto, móvil, impresión).
+
+7) CORRECCIÓN «SIMAT/SIMPADE SALEN VACÍOS» (15 oct 2026)
+   Sin migración nueva. Archivos: src/modelos/Simat.php, src/modelos/Simpade.php, public/simat.php,
+   public/simpade.php, public/parciales/sm_diagnostico.php (nuevo), public/assets/css/simat.css.
+   - CAUSA 1: los módulos abrían el año «actual» aunque no tuviera matrículas activas (p. ej. tras promover el año).
+     Ahora abren el año actual si tiene activas; si no, el más reciente que sí las tenga.
+   - CAUSA 2: SIMAT/SIMPADE solo cuentan matrículas en estado «activa». Si el año tiene pendientes, un aviso lo dice
+     (con conteo por estado) y enlaza a los años que sí tienen datos. Activa las matrículas en Matrículas.
+   - Robustez: las consultas complementarias (hoja de vida, caracterización, apoyos, asistencia, notas, convivencia)
+     ya no cortan la página si una tabla o columna falla; esa señal queda vacía y se registra en el log de errores.
+   - CSS: simat.css quedó aislado bajo .sm-modulo (contenedor nuevo en ambas páginas) y neutraliza los choques con
+     base.css: input/select a 100 % (casillas), label con margen superior, subrayado de enlaces, salto de botones
+     y sombra de .panel-seccion. Ya no afecta a otras páginas.
+
+8) RECONSTRUCCIÓN DE ROBUSTEZ Y MEJORAS (15 oct 2026, 2.ª ronda)
+   Sin migración nueva. Archivos: Simat.php, Simpade.php, simat.php, simpade.php, simat.css,
+   assets/js/simat.js (nuevo), parciales/sm_error.php (nuevo), parciales/sm_diagnostico.php.
+   - «Se bloquea / menú y botones muertos»: la página se cortaba antes del pie (donde cargan los scripts del menú).
+     Causa probable: tablaExiste()/columnaExiste() consultaban information_schema, muy lento en hostings gratuitos
+     (decenas de consultas por carga). Ahora usan SELECT ... LIMIT 0 (instantáneo).
+   - Si algo vuelve a fallar, el error se muestra DENTRO del módulo (causa visible para administración/rector) y la
+     página se completa: el menú, las pestañas y los botones siguen funcionando. El detalle también va al error_log.
+   - JS propio (simat.js): filtro en vivo de tablas, contador, anti-doble-envío, confirmaciones y «Limpiar» factores.
+   - Según instructivos de secretarías de educación (SIMAT) y boletines SIMPADE:
+       · SIMAT Resumen: guía de estados (Nuevo, Inscrito, Asignado, Matriculado, Promocionado, Sin continuidad,
+         Reprobado, Trasladado, Retirado, Graduado, Cancelado) y pasos de reporte (no duplicar, verificar tras guardar).
+       · SIMAT Novedades: el retiro exige motivo y el traslado la institución/sede de destino.
+       · SIMAT Conciliar: cómo descargar el listado (Procesos por lotes) y abrir el CSV.
+       · SIMPADE: nuevas causas de retiro (Cambio de país, Dificultades académicas, Poco gusto por el estudio) y nota
+         de que el rector informa el retiro por escrito, con soporte en la carpeta del estudiante.
+
+9) CAUSA RAÍZ REAL DEL «VACÍO Y MENÚ MUERTO» (15 oct 2026, 3.ª ronda)
+   «Array callback must have exactly two elements» en simat.php / simpade.php: parciales/encabezado.php reutiliza la
+   variable $enlace (un array del menú) y pisaba el closure $enlace() de las páginas. Al dibujar las pestañas PHP
+   fallaba, cortaba la página antes del pie y por eso el menú y los botones no cargaban. Renombrado a $smUrl.

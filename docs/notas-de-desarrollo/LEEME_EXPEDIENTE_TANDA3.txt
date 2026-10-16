@@ -1,0 +1,35 @@
+SERENA - Tanda 3 (expediente del estudiante y gestion docente)
+==============================================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos.
+2. Ejecutar sql/migraciones/036_expediente.sql (reejecutable). Requiere 034 y 035.
+3. Subir los archivos.
+
+NUEVO
+ - Expedientes (/estudiantes.php > /estudiante_ficha.php): hoja de vida y contactos de emergencia, observador y anecdotario,
+   convivencia (Ley 1620: situaciones tipo I, II, III, con actuaciones y decision final), servicio social (80 h) y horas de
+   Constitucion Politica (50 h) con barra de avance, aula de apoyo / PIAR (con seguimientos) y asistencia por asignatura y periodo.
+ - Casos (/casos.php): lista de procesos de convivencia y de planes de apoyo (coordinacion, rectoria, administracion, orientacion).
+ - Docente: Asistencia (diaria por clase o RESUMEN al final del periodo), Planeador y Diario de campo (privados del docente).
+
+QUIEN VE Y ESCRIBE QUE  (src/modelos/Expediente.php > capacidades)
+ - Salud sensible (condiciones, medicamentos, desarrollo) y diagnostico de apoyo: SOLO coordinador, rector, administrador, psicologo y orientador.
+ - Docente (solo estudiantes de sus grupos o que dirige): ve EPS, RH, alergias, contactos, observador (menos el reservado "seguimiento"),
+   ajustes razonables del PIAR. NO ve diagnosticos ni procesos disciplinarios. Puede anotar en el observador, registrar horas y REPORTAR una situacion.
+ - Convivencia: ven coordinador, rector, administrador, psicologo y orientador; gestionan (abrir, actuar, cerrar) coordinador, rector y administrador.
+ - Secretaria academica: edita hoja de vida (sin salud sensible) y registra horas.
+ - Acudiente: observador marcado "visible para la familia", horas y asistencia de SUS hijos. Estudiante: sus horas y su asistencia.
+ - Cada consulta a un expediente por personal con acceso a datos sensibles queda en auditoria (quien consulto a quien, nunca el contenido).
+
+DECISIONES A REVISAR (datos de menores: valida con el rector y el asesor juridico del colegio)
+ - Los acudientes NO ven procesos de convivencia ni salud ni apoyo por la plataforma (el debido proceso se notifica por los canales del manual de convivencia).
+ - Los procesos de convivencia no se borran; las anotaciones del observador solo las elimina coordinacion/rectoria/administracion (con auditoria).
+ - Las horas obligatorias (80 y 50) estan fijas en Expediente::HORAS; cambialas ahi si tu SIEE usa otras.
+ - Este expediente es academico-administrativo y NO muestra los registros de bienestar emocional (diario, seguimientos del psicologo): siguen separados.
+ - El dictado por voz (🎤) aparece en estos campos; en Chrome/Edge el audio lo procesa Google/Microsoft. Considera data-sin-voz en
+   hoja de vida (salud), convivencia y apoyo si no quieres que se dicten datos sensibles.
+
+PENDIENTE
+ - Asistencia dentro del PDF del boletin (hoy se ve en el expediente).  - Notificacion a coordinacion cuando un docente reporta.
+ - Citaciones imprimibles / actas.  - Informes, graficas y certificados editables (Tanda 4).

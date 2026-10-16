@@ -1,0 +1,174 @@
+LEEME — MÓDULO DE INFORMES (Tanda 5)
+====================================
+Base: tu htdocs_actualizado (certificados con QR, Tanda 4). Se agregó un módulo de INFORMES con los 69 informes de tu lista,
+en 15 categorías, con formato institucional (logo, DANE, NIT, resolución, firmas, color) y 3 salidas: HTML imprimible, PDF y CSV.
+
+NADA de esto se ejecutó ni se probó (como pediste: solo código). Al subirlo, lo primero es abrir /informes.php y revisar errores.
+
+CÓMO INSTALAR (en este orden)
+1. Copia los archivos de este zip sobre tu htdocs (no pisa tu .env: no viene incluido).
+2. Ejecuta sql/migraciones/038_informes.sql en MySQL (reejecutable; solo crea tablas nuevas, no toca las tuyas).
+3. Entra con secretaría académica, administrador o rector → menú «Informes».
+4. Configura la institución (logo, DANE, resolución, firmas) en «Institución»: el encabezado de todos los informes sale de ahí.
+
+QUÉ HAY DE NUEVO
+- public/informes.php            Catálogo por categorías, buscador, filtros del informe elegido, y emisión de certificados.
+- public/informe_ver.php         Genera el informe (formato=html | pdf | csv). Solo lectura.
+- public/refuerzos.php           Captura: genera refuerzos (de las notas perdidas), registra su resultado y planes de mejoramiento.
+- public/restaurante.php         Captura: beneficiarios, asistencia diaria y pagos del restaurante.
+- public/cartera.php             Captura: cargos (masivos o individuales) y pagos.
+- public/caracterizacion.php     Captura: víctima del conflicto, etnia, SISBÉN, estrato (dato sensible, auditado).
+- src/modelos/Informes.php       Núcleo: permisos, filtros validados, estudiantes del año, matriz de notas, bitácora.
+- src/informes/catalogo.php      El catálogo (una entrada por informe). Para agregar un informe: una entrada + un método en Gen*.php.
+- src/informes/Gen*.php          Los generadores (uno por categoría o grupo de categorías).
+- src/helpers/InformePDF.php     PDF sin librerías (usa tu CertificadoPDF): encabezado con logo, tablas con salto de página, «Página X de Y».
+- src/helpers/InformeRender.php  HTML imprimible y CSV (UTF-8 con BOM, protegido contra inyección de fórmulas).
+- src/helpers/captura.php        Utilidades de las 4 pantallas de captura.
+- public/assets/css/informes.css, public/assets/js/informes.js
+- sql/migraciones/038_informes.sql
+Archivos TUYOS que se modificaron (mínimo):
+- src/modelos/Certificados.php   + tipo «traslado» (título, plantilla editable y entrada en TIPOS). Nada más.
+- src/helpers/navegacion.php     + enlaces Informes, Refuerzos y planes, Caracterización, Restaurante y Cartera según el rol.
+
+LOS 69 INFORMES
+
+1. Calificaciones, evaluación y resultados
+   - Planilla Auxiliar   (planilla_auxiliar)
+   - Planilla de Notas   (planilla_notas)
+   - Planilla de Verificación   (planilla_verificacion)
+   - Progreso de Evaluación   (progreso_evaluacion)
+   - Evaluación Semestral   (evaluacion_semestral)
+   - Estudiantes por Escala de Valoración   (estudiantes_escala)
+   - Resultados Académicos   (resultados_academicos)
+   - Libro de Calificaciones   (libro_calificaciones)
+   - Índice del libro de calificaciones   (indice_libro_calificaciones)
+   - Consolidado General   (consolidado_general)
+
+2. Rendimiento académico
+   - Estudiantes con Alto Rendimiento   (alto_rendimiento)
+   - Estudiantes con Bajo Rendimiento   (bajo_rendimiento)
+   - Estudiantes con Logros Perdidos   (logros_perdidos)
+   - Listado de Estudiantes Perdiendo   (estudiantes_perdiendo)
+   - Rendimiento por Área   (rendimiento_area)
+   - Rendimiento por Asignatura   (rendimiento_asignatura)
+   - Rendimiento por Estudiante (Asignaturas)   (rendimiento_est_asignaturas)
+   - Rendimiento por Estudiante (Promedios)   (rendimiento_est_promedios)
+   - Rendimiento por Grupo   (rendimiento_grupo)
+
+3. Boletines, certificados y constancias
+   - Boletín Informativo   (boletin)
+   - Boletín Informativo (Con Resumen)   (boletin_resumen)
+   - Boletín Informativo (Por Áreas)   (boletin_areas)
+   - Certificado de Estudios [emite certificado con QR]   (cert_estudios)
+   - Certificado de Notas Parciales [emite certificado con QR]   (cert_notas_parciales)
+   - Certificado de Traslado [emite certificado con QR]   (cert_traslado)
+   - Constancia de Estudio [emite certificado con QR]   (constancia_estudio)
+   - Estudiantes Sin Certificado   (estudiantes_sin_certificado)
+
+4. Matrícula, inscripción y admisiones
+   - Hoja de Matrícula   (hoja_matricula)
+   - Renovación de Matrícula   (renovacion_matricula)
+   - Reserva de Cupo   (reserva_cupo)
+   - Pre-Inscripción   (preinscripcion)
+   - Estudiantes en proceso de inscripción   (inscripcion_en_proceso)
+   - Listado de Estudiantes Nuevos   (estudiantes_nuevos)
+   - Listado de Estudiantes Cancelados   (estudiantes_cancelados)
+   - Índice del libro de matrículas   (indice_libro_matriculas)
+
+5. Asistencia e inasistencia
+   - Control de Asistencia   (control_asistencia)
+   - Escala de Inasistencia   (escala_inasistencia)
+   - Inasistencia por Tipo   (inasistencia_tipo)
+   - Porcentaje promedio de Inasistencia   (inasistencia_porcentaje)
+
+6. Refuerzos y planes de mejoramiento
+   - Estudiantes con Refuerzos Pendientes   (refuerzos_pendientes)
+   - Planilla de Refuerzos   (planilla_refuerzos)
+   - Estudiantes en Plan de Mejoramiento   (plan_mejoramiento)
+   - Eficiencia del Plan de Mejoramiento   (eficiencia_plan)
+
+7. Promoción e historial académico
+   - Cursó y Aprobó   (curso_aprobo)
+   - Evaluación y Promoción de Estudiantes   (evaluacion_promocion)
+   - Estado Académico de Grados Anteriores   (estado_grados_anteriores)
+   - Record Académico   (record_academico)
+
+8. Seguimiento y expediente estudiantil
+   - Cuaderno de Seguimiento   (cuaderno_seguimiento)
+   - Ficha de Seguimiento   (ficha_seguimiento)
+   - Hoja de Vida   (hoja_vida)
+
+9. Estudiantes y caracterización poblacional
+   - Listado de Estudiantes   (listado_estudiantes)
+   - Directorio de Estudiantes   (directorio_estudiantes)
+   - Listado de Estudiantes con Discapacidad   (estudiantes_discapacidad)
+   - Estudiantes Víctimas del Conflicto   (victimas_conflicto)
+   - Listado de Familias   (listado_familias)
+
+10. Docentes y asignación académica
+   - Asignación Académica   (asignacion_academica)
+   - Listado de Docentes   (listado_docentes)
+
+11. Restaurante escolar
+   - Asistencia al Restaurante   (rest_asistencia)
+   - Control de Pagos Restaurante   (rest_pagos)
+   - Distribución Restaurante Escolar   (rest_distribucion)
+   - Listado de Estudiantes Restaurante   (rest_listado)
+
+12. Cartera y estados financieros
+   - Estados de Cuenta   (estados_cuenta)
+   - Estudiantes con Saldos pendientes   (saldos_pendientes)
+   - Pensión Mensual   (pension_mensual)
+
+13. Deserción y movimientos estudiantiles
+   - Deserción Escolar   (desercion)
+   - Salidas   (salidas)
+
+14. Planeación académica
+   - Plan de período   (plan_periodo)
+
+15. Administración, control e información institucional
+   - Dane   (dane)
+   - Registro de Auditoria   (auditoria)
+
+QUIÉN VE QUÉ
+- Docente: solo SUS grupos/asignaturas (planillas, rendimiento, asistencia, listados, planes de período propios).
+- Coordinador, rector, administrador, secretaría académica: todo su colegio, salvo lo financiero (cartera: solo secretaría académica, administrador y rector)
+  y auditoría (solo administrador y rector).
+- Psicólogo/orientador: seguimiento, hoja de vida, discapacidad/PIAR, víctimas del conflicto.
+- Datos sensibles (hoja de matrícula, seguimiento, hoja de vida, discapacidad, víctimas, cuaderno, cartera, auditoría): cada consulta queda en la auditoría.
+- Todo se filtra por el colegio de la sesión; cada filtro (año, período, grupo, estudiante, asignatura) se valida contra ese colegio y el alcance del rol.
+- Cada informe generado queda en la bitácora informes_generados (quién, cuál, filtros, formato, filas) y se muestra como «Ref. INF-n» en el pie.
+
+CERTIFICADOS (categoría 3)
+Certificado de Estudios, Notas Parciales, Traslado y Constancia de Estudio NO se dibujan aquí: emiten un certificado real con QR usando tu
+Certificados::emitir (estudio, notas, traslado, matrícula). «Notas parciales» = el certificado de calificaciones, que ya incluye solo los períodos con notas.
+El texto de «traslado» se edita en tu pantalla de plantillas como los demás.
+
+DECISIONES A REVISAR (las tomé yo; cámbialas si no te sirven)
+1. Informes que necesitaban datos que NO existían: se crearon tablas (038): refuerzos, planes de mejoramiento, caracterización, restaurante y cartera,
+   cada una con su pantalla de captura. Si tu colegio usa otro sistema para restaurante o cartera, esos informes quedarán vacíos hasta que se alimenten.
+2. «Logros perdidos»: tu modelo no guarda logros por estudiante; se interpreta como asignaturas perdidas en el período + los logros que el docente definió para esa asignatura y período.
+3. «Perdiendo», «bajo rendimiento», «promoción»: «perdida» = el desempeño de la nota NO aprueba según la escala del colegio (flag aprueba). El umbral de bajo/alto
+   rendimiento es el mínimo aprobatorio / el nivel más alto, y se puede cambiar en el filtro «Umbral».
+4. «Evaluación y Promoción»: es una SUGERENCIA (0 perdidas = promovido; hasta 2 = pendiente de recuperación; más = no promovido). El 2 se cambia con el filtro Umbral.
+   La decisión oficial es de la Comisión de Evaluación y Promoción según tu SIEE: ajusta la regla si tu SIEE dice otra cosa (áreas vs asignaturas).
+5. Inasistencia: cuenta las ausencias registradas por clase (tabla asistencias) y, si no filtras por fechas, suma el resumen por período (inasistencias_periodo).
+   El «%» solo usa asistencia diaria porque el resumen por período no guarda el total de clases.
+6. Evaluación semestral: divide los períodos por la mitad (con 4 períodos: 1-2 y 3-4; con 3: 1-2 y 3).
+7. «Dane»: es un resumen de apoyo (identificación + matrícula por grado y sexo). NO es el formato oficial C600/SIMAT; el sexo sale de hoja de vida (genero).
+8. Deserción: «no continúan» incluye a los graduados del último grado; hay que descartarlos a mano (el sistema no sabe cuál es el último grado).
+9. Libro de calificaciones / boletines / ficha / hoja de vida: máximo 150 / 120 / 60 estudiantes por vez para no agotar memoria del hosting; se pide por grupo.
+10. Boletines: salen de tu Evaluacion::boletin (mismo cálculo de definitiva y promedio que ya usas). «Solo publicados» respeta boletin_publicado.
+11. Hoja de matrícula: la salud (grupo sanguíneo, alergias, condiciones, medicamentos) solo se imprime para roles con acceso sensible (directivos y orientación); secretaría ve «Reservado».
+12. Cartera: pagos no pueden superar el saldo del cargo; los cargos masivos no se duplican (mismo concepto y mes por estudiante).
+13. Los PDF usan Helvetica estándar (acentos y ñ funcionan; emojis o caracteres fuera de Latin-1 se pierden). Tablas muy anchas (más de ~14 columnas) se achican: usa orientación horizontal (ya viene así en las que lo necesitan).
+
+CONFLICTO DE NUMERACIÓN DE MIGRACIONES
+Tu línea usa 036_expediente y 037_certificados; la línea anterior que te había entregado usaba 036_asistencia y 037_horarios. Esta migración es la 038 de TU línea.
+Si vas a mezclar ambas líneas, renumera antes de ejecutar.
+
+LO QUE NO ENTRA EN ESTE ZIP
+- De la Tanda 3 anterior se descartaron «Documentos con QR» y «Verificar» (chocan con tus certificados) y «Excusas» (depende de otra tabla de asistencia).
+- Los parches de endurecimiento de seguridad (cookies seguras, CSP, HSTS, timeout) y de auditoría de cambio de notas siguen pendientes: se pueden aplicar en la siguiente tanda sobre estos archivos.
+- Excluidos del zip: src/config/.env, src/config/1.env y src/respaldos/*.sql (secretos y copias de la base). Si 1.env/.env tienen claves reales y estuvieron en el zip anterior, cámbialas.

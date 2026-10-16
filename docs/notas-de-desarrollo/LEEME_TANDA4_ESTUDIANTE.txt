@@ -1,0 +1,22 @@
+SERENA - Tanda 4 (panel del estudiante) - SUBE DESPUES DE LAS TANDAS 1, 2 Y 3
+============================================================================
+ORDEN: 1) Respaldo de los 3 PHP y estudiante.css. 2) Subir respetando rutas. 3) Ctrl+F5. No toca base de datos.
+
+DASHBOARD (estudiante/dashboard.php)
+ - Tarjeta nueva "Notas": promedio del ultimo periodo con boletin PUBLICADO + desempeno (misma regla de
+   privacidad que boletin.php). Sin boletin publicado, o sin migraciones 034/035: muestra "—" y nada se rompe.
+ - Acceso rapido "Mis notas".
+ - Grafica de la semana: role="img" + texto equivalente con un valor por dia; colores desde los tokens del
+   tema (antes #E8B923 y texto gris fijo: ilegible en modo oscuro).
+REGISTRO EMOCIONAL (estudiante/emociones.php)
+ - Las emociones ahora son un <fieldset>/<legend> (antes un <label> sin control).
+ - role=alert / role=status en mensajes.
+ - Si la intensidad guardada es 4 o 5: enlace amable a Respiracion y a "Ayuda ahora".
+RESPIRACION (estudiante/respiracion.php)
+ - El texto de la fase (Inhala/Sostén/Exhala) se anuncia a lectores de pantalla (aria-live).
+ - El foco pasa al boton Detener/Empezar (antes se perdia al ocultarse el boton pulsado).
+ - Aviso cuando el sistema reduce animaciones; enlace a "Ayuda ahora".
+CSS (estudiante.css): estilo del fieldset; en celular la 5a tarjeta ocupa el ancho completo (sin hueco).
+
+NO SE PROBO contra base de datos real ni en navegador. Revisar: tarjeta Notas con un estudiante que tenga
+boletin publicado, y la grafica en modo oscuro.

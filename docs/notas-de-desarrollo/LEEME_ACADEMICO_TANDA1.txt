@@ -1,0 +1,38 @@
+SERENA - Tanda 1 del sistema academico (base academica)
+=======================================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos.
+2. Ejecutar sql/migraciones/034_academico_base.sql (reejecutable). Crea los roles "secretaria_academica" y "acudiente",
+   y las tablas anios_lectivos, periodos, inscripciones, matriculas y acudientes_estudiantes.
+   Requiere 027 (multicolegio). El rol "rector" y "orientador" ya existian.
+3. Subir los archivos.
+
+FLUJO DE TRABAJO RECOMENDADO
+ a) Administrador/Rector/Secretaria academica: Anios lectivos > crear el anio > fechas > "Generar periodos" > marcar como actual.
+ b) Para recibir inscripciones: en ese anio activar "Inscripciones web abiertas" y compartir  <tu-sitio>/inscripcion.php
+ c) Secretaria academica > Inscripciones: En revision / Admitir / Rechazar (con nota) y "Matricular":
+      crea la cuenta del estudiante y la del acudiente (o reutiliza al acudiente si ya existe), los vincula
+      y deja la matricula ACTIVA. Muestra las contrasenas temporales UNA sola vez.
+ d) Renovacion: Matriculas > "Renovar matriculas" (a varios a la vez), o en Anios lectivos activar "Renovacion abierta"
+      para que el acudiente la pida desde su panel (queda PENDIENTE hasta que la secretaria la confirme con grupo).
+ e) Anios lectivos > "Marcar como anio actual": los estudiantes con matricula activa y grupo asignado pasan a su grupo nuevo.
+ f) Consulta publica del estado: <tu-sitio>/inscripcion_estado.php (codigo + documento del estudiante).
+
+ROLES
+ - secretaria_academica: la secretaria DEL COLEGIO (no confundir con "secretaria" = Secretaria de EDUCACION).
+   Se crea desde Usuarios > Crear usuario (aparece en la lista de roles automaticamente).
+ - acudiente: se crea al matricular una inscripcion (o desde Usuarios). Se vincula al estudiante en acudientes_estudiantes.
+ - rector y administrador tambien pueden operar anios lectivos, inscripciones y matriculas.
+
+DECISIONES A REVISAR
+ - Estudiante sin correo: se crea el usuario  est.<documento>@serena.local  (sirve para iniciar sesion, no recibe correos).
+ - Si el anio de la inscripcion NO es el actual, el estudiante queda sin grupo en su cuenta hasta "Marcar como anio actual".
+ - Antibots: campo trampa + maximo 8 inscripciones por IP y hora + CSRF. Si tu hosting esconde la IP real, ajusta
+   Academico::MAX_INSCRIPCIONES_POR_IP_HORA.
+ - Las contrasenas temporales no obligan a cambiarlas al primer ingreso (Serena no tiene esa bandera todavia).
+ - No se envian correos automaticos (confirmacion de inscripcion, credenciales): hoy se entregan en pantalla.
+
+PENDIENTE DE ESTA TANDA (para la siguiente)
+ - Correos de confirmacion y de credenciales.  - Vinculo manual acudiente-estudiante (hermanos con otra cuenta de acudiente).
+ - Promocion automatica de grado.  - Reportes/certificados de matricula (PDF).

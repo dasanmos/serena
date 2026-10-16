@@ -1,0 +1,13 @@
+CAPTURAS DE PANTALLA PARA LA AYUDA
+==================================
+Pon aquí las capturas (JPG recomendado; PNG también funciona si PHP tiene la extensión GD).
+Tamaño sugerido: unos 1000-1400 px de ancho, menos de 400 KB cada una.
+
+Luego enlázalas en src/ayuda/contenido.json, dentro de la sección que ilustran:
+
+  "imagenes": [
+    { "archivo": "est-emociones-1.jpg", "pie": "Formulario para registrar una emoción" }
+  ]
+
+Nombres sugeridos: <id del capítulo>-<número>.jpg  (por ejemplo est-diario-1.jpg, adm-usuarios-2.jpg).
+Si un archivo no existe, simplemente no se muestra: no da error.

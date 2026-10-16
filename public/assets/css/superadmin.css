@@ -1,0 +1,332 @@
+/* ============================================================
+   SERENA — superadmin.css
+   Área de plataforma: superadmin y Secretaría de Educación
+   (encabezado.php les pone body.rol-superadmin a los dos).
+   Todo va acotado a body.rol-superadmin y, para controles y
+   textos, a .contenido-panel: no toca la barra superior ni los
+   demás roles. Usa los tokens de base.css, así que el modo
+   oscuro y el alto contraste siguen funcionando solos.
+
+   Decisión de diseño: el único elemento con énfasis es el héroe
+   dorado del panel. Todo lo demás es sobrio: tarjetas planas,
+   un solo radio por jerarquía, color solo donde indica estado.
+   ============================================================ */
+
+body.rol-superadmin {
+    --sa-radio-tarjeta: var(--radio-borde);
+    --sa-radio-control: var(--radio-borde-sm);
+    --sa-verde: var(--color-exito);
+    --sa-ambar: var(--color-aviso);
+    --sa-rojo: var(--color-peligro);
+    --sa-azul: var(--color-info);
+}
+html[data-tema="oscuro"] body.rol-superadmin {
+    --sa-verde: #6FBE7A;
+    --sa-ambar: #E0B24F;
+    --sa-rojo: #E27B6E;
+    --sa-azul: #6FB2D9;
+}
+
+body.rol-superadmin .contenido-panel { max-width: 1240px; margin-inline: auto; }
+
+/* ---------- Títulos y texto ---------- */
+body.rol-superadmin .contenido-panel h1 {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--espacio-sm);
+}
+body.rol-superadmin .contenido-panel h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: var(--espacio-md);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--espacio-xs) var(--espacio-sm);
+}
+body.rol-superadmin .contenido-panel h2 small { font-weight: 400; font-size: .82rem; }
+body.rol-superadmin .contenido-panel p { max-width: 75ch; }
+.sa-nota { font-size: .82rem; color: var(--color-texto-suave); }
+
+/* ---------- Tarjetas (planas: el relieve lo da el borde) ---------- */
+body.rol-superadmin .panel-seccion {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--sa-radio-tarjeta);
+    box-shadow: none;
+    padding: var(--espacio-lg);
+    margin-bottom: var(--espacio-lg);
+}
+
+/* ---------- Héroe del dashboard (lo único que lleva énfasis) ---------- */
+.sa-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-lg);
+    padding: var(--espacio-xl);
+    margin-bottom: var(--espacio-lg);
+    border-radius: var(--radio-borde-lg);
+    background: var(--color-dorado-medio);
+    color: #2B2B2B;
+}
+.sa-hero > div { min-width: 0; }
+.sa-hero h1 { color: #2B2B2B; margin: 0 0 var(--espacio-xs); }
+.sa-hero p { margin: 0; color: #2B2B2B; max-width: 56ch; }
+.sa-hero-cuenta {
+    background: rgba(255,255,255,.7);
+    border: 1px solid rgba(43,43,43,.18);
+    border-radius: var(--sa-radio-tarjeta);
+    padding: var(--espacio-md) var(--espacio-lg);
+    font-size: .9rem;
+    color: #2B2B2B;
+    max-width: 100%;
+}
+.sa-hero-cuenta strong { display: block; font-size: .8rem; font-weight: 600; color: #4A3C00; }
+.sa-hero-cuenta span { display: block; margin-bottom: var(--espacio-sm); overflow-wrap: anywhere; }
+.sa-hero-cuenta span:last-child { margin-bottom: 0; }
+
+/* ---------- KPIs (la barra de color indica el estado) ---------- */
+.sa-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--espacio-md);
+    margin-bottom: var(--espacio-lg);
+}
+.sa-kpi {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-left: 5px solid var(--sa-acento, var(--color-dorado-oscuro));
+    border-radius: var(--sa-radio-tarjeta);
+    padding: var(--espacio-lg);
+    min-width: 0;
+}
+.sa-kpi-etiqueta { font-size: .85rem; font-weight: 600; color: var(--color-texto-suave); }
+.sa-kpi-valor {
+    font-family: var(--fuente-titulos);
+    font-size: 2.6rem; font-weight: 700; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    margin-top: var(--espacio-xs);
+}
+.sa-kpi-pie { font-size: .82rem; color: var(--color-texto-suave); margin-top: var(--espacio-xs); }
+.sa-kpi.es-verde { --sa-acento: var(--sa-verde); }
+.sa-kpi.es-ambar { --sa-acento: var(--sa-ambar); }
+.sa-kpi.es-rojo  { --sa-acento: var(--sa-rojo); }
+.sa-kpi.es-azul  { --sa-acento: var(--sa-azul); }
+
+/* ---------- Semáforo ---------- */
+.sa-semaforo { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--espacio-md); }
+.sa-semaforo-item {
+    border-radius: var(--sa-radio-control);
+    padding: var(--espacio-md);
+    border: 1px solid currentColor;
+    text-align: center;
+    font-weight: 500;
+}
+.sa-semaforo-item b { display: block; font-family: var(--fuente-titulos); font-size: 2rem; font-variant-numeric: tabular-nums; }
+.sa-semaforo-item.rojo     { background: var(--color-peligro-fondo); color: var(--color-peligro); }
+.sa-semaforo-item.amarillo { background: var(--color-aviso-fondo);   color: var(--color-aviso); }
+.sa-semaforo-item.verde    { background: var(--color-exito-fondo);   color: var(--color-exito); }
+.sa-semaforo-item.gris     { background: var(--color-fondo-alterno); color: var(--color-texto-suave); border-color: var(--color-borde); }
+
+/* ---------- Dos columnas del dashboard ---------- */
+.sa-grid-2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--espacio-lg); align-items: start; }
+.sa-grid-2 > * { min-width: 0; } /* sin esto, una tabla ancha estira la columna y rompe la página */
+@media (max-width: 900px) { .sa-grid-2 { grid-template-columns: 1fr; } }
+
+/* ---------- Accesos rápidos ---------- */
+.sa-accesos { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--espacio-sm); }
+.sa-acceso {
+    display: flex; flex-direction: column; align-items: center; gap: var(--espacio-xs);
+    padding: var(--espacio-md) var(--espacio-sm);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--sa-radio-control);
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto);
+    text-decoration: none;
+    font-size: .88rem; font-weight: 500; text-align: center;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+.sa-acceso:hover { border-color: var(--color-dorado-oscuro); background: var(--color-superficie); }
+.sa-acceso span { font-size: 1.5rem; line-height: 1; }
+
+/* ---------- Lista de atención ---------- */
+.sa-lista { list-style: none; margin: 0; padding: 0; }
+.sa-lista li {
+    display: flex; justify-content: space-between; align-items: center; gap: var(--espacio-md);
+    padding: var(--espacio-sm) 0;
+    border-bottom: 1px solid var(--color-borde);
+}
+.sa-lista li:last-child { border-bottom: 0; }
+.sa-lista li > div { min-width: 0; }
+.sa-lista small { color: var(--color-texto-suave); display: block; }
+
+/* ---------- Insignias de estado (borde propio: no dependen solo del color) ---------- */
+.sa-chip {
+    display: inline-block; padding: 2px 10px; border-radius: var(--radio-pill);
+    border: 1px solid currentColor;
+    font-size: .78rem; font-weight: 600; white-space: nowrap;
+}
+.sa-chip.ok   { background: var(--color-exito-fondo);   color: var(--color-exito); }
+.sa-chip.warn { background: var(--color-aviso-fondo);   color: var(--color-aviso); }
+.sa-chip.bad  { background: var(--color-peligro-fondo); color: var(--color-peligro); }
+.sa-chip.off  { background: var(--color-fondo-alterno); color: var(--color-texto-suave); }
+
+/* ---------- Utilidades (reemplazan estilos en línea de las páginas) ---------- */
+.sa-scroll { overflow-x: auto; max-width: 100%; }
+.sa-scroll > table { min-width: 560px; }
+.sa-en-linea { display: inline; }
+.sa-espaciado { margin-top: var(--espacio-md); }
+.sa-checks {
+    max-height: 240px; overflow: auto;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--sa-radio-control);
+    padding: var(--espacio-sm) var(--espacio-md);
+    background: var(--color-superficie);
+}
+body.rol-superadmin .contenido-panel .sa-checks label { margin: 0; padding: 6px 0; font-weight: 400; }
+.sa-mensaje-texto { white-space: pre-wrap; }
+
+/* ---------- Tablas ---------- */
+body.rol-superadmin .contenido-panel .tabla,
+body.rol-superadmin .contenido-panel .tabla-datos {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: .92rem;
+}
+body.rol-superadmin .contenido-panel .tabla th,
+body.rol-superadmin .contenido-panel .tabla-datos th {
+    background: var(--color-fondo-alterno);
+    text-align: left;
+    font-size: .82rem; font-weight: 600;
+    color: var(--color-texto-suave);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--color-borde);
+}
+body.rol-superadmin .contenido-panel .tabla td,
+body.rol-superadmin .contenido-panel .tabla-datos td {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-borde);
+    vertical-align: middle;
+    font-variant-numeric: tabular-nums;
+}
+body.rol-superadmin .contenido-panel .tabla tbody tr:hover,
+body.rol-superadmin .contenido-panel .tabla-datos tbody tr:hover { background: var(--color-fondo-alterno); }
+
+/* ---------- Formularios ---------- */
+body.rol-superadmin .contenido-panel input[type="text"],
+body.rol-superadmin .contenido-panel input[type="email"],
+body.rol-superadmin .contenido-panel input[type="password"],
+body.rol-superadmin .contenido-panel input[type="month"],
+body.rol-superadmin .contenido-panel input[type="file"],
+body.rol-superadmin .contenido-panel select,
+body.rol-superadmin .contenido-panel textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--sa-radio-control);
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    font: inherit;
+    transition: border-color .15s ease;
+}
+body.rol-superadmin .contenido-panel input:focus-visible,
+body.rol-superadmin .contenido-panel select:focus-visible,
+body.rol-superadmin .contenido-panel textarea:focus-visible {
+    outline: 3px solid var(--color-dorado-oscuro);
+    outline-offset: 1px;
+    border-color: var(--color-dorado-oscuro);
+}
+body.rol-superadmin .contenido-panel form label { display: block; margin: var(--espacio-sm) 0; font-size: .9rem; font-weight: 500; }
+body.rol-superadmin .contenido-panel form label > input[type="checkbox"],
+body.rol-superadmin .contenido-panel form label > input[type="radio"] { width: auto; margin-right: 6px; }
+body.rol-superadmin .contenido-panel input[type="checkbox"],
+body.rol-superadmin .contenido-panel input[type="radio"] { accent-color: var(--color-dorado-texto); }
+
+/* Filtros en fila */
+body.rol-superadmin .contenido-panel form[method="GET"] { display: flex; flex-wrap: wrap; gap: var(--espacio-md); align-items: flex-end; }
+body.rol-superadmin .contenido-panel form[method="GET"] label { margin: 0; flex: 1 1 180px; }
+
+/* ---------- Botones (solo dentro del contenido, no en la barra) ---------- */
+body.rol-superadmin .contenido-panel button:not(.boton-mostrar-password),
+body.rol-superadmin .contenido-panel .boton-secundario,
+body.rol-superadmin .contenido-panel .boton-acceso {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radio-pill);
+    border: 1px solid transparent;
+    font: inherit; font-weight: 600; font-size: .9rem;
+    cursor: pointer; text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+/* Primario: dorado liso con texto oscuro (contraste fijo en claro y oscuro) */
+body.rol-superadmin .contenido-panel button:not(.boton-secundario):not(.boton-peligro):not(.boton-mostrar-password),
+body.rol-superadmin .contenido-panel .boton-acceso {
+    background: var(--color-dorado-medio);
+    color: #2B2B2B;
+}
+body.rol-superadmin .contenido-panel button:not(.boton-secundario):not(.boton-peligro):not(.boton-mostrar-password):hover:not(:disabled),
+body.rol-superadmin .contenido-panel .boton-acceso:hover { background: var(--color-dorado-claro); }
+body.rol-superadmin .contenido-panel .boton-secundario { background: var(--color-superficie); color: var(--color-texto); border-color: var(--color-borde); }
+body.rol-superadmin .contenido-panel .boton-secundario:hover { border-color: var(--color-dorado-oscuro); }
+body.rol-superadmin .contenido-panel .boton-peligro { background: var(--color-peligro-fondo); color: var(--color-peligro); border-color: var(--color-peligro); }
+body.rol-superadmin .contenido-panel button:disabled { opacity: .55; cursor: not-allowed; }
+body.rol-superadmin .contenido-panel button:focus-visible,
+body.rol-superadmin .contenido-panel a:focus-visible,
+body.rol-superadmin .contenido-panel summary:focus-visible { outline: 3px solid var(--color-dorado-oscuro); outline-offset: 2px; }
+body.rol-superadmin .contenido-panel td button,
+body.rol-superadmin .contenido-panel td .boton-secundario { padding: 6px 12px; font-size: .82rem; margin: 2px 0; }
+
+/* ---------- Mensajes ---------- */
+body.rol-superadmin .contenido-panel .mensaje {
+    border-radius: var(--sa-radio-control);
+    padding: var(--espacio-md) var(--espacio-lg);
+    border-left: 5px solid currentColor;
+    margin-bottom: var(--espacio-md);
+}
+
+/* ---------- Desplegables ---------- */
+body.rol-superadmin .contenido-panel details {
+    border: 1px solid var(--color-borde); border-radius: var(--sa-radio-control);
+    padding: var(--espacio-sm) var(--espacio-md); margin-top: var(--espacio-sm);
+    background: var(--color-fondo-alterno);
+}
+body.rol-superadmin .contenido-panel details[open] { background: var(--color-superficie); }
+body.rol-superadmin .contenido-panel summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+
+/* ---------- Movimiento: una sola entrada, la del héroe ---------- */
+@media (prefers-reduced-motion: no-preference) {
+    .sa-hero { animation: sa-entrada .4s ease both; }
+}
+@keyframes sa-entrada { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Móvil ---------- */
+@media (max-width: 640px) {
+    .sa-hero { padding: var(--espacio-lg); }
+    .sa-hero-cuenta { width: 100%; }
+    .sa-kpi-valor { font-size: 2.2rem; }
+    body.rol-superadmin .panel-seccion { padding: var(--espacio-md); }
+    /* Tablas sin envoltorio .sa-scroll: que al menos se desplacen en vez de romper la página */
+    body.rol-superadmin .contenido-panel .tabla-datos { display: block; overflow-x: auto; }
+    body.rol-superadmin .contenido-panel td button,
+    body.rol-superadmin .contenido-panel td .boton-secundario { padding: 8px 12px; }
+}
+
+/* ---------- Alto contraste forzado del sistema ---------- */
+@media (forced-colors: active) {
+    .sa-chip, .sa-semaforo-item, .sa-kpi { border: 1px solid CanvasText; }
+}
+
+/* ---------- Impresión (reportes) ---------- */
+@media print {
+    body.rol-superadmin .sa-hero,
+    body.rol-superadmin .contenido-panel form,
+    body.rol-superadmin .sa-accesos { display: none !important; }
+    body.rol-superadmin .panel-seccion { border: 1px solid #ccc; break-inside: avoid; }
+}

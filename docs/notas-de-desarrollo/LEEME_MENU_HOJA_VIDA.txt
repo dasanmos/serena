@@ -1,0 +1,36 @@
+SERENA - Menu lateral por categorias + Hoja de vida para todos los roles
+=========================================================================
+APLICAR (sin migracion nueva; usa la 038_hoja_vida_master.sql que ya tienes):
+1. Respaldo de los archivos que se reemplazan.
+2. Subir respetando rutas.  3. Ctrl+F5.
+(Si aun no corriste la 038_hoja_vida_master.sql de la entrega anterior, correla primero.)
+
+MENU
+- Eliminados: menu hamburguesa de la barra superior, sidebar de iconos con su boton hamburguesa y la barrita dorada con pestanas Vistas/Modulos.
+- Nuevo: menu lateral vertical minimalista (solo texto), fijo a la izquierda en escritorio; en pantallas chicas es un cajon que se abre con el boton de texto "Menu".
+- Categorias por rol en src/helpers/navegacion.php > categoriasNavegacionPorRol(). Para mover un modulo de categoria, cambia su texto de lista ahi.
+  Lo que no aparezca en esa lista cae en "Cuenta" (perfil, seguridad, sesiones, preferencias, ayuda).
+- La categoria de la pagina actual queda abierta; las demas se abren/cierran y se recuerdan.
+- Archivos: assets/css/menu_lateral.css, assets/js/menu_lateral.js, parciales/encabezado.php, parciales/pie.php, sw.php (precache).
+
+HOJA DE VIDA (ya no se llama Expediente en pantallas, menu ni ayuda; la clase interna Expediente.php conserva su nombre)
+- Todos los roles la tienen en el menu y ven las pestanas que les corresponden:
+  estudiante (la suya, solo lectura) · acudiente · docente · psicologo · orientador · coordinador · rector · administrador ·
+  secretaria academica · secretaria de educacion y superadmin (solo lectura, del colegio que tengan en contexto).
+- Estudiante: Matricula, Aprobacion, Observaciones (certificados), Anecdotario y Hoja de vida (solo lo marcado "visible para la familia"),
+  Certificados, Horas, Asistencia. No ve Desarrollo, Aula de apoyo, Procesos ni salud sensible.
+- Secretaria de Educacion y superadmin: Matricula (sin salud sensible ni etnia), Aprobacion, Observaciones, Anecdotario y Hoja de vida sin
+  anotaciones reservadas, Certificados, Horas, Asistencia. Sin escritura. Deben elegir colegio en la barra superior.
+- Nueva pestana Certificados (lo que antes era el bloque "Certificados emitidos").
+- "Matricula" en la cabecera usa el numero consecutivo (codigo_matricula, migracion 038_codigo_matricula) si no hay uno escrito a mano.
+- Cada apertura por personal queda en "quien ha visto esta ficha" (AccesoFicha, sin repetidos en 15 min) y, para roles con acceso a datos sensibles, en auditoria.
+- Boton "Hoja de vida" en la ficha de seguimiento del psicologo/orientador.
+- Archivos: estudiante_ficha.php, estudiantes.php, evidencia_ver.php, casos.php, parciales/hv_*.php, assets/css/hoja_vida.css (adaptado al tema dorado),
+  src/modelos/HojaVida.php, src/modelos/Expediente.php (capacidades), Certificados.php y acudiente/panel.php (solo textos), src/ayuda/contenido.json (textos).
+
+PARA REVISAR (datos de menores)
+- Superadmin y Secretaria de Educacion ahora leen datos de matricula de estudiantes. Si no lo quieres, quita 'secretaria' y 'superadmin' de
+  Expediente::capacidades > $plataforma y de requiereRol en estudiante_ficha.php, estudiantes.php y evidencia_ver.php.
+- Orientador: el detalle de seguimiento limita al orientador a sus grupos, pero la hoja de vida (Expediente::puedeAccederEstudiante) le deja abrir
+  cualquier estudiante del colegio, igual que antes. Si debe limitarse a sus grupos, hay que agregar ese filtro en puedeAccederEstudiante y estudiantes().
+- Sin probar contra base de datos ni navegador: solo se valido la sintaxis PHP/JSON.

@@ -1,0 +1,6 @@
+# Las fotos NO se sirven directo: pasan por public/docente/foto_estudiante.php (con permisos).
+Require all denied
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

@@ -1,0 +1,79 @@
+/* ============================================================
+   SERENA — psicologo.css
+   Rol psicólogo y orientador (body.rol-acompana, lo pone encabezado.php).
+   Personas que trabajan con alertas, fichas y citas muchas horas al día:
+   la pantalla debe ser silenciosa y legible. Lo único que llama la atención
+   es lo que de verdad lo necesita: una alerta alta sin atender.
+   Se carga solo para estos dos roles.
+   ============================================================ */
+
+:root { --psi-tinta: #2B2B2B; } /* texto sobre dorado; --color-texto es claro en modo oscuro */
+
+/* --- Alertas: urgencia clara, sin parpadeo permanente ---
+   Antes la tarjeta de alerta alta pulsaba para siempre. Con varias en pantalla
+   eso cansa y distrae; ahora avisa 3 veces al aparecer y se queda quieta. */
+.rol-acompana .tarjeta-alerta { animation: none; }
+.rol-acompana .tarjeta-alerta.severidad-alta:not(.atendida),
+.rol-acompana .tarjeta-alerta.severidad-alto:not(.atendida) {
+    border-left-width: 6px;
+    animation: destello-alerta 2.4s ease-in-out 3;
+}
+.rol-acompana .tarjeta-alerta.atendida { opacity: 0.78; } /* 0.6 bajaba el texto del contraste mínimo */
+.rol-acompana .tarjeta-alerta .motivo-alerta { font-size: var(--texto-base); line-height: 1.5; }
+.rol-acompana .tarjeta-alerta .estudiante-alerta { font-size: var(--texto-md); }
+.rol-acompana .tarjeta-resumen-alerta .etiqueta-alerta { text-transform: none; letter-spacing: 0; font-size: var(--texto-sm); }
+
+/* --- Panel y resúmenes: cifras alineadas a la izquierda, fáciles de comparar --- */
+.rol-acompana .tarjetas-resumen .tarjeta { text-align: left; padding: var(--espacio-md) var(--espacio-lg); }
+.rol-acompana .tarjetas-resumen .tarjeta-icono { margin-left: 0; }
+.rol-acompana .tarjeta-numero { font-variant-numeric: tabular-nums; }
+.rol-acompana .tarjeta-etiqueta { text-transform: none; letter-spacing: 0; font-size: var(--texto-sm); }
+.rol-acompana .tarjeta:hover { transform: none; }
+.rol-acompana .panel-seccion:hover { box-shadow: var(--sombra-md); }
+
+/* --- Tablas de estudiantes y reportes ---
+   Encabezado en minúscula normal, cifras tabulares y fila resaltada también
+   al navegar con teclado. */
+.rol-acompana .tabla-datos th { text-transform: none; letter-spacing: 0; font-size: var(--texto-sm); }
+.rol-acompana .tabla-datos td { font-variant-numeric: tabular-nums; }
+.rol-acompana .tabla-datos tbody tr:focus-within { background-color: var(--color-fondo-alterno); }
+.rol-acompana .tabla-datos td a { font-weight: 600; }
+
+/* --- Filtros: chips de grupo --- */
+.rol-acompana .chip-grupo { min-height: 40px; display: inline-flex; align-items: center; }
+.rol-acompana .chip-grupo.activo { color: var(--psi-tinta); }
+.rol-acompana .chip-grupo:focus-within { outline: 3px solid var(--color-dorado-oscuro-texto); outline-offset: 2px; }
+/* Agenda: la franja a elegir es un radio dentro del chip */
+.rol-acompana .chip-grupo input[type="radio"] { width: auto; margin-right: 6px; accent-color: var(--color-dorado-oscuro-texto); }
+.rol-acompana .chip-grupo:has(input:checked) {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--psi-tinta);
+}
+
+/* --- Seguimientos y plan del estudiante --- */
+.rol-acompana .fila-tarea-seguimiento { display: flex; flex-direction: column; gap: var(--espacio-xs); margin-bottom: var(--espacio-md); }
+.rol-acompana .acciones-tarea-seguimiento button { min-height: 36px; font-size: var(--texto-sm); padding: 6px 14px; }
+.rol-acompana .tarea-seguimiento.tarea-vencida .info-tarea-seguimiento strong::after {
+    content: ' (vencida)';
+    font-weight: 400;
+    color: var(--color-severidad-alta); /* además del borde de color, queda dicho con palabras */
+}
+.rol-acompana .lista-plan-seguimiento { gap: var(--espacio-sm); }
+.rol-acompana .notas-seguimiento-alerta li { line-height: 1.55; }
+
+/* --- Línea de tiempo de la alerta: paso cumplido con tinta oscura --- */
+.rol-acompana .paso-tiempo-alerta.completado .punto-tiempo-alerta { color: var(--psi-tinta); font-weight: 700; }
+
+/* --- Formularios largos (encuestas, notas de sesión): texto cómodo --- */
+.rol-acompana textarea { line-height: 1.55; min-height: 96px; }
+
+/* --- Menos movimiento innecesario --- */
+.rol-acompana .lista-simple li,
+.rol-acompana .fila-recurso-apoyo,
+.rol-acompana .tarjeta-comparativa { animation: none; }
+
+@media (max-width: 600px) {
+    .rol-acompana .tarjetas-resumen { grid-template-columns: repeat(2, 1fr); gap: var(--espacio-sm); }
+    .rol-acompana .tarjetas-resumen .tarjeta { padding: var(--espacio-md); }
+    .rol-acompana .tarjeta-alerta { padding: var(--espacio-md); }
+}

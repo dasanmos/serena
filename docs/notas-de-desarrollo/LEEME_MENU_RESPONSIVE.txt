@@ -1,0 +1,55 @@
+SERENA - Menu horizontal GIA + barrita dorada + responsive + PDF institucional con QR
+=====================================================================================
+ORDEN PARA APLICAR
+ 1) Respaldo.  2) Ejecutar sql/migraciones/039_documentos_pdf.sql (tabla nueva; reejecutable; solo la usan los "PDF con QR" de informes).
+ 3) Subir los archivos respetando rutas.  4) BORRAR: public/assets/css/menu_lateral.css y public/assets/js/menu_lateral.js (ya no se usan).
+ 5) Ctrl+F5.  Hoja de vida y demo: sin cambios.
+
+MENU (reimplementado sobre la version de tu companero)
+ - Barra HORIZONTAL estilo GIA bajo la barra superior; cada categoria del rol se despliega en una lista vertical con iconos.
+ - Barrita dorada de Vistas/Modulos en su posicion de siempre. Sin hamburguesa en la barra superior, sin sidebar.
+ - Celular/tableta: cajon con acordeon, boton "Menu" en la barra superior.
+ - src/helpers/navegacion.php trae las categorias por rol (categoriasNavegacionPorRol, gruposNavegacion).
+ - sonidos.js, base.js, base.css, panel.css: limpiados de lo viejo.
+
+RESPONSIVE
+ - assets/css/responsive.css al final de todo (panel y paginas publicas). Impresion nueva: A4, tablas que repiten encabezado,
+   filas que no se cortan, texto que no se sale del borde.
+
+PDF
+ - Formato institucional UNICO (membrete con logo, nombre oficial, DANE/NIT/resolucion, pie con quien y cuando lo genero,
+   "Pagina n de N"): src/helpers/DocumentoPdf.php + GeneradorPDF.php.
+ - GeneradorPDF: tablas con ajuste de texto por celda, encabezado repetido y filas que no se parten entre hojas; titulos y parrafos
+   se ajustan al margen; palabras largas se parten; nuevos: indicadores(), graficoBarras(), graficoLinea().
+ - VERSION CON QR: ?qr=1 (o ?pdf=qr). El QR lleva a verificar.php, que confirma tipo, titulo, colegio y fecha (NUNCA muestra el contenido).
+ - Cualquier pagina de informe habilitada (lista en src/helpers/PdfDesdeHtml.php, constante PAGINAS) ofrece los botones
+   "Descargar PDF" y "PDF con QR" y se convierte con sus mismas consultas y permisos. Los graficos interactivos de pantalla no se
+   convierten (el PDF lo avisa). Para habilitar otra pagina, agregar su ruta a PAGINAS.
+ - Reportes con PDF propio (estadisticas del estudiante, reporte institucional, grupo, caso, diario) pasan al formato institucional,
+   con graficos e indicadores, y tienen boton "PDF con QR".
+ - CERTIFICADOS: paginacion real (borde en cada hoja, encabezado compacto, tabla con filas ajustadas y encabezado repetido, firmas juntas,
+   "Hoja n de N", titulos largos sin salirse). Nuevo: version sin QR (qr=0), hoja de verificacion de 1 pagina (hoja=1),
+   PDF en lote (marcados o todos los vigentes) y Registro de certificados emitidos (con QR opcional): secretaria_academica/certificados_pdf.php.
+
+SIN PROBAR EN NAVEGADOR: solo se reviso sintaxis (php -l, node). Revisar un certificado largo (muchas notas) y un informe con tabla ancha.
+
+CORRECCIONES POSTERIORES
+ - PDF "con QR" sin QR: la causa era que la tabla documentos_emitidos no existia (migracion 039 sin aplicar) y el error se tragaba en silencio.
+   Ahora DocumentoPdf la crea sola si falta; y si aun asi no se pudiera registrar, el pie del PDF lo dice en rojo en vez de omitir el QR.
+ - Boletin: las asignaturas se agrupan por AREA (cada area una sola vez, ignorando mayusculas/espacios; sin area al final como
+   "Otras asignaturas"), tambien en el PDF, en el certificado de calificaciones y en la tabla de pantalla. El PDF muestra el Area como banda
+   y debajo sus asignaturas, con el docente en una segunda linea.
+ - Nombre de archivo del PDF sin perder tildes ni la n (antes salia "Bolet-n-de-notas").
+
+MODULO DE INFORMES DEL COLEGA (tanda 5) INTEGRADO
+ - Leer tambien LEEME_INFORMES_TANDA5.txt (los 69 informes, quien ve que, decisiones a revisar).
+ - MIGRACION: su 038_informes.sql se renumero a sql/migraciones/040_informes.sql (la 038 ya la usan codigo_matricula y hoja_vida_master).
+   Orden: 040_informes.sql (y 039_documentos_pdf.sql, que ademas se crea sola al pedir un PDF con QR).
+ - PDF: InformePDF ahora usa el formato institucional unico (DocumentoPdf/GeneradorPDF): membrete, tablas que ajustan el texto y repiten
+   encabezado, filas de totales, bandas de grupo, pares, firmas, A4 horizontal para tablas anchas, "Pagina n de N", Ref. INF-n en el pie
+   y VERSION CON QR (casilla "PDF con codigo QR" en informes.php, o boton "PDF con QR" en la vista imprimible).
+ - MENU: Informes, Refuerzos y planes, Caracterizacion, Restaurante, Cartera y Planilla(s) quedan en las categorias de cada rol
+   (navegacion.php). Se conservo "Seguimiento" de nuestra linea y se agregaron las planillas del colega.
+ - Mezclados sin conflicto: Certificados.php (+ tipo traslado), Academico.php, docente/planilla.php, administrador/salud.php, ayuda/contenido.json.
+ - El boletin "Por Areas" del colega usa Evaluacion::boletin, que ya agrupa por area.
+ - InformeRender (HTML imprimible) y CSV del colega: sin cambios, salvo el boton "PDF con QR".

@@ -1,0 +1,19 @@
+SERENA - Tanda 5 (planilla, boletin, panel docente) - SUBE DESPUES DE LAS TANDAS 1 A 4
+=====================================================================================
+ORDEN: 1) Respaldo de los 3 PHP y academico.css. 2) Subir respetando rutas. 3) Ctrl+F5. No toca base de datos.
+
+PLANILLA (docente/planilla.php)
+ - Enter pasa a la nota del siguiente estudiante (misma actividad); Mayus+Enter vuelve; en la ultima fila va a
+   "Guardar planilla". CAMBIO DE COMPORTAMIENTO: antes Enter enviaba el formulario; ahora se guarda con el boton.
+ - Aviso "Hay cambios sin guardar" y advertencia del navegador al salir con cambios.
+ - Notas fuera de la escala: borde de peligro + mensaje con el rango (no solo color). El servidor sigue validando.
+ - Fila activa resaltada; <caption> y scope="col" para lectores de pantalla; primera columna mas angosta en celular.
+ - JavaScript probado en un DOM simulado (jsdom): navegacion, rango y estado. Sin JS la planilla funciona igual.
+BOLETIN (boletin.php)
+ - Nota no aprobada: ademas del rojo, simbolo "▾" y texto para lectores de pantalla "(no aprobado)".
+ - Al imprimir/guardar PDF: fecha de generacion y linea "Firma y sello de la institucion".
+ - <caption>, scope="col" y se quitaron estilos en linea.
+PANEL DOCENTE (docente/panel.php): boton "Planilla de notas" (antes solo estaba en el menu).
+
+NO SE PROBO contra base de datos real ni en navegador. Revisar: planilla con 2+ actividades y 10+ estudiantes,
+y la vista de impresion del boletin.

@@ -1,0 +1,89 @@
+/* ============================================================
+   SERENA — encuestas.css
+   Toma de encuestas (estudiante) y panel de construcción de
+   encuestas (psicólogo/coordinador). Encuesta genérica: título,
+   descripción opcional, N preguntas de opción múltiple/texto
+   libre/escala. Sin límite de tamaño fijo ni estructura por bloques.
+   ============================================================ */
+
+/* --- Cabecera con contador de preguntas --- */
+.cabecera-bloque-encuesta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-bottom: var(--espacio-md);
+}
+.cabecera-bloque-encuesta .contador-bloque { font-size: var(--texto-xs); color: var(--color-texto-suave); text-transform: uppercase; letter-spacing: 0.4px; }
+.cabecera-bloque-encuesta h2, .cabecera-bloque-encuesta h1 { margin-bottom: 0; }
+
+/* --- Tarjeta de pregunta --- */
+.tarjeta-pregunta {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    margin-bottom: var(--espacio-md);
+    box-shadow: var(--sombra-sm);
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+}
+.tarjeta-pregunta .numero-pregunta { font-size: var(--texto-xs); color: var(--color-texto-suave); margin-bottom: 4px; }
+.tarjeta-pregunta .texto-pregunta { font-size: var(--texto-md); margin-bottom: var(--espacio-md); }
+.tarjeta-pregunta.no-respondida { border: 1px solid var(--color-aviso); }
+.tarjeta-pregunta.opcional .texto-pregunta::after {
+    content: 'opcional';
+    display: inline-block;
+    margin-left: 8px;
+    font-size: var(--texto-xs);
+    font-weight: 400;
+    color: var(--color-texto-suave);
+    vertical-align: middle;
+}
+
+/* El botón de enviar se ve más intencional separado del resto de las
+   preguntas, en vez de pegado inmediatamente después de la última tarjeta. */
+.tarjeta-pregunta + button[type="submit"],
+form button[type="submit"] {
+    margin-top: var(--espacio-md);
+}
+
+/* ============================================================
+   Panel de construcción de encuestas (psicólogo / coordinador)
+   ============================================================ */
+.constructor-bloque-encuesta {
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    margin-bottom: var(--espacio-md);
+}
+.constructor-bloque-encuesta .cabecera-constructor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-sm);
+    margin-bottom: var(--espacio-sm);
+    cursor: grab;
+}
+.constructor-pregunta {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde-sm);
+    padding: var(--espacio-sm) var(--espacio-md);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+}
+.constructor-pregunta .asa-arrastre { color: var(--color-texto-suave); cursor: grab; }
+.constructor-pregunta input[type="text"] { margin: 0; }
+.tipo-pregunta-etiqueta {
+    font-size: var(--texto-xs);
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto-suave);
+    padding: 2px 8px;
+    border-radius: var(--radio-pill);
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .tarjeta-pregunta { padding: var(--espacio-md); }
+}

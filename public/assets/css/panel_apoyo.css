@@ -1,0 +1,208 @@
+/* ============================================================
+   SERENA — panel_apoyo.css
+   Recursos de apoyo emocional: líneas de ayuda, ejercicios de
+   respiración con animación real, recursos adicionales.
+   Tono deliberadamente calmado — animaciones lentas, sin prisa.
+   ============================================================ */
+
+.subtitulo-apoyo {
+    color: var(--color-texto-suave);
+    margin-bottom: var(--espacio-lg);
+}
+
+/* --- Líneas de ayuda: destacadas, fáciles de encontrar rápido --- */
+.lista-lineas-ayuda li {
+    font-size: var(--texto-md);
+    padding: 12px 4px;
+}
+.lista-lineas-ayuda strong { color: var(--color-dorado-texto); }
+
+/* --- Ejercicio de respiración guiada --- */
+.ejercicio-respiracion {
+    text-align: center;
+    padding: var(--espacio-md);
+}
+.ejercicio-respiracion h3 { margin-bottom: var(--espacio-md); }
+.ejercicio-respiracion .lista-simple { text-align: left; margin-top: var(--espacio-md); }
+.ejercicio-respiracion p { text-align: left; }
+
+.circulo-respiracion {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto var(--espacio-md);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    box-shadow: 0 0 0 8px rgba(249, 217, 118, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-texto);
+    font-weight: 600;
+    font-size: var(--texto-sm);
+    /* Ciclo 4-7-8: inhala 4s, sostiene 7s, exhala 8s = 19s total */
+    animation: ciclo-4-7-8 19s ease-in-out infinite;
+}
+
+.circulo-respiracion.circulo-lento {
+    /* Respiración diafragmática: ciclo más largo y suave, sin fase de "sostener" marcada */
+    animation: respirar-lento 8s ease-in-out infinite;
+}
+
+@keyframes ciclo-4-7-8 {
+    0%   { transform: scale(0.72); }               /* inicio de inhalar */
+    21%  { transform: scale(1);    }                /* fin de inhalar (4s de 19s) */
+    58%  { transform: scale(1);    }                /* fin de sostener (7s más = 11s de 19s) */
+    100% { transform: scale(0.72); }                /* fin de exhalar (8s más = 19s) */
+}
+
+@keyframes respirar-lento {
+    0%, 100% { transform: scale(0.8); }
+    50% { transform: scale(1.05); }
+}
+
+/* --- Recursos adicionales (cargados desde la base de datos) --- */
+.fila-recurso-apoyo {
+    border-bottom: 1px solid var(--color-fondo-alterno);
+    padding: var(--espacio-md) 0;
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+}
+.fila-recurso-apoyo:last-child { border-bottom: none; }
+.descripcion-recurso {
+    margin-top: var(--espacio-xs);
+    color: var(--color-texto-suave);
+    font-size: var(--texto-sm);
+}
+
+@media (max-width: 600px) {
+    .circulo-respiracion { width: 100px; height: 100px; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Banner fijo de líneas de ayuda inmediata: siempre
+   visible al hacer scroll en esta página, para que nunca quede
+   "enterrado" si alguien entra buscando ayuda urgente.
+   ============================================================ */
+.banner-ayuda-inmediata {
+    position: sticky;
+    top: 70px;
+    background: var(--color-info-fondo);
+    color: var(--color-info);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md) var(--espacio-lg);
+    margin-bottom: var(--espacio-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    z-index: var(--z-elevado);
+}
+.banner-ayuda-inmediata strong { font-size: var(--texto-md); }
+.banner-ayuda-inmediata .boton-linea-ayuda {
+    background: var(--color-info);
+    color: var(--color-sobre-info);
+    box-shadow: none;
+}
+.banner-ayuda-inmediata .boton-linea-ayuda:hover { box-shadow: 0 4px 14px rgba(46, 110, 142, 0.3); }
+/* El botón de ayuda urgente debe seguir en rojo (mismo color que .boton-peligro
+   en el resto del sitio) aunque combine la clase .boton-linea-ayuda de arriba. */
+.banner-ayuda-inmediata .boton-linea-ayuda.boton-peligro {
+    background: var(--color-peligro);
+    color: var(--color-sobre-peligro);
+}
+.banner-ayuda-inmediata .boton-linea-ayuda.boton-peligro:hover { box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3); }
+
+/* ============================================================
+   AMPLIACIÓN — Tarjetas de recursos (en vez de solo lista de texto):
+   para recursos con imagen/ícono, tipo (artículo, video, ejercicio)
+   ============================================================ */
+.grilla-recursos-apoyo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--espacio-md);
+}
+.tarjeta-recurso-apoyo {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    box-shadow: var(--sombra-sm);
+    transition: box-shadow var(--velocidad-media) var(--curva-suave), transform var(--velocidad-media) var(--curva-suave);
+}
+.tarjeta-recurso-apoyo:hover { box-shadow: var(--sombra-md); transform: translateY(-3px); }
+.tarjeta-recurso-apoyo .tipo-recurso {
+    display: inline-block;
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+    background: var(--color-fondo-alterno);
+    padding: 2px 10px;
+    border-radius: var(--radio-pill);
+    margin-bottom: var(--espacio-sm);
+}
+
+/* ============================================================
+   AMPLIACIÓN — Ejercicio de conexión con el presente (5-4-3-2-1),
+   alternativa breve al ejercicio de respiración, paso a paso
+   ============================================================ */
+.ejercicio-5432 { text-align: left; padding: var(--espacio-md); }
+.paso-5432 {
+    display: flex;
+    gap: var(--espacio-md);
+    align-items: center;
+    padding: var(--espacio-sm) 0;
+    border-bottom: 1px solid var(--color-fondo-alterno);
+}
+.paso-5432:last-child { border-bottom: none; }
+.numero-paso-5432 {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Recurso en audio/video embebido, con marco calmado
+   ============================================================ */
+.contenedor-media-apoyo {
+    border-radius: var(--radio-borde-lg);
+    overflow: hidden;
+    box-shadow: var(--sombra-md);
+    margin: var(--espacio-md) 0;
+}
+.contenedor-media-apoyo iframe, .contenedor-media-apoyo video { width: 100%; display: block; border: none; }
+
+/* ============================================================
+   AMPLIACIÓN — Selector de duración del ejercicio de respiración
+   (algunos estudiantes prefieren un ciclo más corto)
+   ============================================================ */
+.selector-duracion-respiracion {
+    display: flex;
+    justify-content: center;
+    gap: var(--espacio-sm);
+    margin-bottom: var(--espacio-lg);
+}
+.opcion-duracion-respiracion {
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto);
+    padding: 6px 16px;
+    border-radius: var(--radio-pill);
+    font-size: var(--texto-xs);
+    box-shadow: none;
+}
+.opcion-duracion-respiracion.activa { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); }
+
+@media (max-width: 600px) {
+    .banner-ayuda-inmediata { position: static; flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Confirmación en estudiante/ayuda_urgente.php: mensaje
+   tranquilizador tras avisar a psicología/orientación (tono cálido, no
+   de alarma — el susto ya pasó, ahora es contención).
+   ============================================================ */
+.panel-ayuda-urgente-confirmacion {
+    background: var(--color-exito-fondo);
+    border-left: 4px solid var(--color-exito);
+}
+.panel-ayuda-urgente-confirmacion h2 { color: var(--color-exito); margin-bottom: var(--espacio-sm); }

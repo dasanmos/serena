@@ -1,0 +1,260 @@
+/* ============================================================
+   SERENA — login.css
+   Login, registro, recuperación de contraseña, PIN del diario,
+   páginas legales de consentimiento.
+   ============================================================ */
+
+.login-body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espacio-md);
+    background: radial-gradient(circle at 20% 20%, rgba(249, 217, 118, 0.18), transparent 55%),
+                radial-gradient(circle at 80% 80%, rgba(232, 185, 35, 0.12), transparent 55%),
+                var(--color-fondo);
+}
+
+.contenedor-login { width: 100%; max-width: 420px; }
+
+.card-login {
+    background-color: var(--color-superficie);
+    border-radius: var(--radio-borde-lg);
+    padding: 36px 28px;
+    box-shadow: var(--sombra-lg);
+    text-align: center;
+    animation: aparecer-rebote var(--velocidad-lenta) var(--curva-rebote);
+}
+
+.logo-login {
+    width: 120px;
+    margin: 0 auto 8px;
+    display: block;
+    animation: flotar 5s ease-in-out infinite;
+}
+
+.eslogan {
+    color: var(--color-dorado-texto);
+    font-size: var(--texto-xs);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--espacio-lg);
+}
+
+.card-login form { text-align: left; }
+
+.card-login label {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--color-texto);
+}
+
+/* El wrapper del ojito no es un <input>, así que no hereda el glow dorado de
+   input:focus — se replica acá para que el campo completo (input + ojito) se
+   sienta como una sola pieza al enfocar, no solo el input recortado. */
+.campo-password-wrapper:focus-within {
+    border-radius: var(--radio-borde);
+    box-shadow: 0 0 0 3px rgba(232, 185, 35, 0.18);
+}
+.campo-password-wrapper:focus-within input[type="password"],
+.campo-password-wrapper:focus-within input[type="text"] {
+    border-color: var(--color-dorado-oscuro);
+    box-shadow: none; /* el glow ya lo puso el wrapper por fuera, para no duplicarlo */
+}
+
+/* El widget de Google se dibuja dentro de un iframe con SU PROPIO recuadro gris —
+   antes quedaba flotando como un elemento ajeno en medio de la tarjeta. Envolverlo
+   en una tarjetita con el mismo radio/borde que el resto del formulario lo integra
+   visualmente en vez de que se vea pegado con calzador. */
+#recaptcha-widget {
+    display: flex;
+    justify-content: center;
+    padding: 4px;
+    margin: var(--espacio-md) 0;
+    border-radius: var(--radio-borde);
+    background: var(--color-fondo-alterno);
+    transition: background var(--velocidad-media) var(--curva-suave);
+}
+
+.opcion-consentimiento {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: var(--texto-sm);
+    margin-top: var(--espacio-md);
+}
+.opcion-consentimiento input { width: auto; margin-top: 3px; }
+
+.card-login button {
+    width: 100%;
+    margin-top: var(--espacio-lg);
+    padding: 14px 20px;
+    font-size: var(--texto-base);
+}
+
+.enlaces-login {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--espacio-lg);
+    font-size: var(--texto-sm);
+}
+
+/* --- PIN del diario: campo distinto al login normal, centrado y espaciado --- */
+.campo-pin {
+    text-align: center;
+    font-size: var(--texto-lg);
+    font-weight: 700;
+    letter-spacing: 10px;
+    padding: 14px 12px;
+}
+.campo-pin:focus { animation: latido 0.3s var(--curva-rebote); }
+
+/* El ojito de mostrar/ocultar (base.js/base.css) le agrega padding-right:44px
+   (--ojo-ancho) al envolver el campo, lo que descentraría visualmente un PIN con text-align:
+   center. Se compensa con el mismo espacio a la izquierda para que los dígitos
+   sigan quedando centrados de verdad, no solo dentro de una caja asimétrica. */
+.campo-password-wrapper .campo-pin {
+    padding-left: var(--ojo-ancho);
+}
+
+.campo-pin.pin-bloqueado {
+    animation: pulso-suave 1.2s ease-in-out infinite;
+    background: var(--color-fondo-alterno);
+}
+
+@media (max-width: 480px) {
+    .card-login { padding: 26px 20px; }
+    .campo-pin { font-size: var(--texto-md); letter-spacing: 6px; }
+}
+
+/* --- Páginas legales (consentimiento de datos, Ley 1581) --- */
+.pagina-legal {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: var(--espacio-2xl) var(--espacio-md);
+}
+
+.contenedor-legal {
+    background-color: var(--color-superficie);
+    border-radius: var(--radio-borde-lg);
+    padding: 36px 32px;
+    box-shadow: var(--sombra-lg);
+    animation: deslizar-arriba var(--velocidad-lenta) var(--curva-suave);
+}
+
+.logo-legal { width: 80px; margin-bottom: var(--espacio-md); }
+.contenedor-legal h1 { margin-bottom: var(--espacio-md); }
+.contenedor-legal p { margin-bottom: var(--espacio-sm); }
+.contenedor-legal ul { margin: var(--espacio-sm) 0 var(--espacio-sm) 20px; }
+.contenedor-legal li { margin-bottom: var(--espacio-xs); }
+
+@media (min-width: 1200px) {
+    .contenedor-login { max-width: 460px; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Medidor de fortaleza de contraseña (registro, cambio
+   de contraseña). Requiere que el JS marque data-nivel="1..4" en
+   .medidor-fortaleza según la fuerza calculada.
+   ============================================================ */
+.medidor-fortaleza { margin-top: 8px; }
+.medidor-fortaleza .barras-fortaleza { display: flex; gap: 4px; }
+.medidor-fortaleza .segmento-fortaleza {
+    flex: 1; height: 4px; border-radius: var(--radio-pill);
+    background: var(--color-borde);
+    transition: background var(--velocidad-media) var(--curva-suave);
+}
+.medidor-fortaleza[data-nivel="1"] .segmento-fortaleza:nth-child(1) { background: var(--color-error); }
+.medidor-fortaleza[data-nivel="2"] .segmento-fortaleza:nth-child(-n+2) { background: var(--color-aviso); }
+.medidor-fortaleza[data-nivel="3"] .segmento-fortaleza:nth-child(-n+3) { background: var(--color-dorado-oscuro); }
+.medidor-fortaleza[data-nivel="4"] .segmento-fortaleza { background: var(--color-exito); }
+.texto-medidor-fortaleza { font-size: var(--texto-xs); color: var(--color-texto-suave); margin-top: 4px; }
+
+/* ============================================================
+   AMPLIACIÓN — Registro por pasos (datos básicos → rol/grupo →
+   consentimiento Ley 1581), para no mostrar un formulario gigante
+   de una vez a un estudiante de 10-11 años.
+   ============================================================ */
+.pasos-registro {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: var(--espacio-lg);
+}
+.paso-registro-punto {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto-suave);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--texto-xs); font-weight: 700;
+}
+.paso-registro-punto.completado { background: var(--color-exito); color: var(--color-sobre-exito); }
+.paso-registro-punto.actual { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro)); color: var(--color-texto); }
+.conector-paso-registro { width: 24px; height: 2px; background: var(--color-borde); align-self: center; }
+.conector-paso-registro.completado { background: var(--color-exito); }
+
+/* ============================================================
+   AMPLIACIÓN — Recuadro de consentimiento de datos, más visible que
+   el checkbox suelto — Ley 1581: el estudiante/acudiente debe poder
+   leer con calma qué se recolecta antes de aceptar.
+   ============================================================ */
+.recuadro-consentimiento {
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    margin-top: var(--espacio-md);
+    max-height: 180px;
+    overflow-y: auto;
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+    text-align: left;
+}
+.recuadro-consentimiento h3 { font-size: var(--texto-sm); color: var(--color-texto); margin-bottom: 6px; }
+
+/* --- Enlace a la política completa, siempre visible junto al checkbox --- */
+.opcion-consentimiento a { font-weight: 600; }
+
+/* ============================================================
+   AMPLIACIÓN — Mensaje de error de credenciales, sin filtrar si el
+   usuario o la contraseña es lo incorrecto (buena práctica de seguridad,
+   ya reflejado en backend; aquí solo el contenedor visual)
+   ============================================================ */
+.error-login-generico { text-align: left; }
+
+/* ============================================================
+   AMPLIACIÓN — Aviso de bloqueo temporal por intentos fallidos
+   (rate limiting de login) — informa sin sonar punitivo
+   ============================================================ */
+.aviso-bloqueo-temporal {
+    background: var(--color-aviso-fondo);
+    color: var(--color-aviso);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    font-size: var(--texto-sm);
+    text-align: left;
+    margin-top: var(--espacio-md);
+}
+.aviso-bloqueo-temporal .cuenta-regresiva-bloqueo { font-weight: 700; }
+
+/* ============================================================
+   AMPLIACIÓN — Selector de rol/tipo de cuenta en pantallas donde
+   aplique (ej. antes de mostrar el formulario correcto)
+   ============================================================ */
+.selector-tipo-cuenta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-sm); margin-top: var(--espacio-lg); }
+.opcion-tipo-cuenta {
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    text-align: center;
+    color: var(--color-texto);
+    box-shadow: none;
+    transition: background var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-suave);
+}
+.opcion-tipo-cuenta:hover { background: var(--color-dorado-claro); transform: translateY(-2px); text-decoration: none; }
+
+@media (max-width: 480px) {
+    .selector-tipo-cuenta { grid-template-columns: 1fr; }
+}

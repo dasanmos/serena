@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serena — Sin conexión</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: #F5F3EC; color: #2B2B2B;
+    font-family: -apple-system, BlinkMacSystemFont, "Poppins", Segoe UI, Roboto, sans-serif;
+    padding: 24px; text-align: center;
+  }
+  .tarjeta { max-width: 380px; }
+  .icono { font-size: 48px; margin-bottom: 12px; }
+  h1 { font-size: 22px; margin: 0 0 10px; color: #2B2B2B; }
+  p { font-size: 15px; line-height: 1.5; color: #5B5B5B; margin: 0 0 20px; }
+  button {
+    cursor: pointer; border: none; border-radius: 10px;
+    background: linear-gradient(135deg, #F9D976, #E8B923);
+    color: #2B2B2B; font-weight: 600; padding: 12px 24px; font-size: 15px;
+  }
+</style>
+</head>
+<body>
+  <div class="tarjeta">
+    <div class="icono" aria-hidden="true">📡</div>
+    <h1>Parece que no tienes conexión</h1>
+    <p>Esta parte de Serena necesita internet. Cuando recuperes la señal, vuelve a intentarlo.</p>
+    <button onclick="location.reload()">Reintentar</button>
+  </div>
+</body>
+</html>

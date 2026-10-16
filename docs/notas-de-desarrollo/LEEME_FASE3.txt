@@ -1,0 +1,16 @@
+SERENA - Fase 3 (multi-colegio)  [v2: el DANE es el codigo de registro]
+ORDEN DE APLICACION
+1. Respaldo completo de la base de datos ANTES de tocar nada.
+2. Ejecutar htdocs/sql/migraciones/027_multicolegio.sql (una sola vez).
+3. Subir los archivos del zip respetando las rutas (no incluye .env).
+4. Crear el primer superadmin (cambia el correo):
+   UPDATE usuarios SET rol_id=(SELECT id FROM roles WHERE nombre='superadmin'), colegio_id=NULL WHERE correo='TU_CORREO';
+5. Entrar como superadmin -> Colegios: al colegio 1 (migrado) ponerle su DANE REAL
+   (la migracion le deja 000000000000 como marcador) y renombrarlo.
+DANE: 12 digitos, lo asigna solo el superadmin; es unico por colegio y es el codigo
+con el que sus estudiantes se registran.
+SI YA CORRISTE LA 027 ANTERIOR (con columna 'codigo'), en vez de volver a correrla ejecuta:
+   ALTER TABLE colegios DROP INDEX colegios_codigo_unico, DROP COLUMN codigo,
+     MODIFY dane VARCHAR(12) NOT NULL, ADD UNIQUE KEY colegios_dane_unico (dane);
+   (antes: UPDATE colegios SET dane='<DANE real>' WHERE id=1;  para que no quede NULL)
+NOTA: nada de esto se ha probado todavia contra una base de datos real.

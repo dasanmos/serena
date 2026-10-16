@@ -1,0 +1,36 @@
+SERENA - Mapas y aviso de cookies
+=================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos.
+2. Ejecutar sql/migraciones/032_mapas.sql (reejecutable: omite las columnas que ya existan):
+   agrega direccion/latitud/longitud a "colegios" y crea la tabla "lugares_apoyo".
+   IMPORTANTE: sin esta migracion la pantalla Colegios falla (lee las columnas nuevas).
+3. Subir los archivos respetando las rutas.
+
+MAPA DE COLEGIOS (superadmin y secretaria)
+- Superadmin/Secretaria > Colegios: mapa arriba, con un pin por colegio (respeta la busqueda y el alcance de la secretaria).
+- En "Nuevo colegio" y "Editar colegio": escribir la direccion y pulsar "Ubicar la direccion en el mapa";
+  se puede arrastrar el pin o hacer clic en el mapa para afinar. Los colegios existentes aparecen en
+  "Colegios sin ubicar" hasta que se les ponga direccion.
+
+LUGARES DE AYUDA (estudiante)
+- Administrador > Lugares de ayuda: lugares propios de su colegio.
+- Superadmin > Lugares de ayuda: lugares globales (los ven los estudiantes de todos los colegios).
+- Estudiante > Recursos: mapa + lista, con "Ver los mas cercanos a mi" (la ubicacion se usa solo en el
+  navegador del estudiante; no se guarda ni se envia). Requiere HTTPS para que el navegador la permita.
+- No se incluyen lugares de ejemplo: hay que cargar los reales (nombres, telefonos y direcciones verificados).
+
+SIN API KEY
+- Leaflet 1.9.4 (unpkg, con SRI) + teselas de OpenStreetMap + Nominatim (direcciones).
+- Uso razonable: OpenStreetMap pide poca carga y atribucion (ya incluida). Si Serena crece mucho,
+  cambiar TESELAS en assets/js/mapas.js por un proveedor con plan gratuito (MapTiler, Stadia...).
+
+AVISO DE COOKIES
+- assets/js/cookies.js (banner) + estilos al final de base.css + cookies.php (politica).
+- Decision en localStorage "serena_cookies": "todas" | "necesarias". Los mapas solo cargan solos con "todas";
+  con "necesarias" muestran un boton "Cargar mapa".
+- Menu "Como llegar": Google Maps, Waze, Apple Maps (solo dispositivos Apple), app de mapas de Android (geo:) y OpenStreetMap; en tarjetas, globos del mapa y Colegios.
+- Se puede cambiar en Preferencias, en cookies.php o en el pie de la pagina de inicio.
+- PENDIENTE (recomendado): Google Fonts y reCAPTCHA se siguen cargando siempre. Para que "Solo necesarias"
+  sea total, alojar las tipografias en assets/fonts.

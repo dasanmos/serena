@@ -1,0 +1,70 @@
+/* Módulo de informes: selector (dentro del layout del sitio) y hoja imprimible (documento aparte). */
+.inf-panel { background: var(--superficie, #fff); border: 1px solid var(--borde, #e3dccf); border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; }
+.inf-panel h2 { margin: .2rem 0; }
+.inf-filtros { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem 1rem; align-items: end; margin-top: .8rem; }
+.inf-filtros label { display: flex; flex-direction: column; gap: .25rem; font-size: .9rem; }
+.inf-filtros label em { font-style: normal; color: #b45309; font-size: .78rem; }
+.inf-filtros .inf-ancho { grid-column: 1 / -1; }
+.inf-filtros .inf-check { flex-direction: row; align-items: center; gap: .5rem; }
+.inf-acciones { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .5rem; }
+.inf-nota { font-size: .82rem; opacity: .75; margin: .6rem 0 0; }
+.inf-buscar { margin: 1rem 0 .5rem; }
+.inf-buscar input { width: 100%; max-width: 480px; padding: .6rem .8rem; border-radius: 10px; border: 1px solid var(--borde, #d9d2c3); }
+.inf-cat { margin: .6rem 0; border: 1px solid var(--borde, #e3dccf); border-radius: 12px; background: var(--superficie, #fff); }
+.inf-cat > summary { cursor: pointer; padding: .8rem 1rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem; list-style: none; }
+.inf-cat > summary small { flex-basis: 100%; opacity: .7; }
+.inf-cuenta { background: var(--inf-color, #AD6B05); color: #fff; border-radius: 999px; padding: 0 .55rem; font-size: .75rem; }
+.inf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .7rem; padding: 0 1rem 1rem; }
+.inf-card { display: flex; flex-direction: column; gap: .25rem; padding: .7rem .8rem; border: 1px solid var(--borde, #e3dccf); border-radius: 10px; text-decoration: none; color: inherit; }
+.inf-card:hover, .inf-card-act { border-color: #AD6B05; box-shadow: 0 0 0 2px rgba(173, 107, 5, .15); }
+.inf-card span { font-size: .8rem; opacity: .72; }
+.inf-card em { font-size: .75rem; color: #AD6B05; font-style: normal; }
+.inf-recientes ul { padding-left: 1.1rem; font-size: .88rem; }
+
+/* ---- Hoja imprimible ---- */
+body.informe { margin: 0; background: #eceae4; color: #1b1b1b; font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.inf-barra { position: sticky; top: 0; z-index: 5; display: flex; gap: .6rem; align-items: center; padding: .6rem 1rem; background: #fff; border-bottom: 1px solid #ddd; }
+.inf-barra-esp { flex: 1; }
+.inf-barra a, .inf-barra button { font: inherit; padding: .4rem .8rem; border-radius: 8px; border: 1px solid #c9c2b2; background: #fff; color: #1b1b1b; text-decoration: none; cursor: pointer; }
+.inf-barra .inf-boton, .inf-barra button { background: var(--inf-color, #AD6B05); border-color: var(--inf-color, #AD6B05); color: #fff; }
+.inf-hoja { max-width: 1100px; margin: 1rem auto; background: #fff; padding: 1.6rem 2rem; box-shadow: 0 2px 12px rgba(0, 0, 0, .12); }
+.inf-cab { display: flex; gap: 1rem; align-items: center; border-bottom: 2px solid var(--inf-color, #AD6B05); padding-bottom: .7rem; }
+.inf-logo { max-height: 70px; max-width: 90px; object-fit: contain; }
+.inf-inst { flex: 1; text-align: center; display: flex; flex-direction: column; gap: .1rem; }
+.inf-inst strong { font-size: 1.15rem; }
+.inf-inst span { font-size: .78rem; color: #555; }
+.inf-titulo { text-align: center; color: var(--inf-color, #AD6B05); font-size: 1.35rem; margin: 1.1rem 0 .1rem; text-transform: uppercase; letter-spacing: .02em; }
+.inf-sub { text-align: center; color: #555; margin: 0 0 1rem; }
+.inf-bloque { margin: .9rem 0; }
+.inf-bloque h2 { font-size: .98rem; color: var(--inf-color, #AD6B05); margin: 0 0 .35rem; }
+.inf-banda { background: color-mix(in srgb, var(--inf-color, #AD6B05) 16%, #fff); border-left: 4px solid var(--inf-color, #AD6B05); padding: .35rem .7rem; font-size: .95rem; margin: 1.2rem 0 .6rem; }
+.inf-scroll { overflow-x: auto; }
+.inf-tabla { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.inf-tabla th { background: color-mix(in srgb, var(--inf-color, #AD6B05) 22%, #fff); text-align: center; padding: .3rem .4rem; border-bottom: 1px solid #bbb; }
+.inf-tabla td { padding: .25rem .4rem; border-bottom: 1px solid #e2e2e2; vertical-align: top; }
+.inf-tabla tbody tr:nth-child(even) { background: #f7f7f7; }
+.inf-tabla tfoot td { font-weight: 700; background: color-mix(in srgb, var(--inf-color, #AD6B05) 10%, #fff); border-top: 1px solid #aaa; }
+.inf-tabla .a-i { text-align: left; } .inf-tabla .a-c { text-align: center; } .inf-tabla .a-d { text-align: right; }
+.inf-vacio { text-align: center; color: #777; padding: .8rem; }
+.inf-pares { display: grid; grid-template-columns: 1fr 1fr; gap: .15rem 1.5rem; margin: 0; }
+.inf-pares div { display: flex; gap: .5rem; border-bottom: 1px dotted #ccc; padding: .15rem 0; }
+.inf-pares dt { font-weight: 700; min-width: 8.5rem; color: #444; }
+.inf-pares dd { margin: 0; }
+.inf-texto { text-align: justify; }
+.inf-nota { font-size: .76rem; color: #666; margin: .4rem 0; }
+.inf-firmas { display: flex; gap: 2.5rem; justify-content: space-around; margin: 3rem 0 1rem; }
+.inf-firmas > div { flex: 1; text-align: center; display: flex; flex-direction: column; gap: .1rem; }
+.inf-linea { border-top: 1px solid #333; display: block; margin-bottom: .2rem; }
+.inf-firmas small { color: #555; }
+.inf-pie { margin-top: 1.6rem; border-top: 1px solid #ccc; padding-top: .5rem; font-size: .72rem; color: #666; text-align: center; }
+.inf-salto { break-after: page; height: 0; margin: 1.2rem 0; border-top: 1px dashed #bbb; }
+@media (max-width: 720px) { .inf-hoja { padding: 1rem; } .inf-pares { grid-template-columns: 1fr; } .inf-cab { flex-direction: column; } }
+@media print {
+    body.informe { background: #fff; }
+    .no-print { display: none !important; }
+    .inf-hoja { box-shadow: none; margin: 0; padding: 0; max-width: none; }
+    .inf-salto { border: 0; margin: 0; }
+    .inf-banda, .inf-tabla th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .inf-tabla tr, .inf-firmas { break-inside: avoid; }
+    .inf-tabla thead { display: table-header-group; }
+}

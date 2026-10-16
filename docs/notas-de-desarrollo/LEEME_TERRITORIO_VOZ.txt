@@ -1,0 +1,36 @@
+SERENA - Territorio (secretarias, municipios, nucleos, zonas) y dictado por voz
+===============================================================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos.
+2. Ejecutar sql/migraciones/033_territorio.sql (reejecutable, MySQL/MariaDB). Requiere haber aplicado 029 (secretarias).
+   Hasta aplicarla, Colegios sigue funcionando igual y Territorio muestra un aviso.
+3. Subir los archivos. Menu nuevo: "Territorio" (superadmin y secretaria).
+
+IMPORTAR (Territorio)  -  en este orden
+ 1. Secretarias: boton "Cargar listado incluido" (sql/datos/secretarias_certificadas.csv: 32 departamentales + 61 municipales).
+    OJO: el documento original dice 97 pero suma 93; faltan 4 por agregar/verificar (p. ej. Soacha, Tuluá, Tumaco).
+    La secretaria que ya exista (p. ej. Medellin) se conserva; solo se completa departamento y tipo.
+ 2. Municipios: CSV DIVIPOLA del DANE (datos.gov.co). Cada municipio queda con su secretaria: la propia si es autonomo,
+    o la departamental si no esta certificado. Los colegios existentes se enlazan por nombre de municipio (solo si es unico).
+ 3. Nucleos educativos: CSV (secretaria, municipio, departamento, codigo, nombre) o formulario manual.
+ 4. Comunas / corregimientos / localidades / veredas: CSV (municipio, tipo, nombre, departamento) o formulario manual.
+ 5. Colegios: Colegios > Editar (selects de nucleo y zona) o CSV de colegios con las columnas nuevas: nucleo, zona, direccion.
+ La secretaria (rol) solo gestiona nucleos y zonas de SU secretaria.
+ Los CSV pueden venir de Excel (separador ; y/o Windows-1252): se detectan solos. Hasta 5.000 filas y 2 MB por archivo.
+
+LIMITES CONOCIDOS
+ - secretaria_municipios (el mecanismo anterior) usa solo el NOMBRE del municipio: si dos departamentos tienen un municipio
+   con el mismo nombre, esa herencia automatica es ambigua. El catalogo nuevo (municipios) si distingue departamento.
+ - Los 4 tipos de zona son: comuna, corregimiento, localidad, vereda.
+
+DICTADO POR VOZ
+ - assets/js/voz.js (cargado desde parciales/pie.php) + estilos al final de base.css.
+ - Boton de microfono junto a cada textarea / input de texto de las paginas con sesion.
+ - NO aparece en: contrasenas, correos, numeros, codigos cortos (<=15), campos cuyo nombre sugiere datos sensibles (clave, pin, token,
+   codigo, correo, telefono, dane, documento...), ni dentro de [role="search"] o [data-sin-voz].
+   Para desactivarlo en un campo o formulario: atributo data-sin-voz.
+ - PRIVACIDAD: en Chrome/Edge el audio lo procesa Google/Microsoft. La primera vez se pide aceptar un aviso (serena_voz).
+   Esta documentado en cookies.php y en la ayuda. Considera poner data-sin-voz en observador, anecdotario y notas clinicas.
+ - Funciona en Chrome, Edge, Safari y Chrome Android, con HTTPS (o localhost). No en Firefox.
+ - Comandos: "punto y aparte" y "nueva linea".

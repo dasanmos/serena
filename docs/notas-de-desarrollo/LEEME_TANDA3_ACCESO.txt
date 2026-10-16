@@ -1,0 +1,15 @@
+SERENA - Tanda 3 (landing, login, registro) - SUBE DESPUES DE LAS TANDAS 1 Y 2
+==============================================================================
+ORDEN: 1) Respaldo de los archivos que se reemplazan. 2) Subir respetando rutas. 3) Ctrl+F5. No toca base de datos.
+Requiere el base.css de la Tanda 2 (trae el estilo del enlace "Saltar al contenido").
+
+POSICIONAMIENTO (Serena = bienestar + academico), solo con lo que el codigo ya hace:
+ - index.php: titulo, meta y og; h1 y parrafo del hero; 2 bloques nuevos (Notas y boletines / Matricula y familia);
+   10 roles (nuevos: Acudientes, Secretaria academica); Docentes menciona la planilla; FAQ sobre notas y boletines.
+ - login.php y parciales/auth_marca.php (afecta registro, recuperar, restablecer, 2 pasos, consentimiento):
+   panel de marca con "Bienestar y vida academica" y 4o punto "Notas y boletines por periodo".
+ACCESIBILIDAD: <main> + salto al contenido (landing, login, registro); role=alert/status en mensajes;
+ rel=noopener en el enlace de consentimiento.
+CORRECCION: pestana de rol "Secretaria de Educacion" usaba texto blanco sobre azul claro en modo oscuro (~2.2:1);
+ ahora usa --color-sobre-info.
+NO CAMBIA: la barrita dorada superior (se conserva tal cual).

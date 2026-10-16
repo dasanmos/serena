@@ -1,0 +1,392 @@
+/* ============================================================
+   SERENA — seguridad.css
+   Verificación en 2 pasos: paso 2 del login (verificacion_2pasos.php)
+   y pantalla de Seguridad (seguridad.php). Usa solo tokens de base.css,
+   así que el modo oscuro funciona sin reglas extra.
+   ============================================================ */
+
+.seccion-2fa { max-width: var(--contenedor-sm); }
+.seccion-2fa p { margin-bottom: var(--espacio-md); }
+
+/* Objetivos táctiles de al menos 44 px (guías de Apple para iOS). */
+.seccion-2fa button,
+.seccion-2fa .boton-secundario,
+.card-login .campo-codigo { min-height: 44px; }
+.seccion-2fa .boton-secundario { font-size: var(--texto-sm); padding: 10px 16px; }
+
+/* --- Paso 2 del login --- */
+.titulo-2fa { font-size: var(--texto-lg); margin-bottom: var(--espacio-xs); }
+.subtitulo-2fa { margin-bottom: var(--espacio-lg); font-size: var(--texto-sm); }
+.enlaces-2fa { flex-direction: column; align-items: center; gap: var(--espacio-sm); }
+
+/* Campo del código: grande, centrado y con espaciado, como el PIN del diario. */
+.campo-codigo {
+    text-align: center;
+    font-size: var(--texto-lg);
+    font-weight: 700;
+    letter-spacing: 10px;
+    padding: 14px 12px;
+    font-variant-numeric: tabular-nums;
+}
+.campo-codigo-recuperacion {
+    font-size: var(--texto-md);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.campo-codigo::placeholder { letter-spacing: 6px; opacity: 0.45; font-weight: 400; }
+
+/* --- Estado (Activada / Desactivada) --- */
+.encabezado-2fa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--espacio-sm);
+}
+.encabezado-2fa h2 { margin-bottom: 0; }
+.estado-2fa {
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: var(--radio-pill);
+}
+.estado-2fa-on { background: var(--color-exito-fondo); color: var(--color-exito); }
+.estado-2fa-off { background: var(--color-fondo-alterno); color: var(--color-texto-suave); }
+
+.beneficios-2fa { margin: 0 0 var(--espacio-lg) 20px; }
+.beneficios-2fa li { margin-bottom: var(--espacio-xs); }
+
+/* --- Activación en 3 pasos --- */
+.pasos-2fa {
+    list-style: none;
+    counter-reset: paso;
+    margin: var(--espacio-md) 0 var(--espacio-lg);
+    padding: 0;
+}
+.pasos-2fa > li {
+    min-width: 0;
+    counter-increment: paso;
+    position: relative;
+    padding: 0 0 var(--espacio-lg) 44px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-sm);
+}
+.pasos-2fa > li::before {
+    content: counter(paso);
+    position: absolute;
+    left: 0; top: -2px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: var(--texto-sm);
+    background: var(--color-dorado-claro);
+    color: #3A2C00;
+}
+
+/* El QR va siempre sobre blanco con margen: sin esa "zona de silencio" muchas
+   cámaras no lo leen, y en modo oscuro se perdería contra el fondo. */
+.qr-2fa {
+    align-self: flex-start;
+    background: #fff;
+    padding: 8px;
+    border-radius: var(--radio-borde);
+    border: 1px solid var(--color-borde);
+    line-height: 0;
+    min-width: 96px;
+    min-height: 96px;
+}
+.qr-2fa svg { width: 200px; height: 200px; display: block; }
+
+.clave-manual {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+    flex-wrap: wrap;
+}
+.clave-manual code, .codigos-2fa code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+}
+.clave-manual code {
+    background: var(--color-fondo-alterno);
+    padding: 10px 14px;
+    border-radius: var(--radio-borde-sm);
+    letter-spacing: 1px;
+    word-break: break-all;
+}
+
+.formulario-codigo { display: flex; gap: var(--espacio-sm); flex-wrap: wrap; align-items: stretch; min-width: 0; }
+.formulario-codigo .campo-codigo { flex: 1 1 200px; width: auto; min-width: 0; max-width: 100%; }
+.formulario-codigo button { flex: 0 0 auto; }
+.cancelar-2fa { margin-top: var(--espacio-sm); }
+.reenviar-2fa-correo { margin-top: var(--espacio-sm); }
+
+/* --- Bloques plegables (generar códigos / desactivar) --- */
+.bloque-plegable {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: 0 var(--espacio-md);
+    margin-top: var(--espacio-md);
+}
+.bloque-plegable > summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 12px 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    list-style-position: inside;
+}
+.bloque-plegable[open] > summary { border-bottom: 1px solid var(--color-borde); margin-bottom: var(--espacio-md); }
+.bloque-plegable form { padding-bottom: var(--espacio-md); }
+.bloque-plegable button[type="submit"] { margin-top: var(--espacio-md); width: 100%; }
+
+/* --- Códigos de recuperación --- */
+.codigos-2fa {
+    list-style: none;
+    padding: 0;
+    margin: var(--espacio-md) 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--espacio-sm);
+}
+.codigos-2fa li {
+    background: var(--color-fondo-alterno);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-sm);
+    padding: 12px;
+    text-align: center;
+}
+.codigos-2fa code { font-size: var(--texto-md); font-weight: 600; letter-spacing: 2px; user-select: all; }
+
+.acciones-2fa { display: flex; gap: var(--espacio-sm); flex-wrap: wrap; margin-bottom: var(--espacio-lg); }
+.cierre-codigos { border-top: 1px solid var(--color-borde); padding-top: var(--espacio-md); }
+.cierre-codigos .opcion-consentimiento { margin-top: 0; min-height: 44px; align-items: center; }
+.cierre-codigos button[type="submit"] { width: 100%; margin-top: var(--espacio-md); }
+
+.resumen-codigos { margin-bottom: var(--espacio-sm); }
+.texto-alerta { color: var(--color-error); font-weight: 600; }
+
+/* Progreso visible: un punto por código (lleno = disponible). */
+.puntos-codigos { display: flex; gap: 6px; margin-bottom: var(--espacio-md); flex-wrap: wrap; }
+.punto-codigo {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--color-dorado-oscuro);
+    box-sizing: border-box;
+}
+.punto-disponible { background: var(--color-dorado-oscuro); }
+.punto-usado { background: transparent; }
+.punto-vencido { background: transparent; border-style: dashed; border-color: var(--color-texto-suave); }
+
+@media (max-width: 480px) {
+    .codigos-2fa { grid-template-columns: 1fr 1fr; }
+    .codigos-2fa code { font-size: var(--texto-base); letter-spacing: 1px; }
+    .campo-codigo { letter-spacing: 6px; }
+    .pasos-2fa > li { padding-left: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .seccion-2fa * { animation: none !important; transition: none !important; }
+}
+
+/* Impresión de los códigos: solo lo esencial, sin botones. */
+@media print {
+    .codigos-2fa li { border: 1px solid #000; background: #fff; }
+    .codigos-2fa code { color: #000; }
+}
+
+/* --- Panel de métodos (rejilla de cards, seguridad.php sin ?metodo=) --- */
+.rejilla-metodos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--espacio-lg);
+    margin-bottom: var(--espacio-xl);
+}
+
+.tarjeta-metodo {
+    position: relative;
+    background-color: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-lg);
+    padding: var(--espacio-lg);
+    box-shadow: var(--sombra-sm);
+    transition: box-shadow var(--velocidad-media) var(--curva-suave), transform var(--velocidad-media) var(--curva-suave);
+    display: flex;
+    flex-direction: column;
+}
+.tarjeta-metodo:hover { box-shadow: var(--sombra-lg); transform: translateY(-2px); }
+
+.tarjeta-metodo-estado {
+    position: absolute;
+    top: var(--espacio-md);
+    right: var(--espacio-md);
+}
+
+.tarjeta-metodo-icono {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radio-borde);
+    background: var(--color-info-fondo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: var(--espacio-md);
+}
+
+.tarjeta-metodo h2 {
+    font-size: var(--texto-md);
+    margin-bottom: var(--espacio-sm);
+}
+
+.tarjeta-metodo p {
+    color: var(--color-texto-suave);
+    font-size: var(--texto-sm);
+    flex-grow: 1;
+    margin-bottom: var(--espacio-md);
+}
+
+.tarjeta-metodo-enlace {
+    font-weight: 600;
+    font-size: var(--texto-sm);
+    color: var(--color-dorado-texto);
+}
+.tarjeta-metodo-enlace:hover { color: var(--color-dorado-oscuro-texto); text-decoration: underline; }
+
+.tarjeta-metodo-enlace-deshabilitado {
+    font-weight: 600;
+    font-size: var(--texto-sm);
+    color: var(--color-texto-suave);
+    cursor: not-allowed;
+}
+
+.volver-metodos { margin-bottom: var(--espacio-md); }
+.volver-metodos a { font-size: var(--texto-sm); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+    .tarjeta-metodo:hover { transform: none; }
+}
+
+/* --- WhatsApp: paso previo con CallMeBot --- */
+.formulario-credenciales { display: grid; gap: var(--espacio-sm); max-width: 420px; }
+.formulario-credenciales label { font-weight: 600; font-size: var(--texto-sm); }
+.formulario-credenciales input { min-height: 44px; }
+.formulario-credenciales button[type="submit"] { margin-top: var(--espacio-sm); }
+.dato-guardado { display: flex; gap: var(--espacio-sm); align-items: center; flex-wrap: wrap; margin-bottom: var(--espacio-md); }
+.dato-guardado code { background: var(--color-fondo-alterno); border: 1px solid var(--color-borde); border-radius: var(--radio-borde-sm); padding: 4px 10px; }
+
+/* --- Reconocimiento facial --- */
+.rostro { margin: var(--espacio-md) 0 var(--espacio-lg); }
+
+/* Visor 4:3 con el video en espejo (como un selfie) y un óvalo guía encima. */
+.rostro-visor {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 4 / 3;
+    margin: 0 auto var(--espacio-md);
+    border-radius: var(--radio-borde-lg);
+    overflow: hidden;
+    background: var(--color-fondo-alterno);
+    border: 1px solid var(--color-borde);
+}
+.rostro-video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    display: none;
+}
+.rostro[data-camara="on"] .rostro-video { display: block; }
+.rostro-reposo {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    color: var(--color-texto-suave);
+}
+.rostro[data-camara="on"] .rostro-reposo { display: none; }
+.rostro-guia {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 46%; height: 76%;
+    transform: translate(-50%, -50%);
+    border: 3px dashed var(--color-dorado-medio);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+}
+.rostro[data-camara="on"] .rostro-guia { opacity: 0.9; }
+.rostro[data-fase="ok"] .rostro-guia { border-style: solid; border-color: var(--color-exito); }
+
+.rostro-estado {
+    text-align: center;
+    min-height: 3em;
+    margin-bottom: var(--espacio-sm);
+    color: var(--color-texto-suave);
+    font-size: var(--texto-sm);
+}
+.rostro-estado[data-tipo="error"] { color: var(--color-error); font-weight: 600; }
+.rostro-estado[data-tipo="ok"] { color: var(--color-exito); font-weight: 600; }
+
+.rostro-progreso { justify-content: center; }
+.rostro-acciones { display: flex; justify-content: center; }
+.rostro-acciones button { min-width: 220px; min-height: 44px; }
+
+.consentimiento-rostro {
+    display: flex; gap: var(--espacio-sm); align-items: flex-start;
+    padding: var(--espacio-md);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    background: var(--color-fondo-alterno);
+    margin-bottom: var(--espacio-md);
+    font-size: var(--texto-sm);
+    cursor: pointer;
+}
+.consentimiento-rostro input { width: 22px; height: 22px; flex: 0 0 auto; margin-top: 2px; }
+
+/* --- Mis sesiones (sesiones.php) --- */
+.rejilla-sesiones {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--espacio-lg);
+    margin-bottom: var(--espacio-xl);
+}
+
+.tarjeta-sesion {
+    background-color: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-lg);
+    padding: var(--espacio-lg);
+    box-shadow: var(--sombra-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-sm);
+}
+.tarjeta-sesion-actual { border-color: var(--color-exito); }
+
+.tarjeta-sesion-encabezado {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--espacio-sm);
+}
+.tarjeta-sesion-icono {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radio-borde);
+    background: var(--color-info-fondo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.tarjeta-sesion-encabezado h2 { font-size: var(--texto-base); margin-bottom: 4px; }
+
+.tarjeta-sesion-detalle { font-size: var(--texto-xs); }
+
+.tarjeta-sesion form { margin-top: auto; }
+.tarjeta-sesion button { width: 100%; min-height: 44px; }

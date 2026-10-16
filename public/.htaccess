@@ -1,0 +1,30 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# PHP settings
+php_flag display_errors Off
+php_value session.cookie_httponly 1
+php_value session.cookie_samesite Lax
+# Límites de subida para las imágenes del diario (5 MB validados en PHP).
+# En hosting compartido (InfinityFree) es probable que estas directivas se ignoren
+# y mande el límite del servidor — si las imágenes fallan silenciosamente, ese es el motivo.
+php_value upload_max_filesize 6M
+php_value post_max_size 8M
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Hide sensitive directories
+<FilesMatch "\.(env|md|gitignore)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# La antigua planilla de notas se fusionó en Seguimiento: los marcadores viejos siguen funcionando.
+<IfModule mod_alias.c>
+    RedirectMatch 301 ^(.*)/docente/planilla\.php$ $1/docente/seguimiento.php
+</IfModule>

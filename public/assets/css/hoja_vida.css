@@ -1,0 +1,68 @@
+/* ============================================================
+   SERENA — hoja_vida.css
+   Hoja de vida del estudiante (estructura Master2000). Solo usa tokens de base.css.
+   ============================================================ */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.hv-cabecera { background: var(--color-fondo-alterno); border: 1px solid var(--color-borde); border-left: 4px solid var(--color-dorado-oscuro); border-radius: var(--radio-borde, 12px); padding: var(--espacio-md, 16px); margin-bottom: var(--espacio-md, 16px); }
+.hv-cabecera dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px 16px; margin: 0; }
+.hv-cabecera dt { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--color-texto-suave); }
+.hv-cabecera dd { margin: 0; font-weight: 600; color: var(--color-texto); }
+.hv-cabecera .hv-ultima { margin: 10px 0 0; font-size: .8rem; color: var(--color-texto-suave); }
+
+.hv-tabs, .hv-subtabs { display: flex; flex-wrap: wrap; gap: 2px; }
+.hv-tabs { border-bottom: 2px solid var(--color-borde); }
+.hv-tabs a, .hv-subtabs a { padding: 10px 14px; text-decoration: none; color: var(--color-texto-suave); font-weight: 600; font-size: .9rem; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.hv-tabs a:hover, .hv-subtabs a:hover { color: var(--color-texto); background: var(--color-fondo-alterno); }
+.hv-tabs a.activa, .hv-subtabs a.activa { color: var(--color-dorado-oscuro-texto, #6E5400); border-bottom-color: var(--color-dorado-oscuro); }
+.hv-tabs a:focus-visible, .hv-subtabs a:focus-visible { outline: 3px solid var(--color-dorado-oscuro-texto, #6E5400); outline-offset: 2px; }
+.hv-subtabs { margin: 0 0 var(--espacio-md, 16px); border-bottom: 1px solid var(--color-borde); }
+.hv-subtabs a { padding: 8px 12px; font-size: .85rem; margin-bottom: -1px; }
+
+.hv-contenido { padding: var(--espacio-md, 16px) 0 var(--espacio-lg, 24px); }
+.hv-titulo { font-size: 1.15rem; color: var(--color-dorado-texto, #8A6A00); margin: 0 0 var(--espacio-sm, 8px); }
+.hv-contenido h3 { margin: var(--espacio-md, 16px) 0 var(--espacio-sm, 8px); font-size: 1rem; }
+
+.hv-filtro { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-end; margin: 0 0 var(--espacio-md, 16px); }
+.hv-filtro label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; }
+
+.hv-seccion { border: 1px solid var(--color-borde); border-radius: var(--radio-borde, 12px); padding: var(--espacio-md, 16px); margin: 0 0 var(--espacio-md, 16px); background: var(--color-superficie); }
+.hv-seccion legend { padding: 0 8px; font-weight: 700; color: var(--color-dorado-texto, #8A6A00); }
+.hv-rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 16px; }
+.hv-campo { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.hv-campo.hv-ancho { grid-column: 1 / -1; }
+.hv-etq { font-size: .78rem; font-weight: 600; color: var(--color-texto-suave); }
+.hv-etq abbr { color: var(--color-error); text-decoration: none; }
+.hv-campo input[type="text"], .hv-campo input[type="email"], .hv-campo input[type="tel"], .hv-campo input[type="date"], .hv-campo input[type="number"], .hv-campo select, .hv-campo textarea { width: 100%; box-sizing: border-box; }
+.hv-ro .hv-val { padding: 6px 0; border-bottom: 1px dashed var(--color-borde); min-height: 1.4em; }
+.hv-check { flex-direction: row; align-items: center; gap: 8px; }
+.hv-acciones { margin: var(--espacio-sm, 8px) 0 0; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.hv-ventana, .hv-familiar { border: 1px solid var(--color-borde); border-radius: var(--radio-borde, 12px); padding: 8px 12px; margin: 0 0 var(--espacio-sm, 8px); }
+.hv-ventana summary, .hv-familiar summary { cursor: pointer; }
+
+.hv-tabla td, .hv-tabla th { min-width: 110px; }
+.hv-tabla td:nth-child(2) { min-width: 240px; }
+.hv-detalle > td { background: var(--color-fondo-alterno); }
+.hv-mini { margin: 0 0 4px; font-size: .85rem; }
+.hv-pasar { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 6px; }
+.hv-evidencia { display: inline-block; position: relative; margin: 0 4px 4px 0; }
+.hv-evidencia form { position: absolute; top: -6px; right: -6px; margin: 0; }
+.hv-miniatura { display: block; width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid var(--color-borde); }
+.hv-quitar { border: 0; border-radius: 50%; width: 22px; height: 22px; line-height: 1; padding: 0; cursor: pointer; background: var(--color-peligro); color: var(--color-sobre-peligro, #fff); }
+.hv-adjuntar { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; font-size: .8rem; }
+.hv-adjuntar input[type="file"] { max-width: 190px; }
+
+.hv-tabla-desarrollo th[scope="row"] { font-weight: 600; text-align: left; text-transform: none; letter-spacing: 0; font-size: .9rem; color: var(--color-texto); background: transparent; }
+.hv-tabla-desarrollo input[type="text"] { width: 100%; box-sizing: border-box; min-width: 160px; }
+.hv-semestre { margin-bottom: var(--espacio-md, 16px); }
+.hv-bloque textarea { width: 100%; box-sizing: border-box; }
+.hv-certificado { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--color-borde); }
+
+@media (max-width: 700px) {
+    .hv-tabs a { padding: 8px 10px; font-size: .82rem; }
+    .hv-miniatura { width: 52px; height: 52px; }
+}
+@media print {
+    .hv-tabs, .hv-subtabs, .hv-filtro, .hv-adjuntar, .hv-pasar { display: none !important; }
+    .hv-cabecera { background: none; border: 1px solid #999; }
+}

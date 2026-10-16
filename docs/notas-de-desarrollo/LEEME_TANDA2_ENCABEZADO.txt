@@ -1,0 +1,14 @@
+SERENA - Tanda 2 (menu y encabezado) - SUBE JUNTO CON LA TANDA 1
+================================================================
+ORDEN: 1) Respaldo de public/parciales y public/assets/css. 2) Subir los archivos respetando rutas. 3) Ctrl+F5.
+No toca base de datos.
+
+1) CONTRASTE EN MODO OSCURO (critico): 13 reglas con fondo dorado usaban texto claro
+   (1.37:1 a 2.13:1 en oscuro). Ahora usan --color-tinta-fija (5.44:1 minimo).
+   Afecta: todos los botones, ítem activo del menú lateral y del menú móvil, pestañas activas, avatar de
+   iniciales, burbuja propia del chat, círculo de respiración, pasos de registro y alertas.
+   Modo claro: sin cambio visual.
+2) ENCABEZADO (public/parciales/encabezado.php): enlace "Saltar al contenido"; <main id="contenido-principal">;
+   aria-current="page" en el ítem activo (menú lateral, menú móvil y pestañas); aria-controls en los 3
+   botones de menú; nav móvil con aria-label.
+NO se cambio la estructura visual (3 sistemas de navegacion). Ver propuesta en el chat.

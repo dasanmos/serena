@@ -1,0 +1,775 @@
+/* ============================================================
+   SERENA — estudiante.css
+   Emociones, hábitos, metas, diario, listas del rol estudiante.
+   ============================================================ */
+
+/* --- Selector de emociones --- */
+.grilla-emociones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-sm);
+}
+
+.btn-emocion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    background: var(--color-fondo-alterno);
+    border: 2px solid transparent;
+    border-radius: var(--radio-pill);
+    padding: 8px 16px;
+    font-size: var(--texto-sm);
+    transition: background var(--velocidad-rapida) var(--curva-suave),
+                transform var(--velocidad-rapida) var(--curva-rebote),
+                border-color var(--velocidad-rapida) var(--curva-suave);
+}
+.btn-emocion:hover { transform: translateY(-2px); }
+.btn-emocion input[type="radio"] { display: none; }
+.btn-emocion.activa,
+.btn-emocion:has(input:checked) {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border-color: var(--color-dorado-texto);
+    font-weight: 600;
+    animation: aparecer-rebote var(--velocidad-media) var(--curva-rebote);
+}
+
+.slider-nivel {
+    width: 100%;
+    accent-color: var(--color-dorado-oscuro);
+    padding: 0;
+    border: none;
+    height: 6px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    font-size: var(--texto-base);
+    font-family: var(--fuente-base);
+    resize: vertical;
+    background-color: var(--color-superficie);
+    transition: border-color var(--velocidad-rapida) var(--curva-suave), box-shadow var(--velocidad-rapida) var(--curva-suave);
+}
+textarea:focus {
+    outline: none;
+    border-color: var(--color-dorado-oscuro);
+    box-shadow: 0 0 0 3px rgba(232, 185, 35, 0.18);
+}
+
+/* --- Listas simples (metas, hábitos, notificaciones, diario) --- */
+.lista-simple { list-style: none; padding: 0; }
+.lista-simple li {
+    padding: var(--espacio-sm) 0;
+    border-bottom: 1px solid var(--color-fondo-alterno);
+    font-size: var(--texto-sm);
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+}
+.lista-simple li:last-child { border-bottom: none; }
+
+/* --- Racha de hábitos: insignia con llama animada --- */
+.racha {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: var(--color-dorado-texto);
+}
+.racha-fuego {
+    display: inline-block;
+    animation: latido 1.4s ease-in-out infinite;
+}
+.racha[data-dias="0"] .racha-fuego { animation: none; opacity: 0.35; filter: grayscale(1); }
+
+/* --- Tarjeta de hábito individual --- */
+.fila-habito {
+    padding: var(--espacio-md) 0;
+    border-bottom: 1px solid var(--color-fondo-alterno);
+}
+.fila-habito:last-child { border-bottom: none; }
+.tarjeta-habito {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+}
+
+/* --- Checkbox de "completado hoy" con animación de check --- */
+.check-habito {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--color-dorado-oscuro);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    transition: background var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-rebote);
+    flex-shrink: 0;
+    padding: 0;
+}
+.check-habito.marcado {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    animation: aparecer-rebote var(--velocidad-media) var(--curva-rebote);
+}
+.check-habito.marcado::after {
+    content: '✓';
+    color: var(--est-tinta);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+/* --- Metas: barra de progreso con brillo al completar --- */
+.tarjeta-meta { padding: var(--espacio-md) 0; border-bottom: 1px solid var(--color-fondo-alterno); }
+.tarjeta-meta:last-child { border-bottom: none; }
+.tarjeta-meta.completada .barra-progreso-relleno {
+    background: linear-gradient(90deg, var(--color-exito), #57A863);
+}
+.tarjeta-meta.completada h3::after {
+    content: ' 🎉';
+}
+
+/* --- Diario personal: entradas tipo tarjeta --- */
+.entrada-diario {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    margin-bottom: var(--espacio-sm);
+    box-shadow: var(--sombra-sm);
+    transition: box-shadow var(--velocidad-media) var(--curva-suave);
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+}
+.entrada-diario:hover { box-shadow: var(--sombra-md); }
+.entrada-diario .etiqueta-diario {
+    display: inline-block;
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto-suave);
+    font-size: var(--texto-xs);
+    padding: 2px 10px;
+    border-radius: var(--radio-pill);
+    margin: 2px 4px 0 0;
+}
+
+/* --- Galería de imágenes del diario --- */
+.galeria-diario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin: var(--espacio-sm) 0;
+}
+.galeria-diario img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: var(--radio-borde-sm);
+    box-shadow: var(--sombra-sm);
+    transition: transform var(--velocidad-rapida) var(--curva-suave);
+}
+.galeria-diario a:hover img { transform: scale(1.05); }
+.galeria-diario-mini img { width: 70px; height: 70px; }
+
+.miniatura-diario { position: relative; }
+.miniatura-diario form { position: absolute; top: -6px; right: -6px; margin: 0; }
+.boton-quitar-imagen {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-peligro);
+    color: var(--color-sobre-peligro);
+    font-size: 0.7rem;
+    padding: 0;
+    line-height: 1;
+    box-shadow: var(--sombra-sm);
+}
+.boton-quitar-imagen:hover { transform: scale(1.1); box-shadow: var(--sombra-md); }
+
+/* --- Notificaciones --- */
+.tarjeta-notificacion {
+    margin-bottom: var(--espacio-sm);
+    position: relative;
+    transition: opacity var(--velocidad-media) var(--curva-suave);
+}
+.tarjeta-notificacion.leida { opacity: 0.55; }
+.tarjeta-notificacion.no-leida { border-left: 3px solid var(--color-dorado-oscuro); }
+.tarjeta-notificacion .pill-nueva { position: absolute; top: var(--espacio-md); right: var(--espacio-md); }
+.fecha-notificacion { color: var(--color-texto-suave); }
+.texto-notificacion { margin-top: var(--espacio-xs); }
+
+/* --- Filtro de fechas (estadísticas) --- */
+.form-filtro-fechas {
+    display: flex;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--espacio-lg);
+}
+.form-filtro-fechas > div { min-width: 150px; }
+.form-filtro-fechas label { margin-top: 0; }
+
+.cabecera-estadisticas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-bottom: var(--espacio-lg);
+}
+.cabecera-estadisticas h1 { margin-bottom: 0; }
+
+/* --- Comparativa mensual --- */
+.grilla-comparativa {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--espacio-md);
+}
+.tarjeta-comparativa {
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+}
+.etiqueta-comparativa { font-size: var(--texto-xs); color: var(--color-texto-suave); text-transform: uppercase; letter-spacing: 0.4px; }
+.valor-comparativa { font-family: var(--fuente-titulos); font-size: var(--texto-lg); color: var(--color-dorado-texto); }
+.tendencia-positiva { color: var(--color-exito); font-size: var(--texto-xs); font-weight: 600; }
+.tendencia-negativa { color: var(--color-error); font-size: var(--texto-xs); font-weight: 600; }
+.tendencia-neutra { color: var(--color-texto-suave); font-size: var(--texto-xs); }
+
+/* --- Exportar / imprimir reporte --- */
+@media print {
+    .no-imprimir, .barra-superior, .boton-sonido, .cabecera-estadisticas button { display: none !important; }
+    body { background: #fff; }
+    .panel-seccion, .tarjeta, .tarjeta-comparativa { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .contenido-panel { max-width: 100%; padding: 0; }
+}
+
+/* --- Metas: subtareas y acciones --- */
+.lista-subtareas { margin: var(--espacio-sm) 0 0 18px; }
+.lista-subtareas li { border: none; padding: var(--espacio-xs) 0; }
+.subtarea-completada { text-decoration: line-through; color: var(--color-texto-suave); }
+.boton-check-subtarea {
+    background: none;
+    box-shadow: none;
+    padding: 0 6px 0 0;
+    font-size: 1rem;
+    color: var(--color-dorado-texto);
+}
+.boton-check-subtarea:hover { transform: none; box-shadow: none; }
+.acciones-meta { margin-top: var(--espacio-md); display: flex; gap: var(--espacio-sm); }
+
+/* --- Vitrina de insignias --- */
+.vitrina-insignias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-lg);
+}
+.insignia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 90px;
+    text-align: center;
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+}
+.insignia img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    transition: transform var(--velocidad-media) var(--curva-rebote);
+}
+.insignia-bloqueada img {
+    filter: grayscale(1) opacity(0.35);
+}
+.insignia-obtenida {
+    color: var(--color-dorado-texto);
+    font-weight: 600;
+}
+.insignia-obtenida img {
+    box-shadow: var(--sombra-dorada);
+    animation: aparecer-rebote var(--velocidad-lenta) var(--curva-rebote);
+}
+.insignia-obtenida:hover img { transform: scale(1.08) rotate(-3deg); }
+
+/* --- Metas vencidas: decisión de continuar o reiniciar --- */
+.panel-vencidas { border-left: 3px solid var(--color-aviso); }
+.texto-ayuda-vencidas { color: var(--color-texto-suave); margin-bottom: var(--espacio-md); }
+.tarjeta-meta-vencida { opacity: 0.9; }
+.form-decision-vencida { margin-top: var(--espacio-sm); }
+.form-decision-vencida label { margin-top: var(--espacio-sm); }
+.form-decision-vencida input[type="date"] { max-width: 220px; }
+
+/* --- Historial mensual de hábitos (calendario mini, expandible) --- */
+.historial-mensual {
+    margin-top: var(--espacio-sm);
+}
+.historial-mensual summary {
+    cursor: pointer;
+    font-size: var(--texto-xs);
+    color: var(--color-dorado-texto);
+    font-weight: 600;
+    user-select: none;
+}
+.historial-mensual summary:hover { text-decoration: underline; }
+.historial-mensual[open] summary { margin-bottom: var(--espacio-sm); }
+.grilla-historial {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    max-width: 280px;
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave);
+}
+.dia-historial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: var(--radio-borde-sm);
+    font-size: 0.65rem;
+    color: var(--color-texto-suave);
+}
+.dia-sin-registro { background: var(--color-fondo-alterno); }
+.dia-cumplido {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--est-tinta);
+    font-weight: 700;
+}
+.dia-fallido {
+    background: var(--color-error-fondo);
+    color: var(--color-error);
+}
+
+/* --- Calendario mensual --- */
+.recuadro-calendario {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde-lg);
+    padding: var(--espacio-lg);
+    box-shadow: var(--sombra-md);
+    max-width: 720px;
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave);
+}
+.cabecera-calendario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacio-md);
+    margin-bottom: var(--espacio-lg);
+}
+.titulo-mes {
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-md);
+    color: var(--color-dorado-texto);
+    text-transform: capitalize;
+    min-width: 160px;
+    text-align: center;
+}
+.boton-mes {
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: none;
+    padding: 0;
+}
+.boton-mes:hover { background: var(--color-dorado-claro); color: var(--est-tinta); transform: scale(1.08); }
+
+.grilla-calendario {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.dia-semana-calendario {
+    text-align: center;
+    font-weight: 600;
+    font-size: var(--texto-xs);
+    padding: 6px;
+    color: var(--color-texto-suave);
+    text-transform: uppercase;
+}
+.dia-calendario {
+    background: var(--color-fondo-alterno);
+    border-radius: var(--radio-borde-sm);
+    padding: 8px 4px;
+    text-align: center;
+    font-size: var(--texto-sm);
+    position: relative;
+    min-height: 52px;
+    transition: transform var(--velocidad-rapida) var(--curva-suave);
+}
+.dia-calendario:hover { transform: scale(1.05); z-index: 1; }
+.dia-calendario.dia-hoy { border: 2px solid var(--color-dorado-oscuro); font-weight: 700; }
+.numero-dia { display: block; }
+.marca-habito-dia { position: absolute; top: 2px; right: 4px; font-size: 0.6rem; }
+.nivel-dia { display: block; font-size: 0.68rem; color: var(--color-texto-suave); margin-top: 2px; }
+
+/* Escala de nivel emocional en tonos dorados/tierra del proyecto, NO semáforo rojo-verde
+   genérico — un nivel bajo no debería sentirse como "alarma roja" en el propio calendario
+   del estudiante, solo como información. */
+.dia-nivel-1 { background: var(--est-nivel-1); }
+.dia-nivel-2 { background: var(--est-nivel-2); }
+.dia-nivel-3 { background: var(--est-nivel-3); }
+.dia-nivel-4 { background: var(--est-nivel-4); }
+.dia-nivel-5 { background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-medio)); color: var(--est-tinta); }
+.dia-nivel-5 .nivel-dia { color: var(--est-tinta); }
+
+.leyenda-calendario {
+    display: flex;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    margin-top: var(--espacio-lg);
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+}
+.item-leyenda { display: flex; align-items: center; gap: 6px; }
+.muestra-color { width: 16px; height: 16px; border-radius: 4px; display: inline-block; }
+
+@media (min-width: 1200px) {
+    .grilla-emociones { gap: var(--espacio-md); }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Registro de sueño (módulo sin estilos propios hasta
+   ahora: reutilizaba clases genéricas de listas). Mismo lenguaje visual
+   que .btn-emocion para que se sienta parte de la misma familia.
+   ============================================================ */
+
+/* --- Selector de horas dormidas: escala visual tipo "barras de batería" --- */
+.selector-horas-sueno {
+    display: flex;
+    gap: 4px;
+    margin-top: var(--espacio-sm);
+    flex-wrap: wrap;
+}
+.selector-horas-sueno input[type="radio"] { display: none; }
+.opcion-horas-sueno {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 8px;
+    border-radius: var(--radio-borde-sm);
+    background: var(--color-fondo-alterno);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: background var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-rebote);
+}
+.opcion-horas-sueno:hover { transform: translateY(-2px); }
+.selector-horas-sueno label:has(input:checked) .opcion-horas-sueno,
+.opcion-horas-sueno.activa {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border-color: var(--color-dorado-texto);
+}
+
+/* --- Calidad del sueño: mismo patrón que la grilla de emociones --- */
+.grilla-calidad-sueno { display: flex; flex-wrap: wrap; gap: var(--espacio-sm); margin-top: var(--espacio-sm); }
+.btn-calidad-sueno {
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    background: var(--color-fondo-alterno);
+    border: 2px solid transparent;
+    border-radius: var(--radio-pill);
+    padding: 8px 16px;
+    font-size: var(--texto-sm);
+    transition: background var(--velocidad-rapida) var(--curva-suave), transform var(--velocidad-rapida) var(--curva-rebote);
+}
+.btn-calidad-sueno input[type="radio"] { display: none; }
+.btn-calidad-sueno:hover { transform: translateY(-2px); }
+.grilla-calidad-sueno label:has(input:checked) .btn-calidad-sueno,
+.btn-calidad-sueno.activa {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border-color: var(--color-dorado-texto);
+    font-weight: 600;
+}
+
+/* --- Tarjeta resumen del sueño de hoy/último registro --- */
+.tarjeta-sueno-hoy {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-lg);
+    padding: var(--espacio-lg);
+}
+.tarjeta-sueno-hoy .horas-grandes {
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-2xl);
+    color: var(--color-dorado-texto);
+    line-height: 1;
+}
+.tarjeta-sueno-hoy .horas-grandes small { font-size: var(--texto-sm); color: var(--color-texto-suave); font-family: var(--fuente-base); }
+
+/* --- Historial semanal de sueño: barras verticales, mismo espíritu que
+   .grilla-historial de hábitos pero con altura variable por horas --- */
+.grafico-sueno-semana {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--espacio-sm);
+    height: 140px;
+    margin-top: var(--espacio-md);
+    padding-top: var(--espacio-md);
+}
+.barra-sueno-dia {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    gap: 6px;
+}
+.barra-sueno-dia .barra-vertical {
+    width: 100%;
+    max-width: 30px;
+    border-radius: var(--radio-borde-sm) var(--radio-borde-sm) 0 0;
+    background: linear-gradient(180deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    animation: crecer-barra-sueno 0.6s var(--curva-suave) both;
+    min-height: 4px;
+}
+.barra-sueno-dia.sueno-insuficiente .barra-vertical { background: var(--color-info); }
+.barra-sueno-dia .etiqueta-dia-sueno { font-size: var(--texto-xs); color: var(--color-texto-suave); }
+.barra-sueno-dia .valor-horas-sueno { font-size: var(--texto-xs); font-weight: 700; color: var(--color-texto); }
+@keyframes crecer-barra-sueno { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.barra-sueno-dia .barra-vertical { transform-origin: bottom; }
+
+/* --- Aviso suave cuando el promedio de sueño está por debajo de lo
+   recomendado — informativo, nunca alarmante, siempre con salida a
+   hablar con un adulto de confianza. --- */
+.aviso-sueno-bajo {
+    background: var(--color-info-fondo);
+    color: var(--color-info);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    font-size: var(--texto-sm);
+    margin-top: var(--espacio-md);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Vista Kanban de metas (alternativa a la lista simple,
+   útil cuando hay muchas metas activas/vencidas/completadas)
+   ============================================================ */
+.tablero-metas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--espacio-md);
+    align-items: start;
+}
+.columna-metas { background: var(--color-fondo-alterno); border-radius: var(--radio-borde); padding: var(--espacio-md); }
+.columna-metas h3 { font-size: var(--texto-sm); text-transform: uppercase; letter-spacing: 0.4px; color: var(--color-texto-suave); margin-bottom: var(--espacio-md); }
+.columna-metas .tarjeta-meta { background: var(--color-superficie); border-radius: var(--radio-borde-sm); padding: var(--espacio-sm); box-shadow: var(--sombra-sm); border-bottom: none; }
+.columna-metas .tarjeta-meta + .tarjeta-meta { margin-top: var(--espacio-sm); }
+
+/* ============================================================
+   AMPLIACIÓN — Diario: contador de caracteres y aviso de autoguardado
+   ============================================================ */
+.contador-caracteres { font-size: var(--texto-xs); color: var(--color-texto-suave); text-align: right; margin-top: 2px; }
+.contador-caracteres.limite-cerca { color: var(--color-aviso); }
+.estado-autoguardado {
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.estado-autoguardado .punto-guardado {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--color-exito);
+    animation: pulso-suave 1.6s ease-in-out infinite;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Recordatorio de hábito y frecuencia semanal seleccionable
+   ============================================================ */
+.selector-dias-semana { display: flex; gap: 6px; margin-top: var(--espacio-sm); }
+.selector-dias-semana input { display: none; }
+.dia-semana-boton {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-fondo-alterno);
+    font-size: var(--texto-xs);
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: background var(--velocidad-rapida) var(--curva-suave);
+}
+.selector-dias-semana label:has(input:checked) .dia-semana-boton {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border-color: var(--color-dorado-texto);
+}
+
+@media (max-width: 600px) {
+    .tarjeta-sueno-hoy { flex-direction: column; text-align: center; }
+    .grafico-sueno-semana { height: 110px; }
+}
+
+/* ============================================================
+   IDENTIDAD DEL ROL ESTUDIANTE
+   Todo lo de aquí abajo cuelga de body.rol-estudiante (clase que pone
+   parciales/encabezado.php), así que no toca a ningún otro rol.
+   Idea: un espacio tranquilo y privado. Lo memorable es el ejercicio de
+   respiración; el resto se mantiene callado y fácil de tocar.
+   ============================================================ */
+
+/* --- Tokens propios del estudiante --- */
+:root {
+    /* Tinta oscura para texto sobre dorado: --color-texto se vuelve claro en modo
+       oscuro y sobre dorado perdería contraste (antes ~1.5:1). */
+    --est-tinta: #2B2B2B;
+    /* Escala emocional del calendario: tierra cálida, nunca semáforo rojo-verde. */
+    --est-nivel-1: #EBD3C6;
+    --est-nivel-2: #F2E0B8;
+    --est-nivel-3: #F6EBC9;
+    --est-nivel-4: #EFE3A8;
+    --est-tactil: 44px; /* tamaño mínimo cómodo para tocar */
+}
+html[data-tema="oscuro"] {
+    --est-nivel-1: #4F3B34;
+    --est-nivel-2: #55442A;
+    --est-nivel-3: #5C5030;
+    --est-nivel-4: #675B2E;
+}
+
+/* --- Opciones elegibles (emoción, calidad de sueño, horas, días) ---
+   Antes el radio tenía display:none: no se podía llegar con el teclado.
+   Ahora está oculto solo a la vista, sigue enfocable, y el foco se dibuja
+   en la etiqueta. */
+.rol-estudiante .btn-emocion,
+.rol-estudiante .btn-calidad-sueno,
+.rol-estudiante .selector-horas-sueno label,
+.rol-estudiante .selector-dias-semana label { position: relative; }
+
+.rol-estudiante .btn-emocion input[type="radio"],
+.rol-estudiante .btn-calidad-sueno input[type="radio"],
+.rol-estudiante .selector-horas-sueno input[type="radio"],
+.rol-estudiante .selector-dias-semana input[type="checkbox"] {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.rol-estudiante .btn-emocion:has(input:focus-visible),
+.rol-estudiante .btn-calidad-sueno:has(input:focus-visible),
+.rol-estudiante .selector-horas-sueno label:has(input:focus-visible) .opcion-horas-sueno,
+.rol-estudiante .selector-dias-semana label:has(input:focus-visible) .dia-semana-boton {
+    outline: 3px solid var(--color-dorado-oscuro-texto);
+    outline-offset: 2px;
+}
+
+/* Zona táctil mínima de 44 px */
+.rol-estudiante .btn-emocion,
+.rol-estudiante .btn-calidad-sueno { min-height: var(--est-tactil); }
+.rol-estudiante .opcion-horas-sueno { min-width: var(--est-tactil); height: var(--est-tactil); }
+.rol-estudiante .dia-semana-boton { width: var(--est-tactil); height: var(--est-tactil); }
+.rol-estudiante .boton-mes { width: var(--est-tactil); height: var(--est-tactil); }
+.rol-estudiante .check-habito { width: 32px; height: 32px; }
+
+/* Elegida = tinta oscura + marca ✓ (no depende solo del color) */
+.rol-estudiante .btn-emocion:has(input:checked),
+.rol-estudiante .btn-emocion.activa,
+.rol-estudiante .btn-calidad-sueno:has(input:checked),
+.rol-estudiante .btn-calidad-sueno.activa,
+.rol-estudiante .selector-horas-sueno label:has(input:checked) .opcion-horas-sueno,
+.rol-estudiante .opcion-horas-sueno.activa,
+.rol-estudiante .selector-dias-semana label:has(input:checked) .dia-semana-boton {
+    color: var(--est-tinta);
+    font-weight: 700;
+}
+.rol-estudiante .btn-emocion:has(input:checked)::before,
+.rol-estudiante .btn-calidad-sueno:has(input:checked)::before {
+    content: '✓';
+    font-weight: 700;
+}
+
+/* --- Etiquetas en minúscula normal (antes todo en mayúsculas) --- */
+.rol-estudiante .tarjeta-etiqueta,
+.rol-estudiante .etiqueta-comparativa,
+.rol-estudiante .dia-semana-calendario,
+.rol-estudiante .columna-metas h3 {
+    text-transform: none;
+    letter-spacing: 0;
+}
+.rol-estudiante .tarjeta-etiqueta { font-size: var(--texto-sm); }
+.rol-estudiante .columna-metas h3 { font-size: var(--texto-base); color: var(--color-texto); }
+
+/* --- Menos movimiento sin que nadie lo pida ---
+   Las listas ya no entran deslizándose elemento por elemento, y las tarjetas
+   no saltan al pasar el cursor. Se conserva lo que responde a una acción. */
+.rol-estudiante .lista-simple li,
+.rol-estudiante .tarjeta-comparativa,
+.rol-estudiante .entrada-diario { animation: none; }
+.rol-estudiante .tarjeta:hover { transform: none; }
+.rol-estudiante .panel-seccion:hover { box-shadow: var(--sombra-md); }
+.rol-estudiante .lista-simple li { font-size: var(--texto-base); }
+
+/* --- Calendario: día de hoy y celdas más tocables --- */
+.rol-estudiante .dia-calendario { min-height: var(--est-tactil); }
+.rol-estudiante .dia-calendario.dia-hoy {
+    border-color: var(--color-dorado-texto);
+    box-shadow: 0 0 0 2px var(--color-superficie), 0 0 0 4px var(--color-dorado-texto);
+}
+
+/* --- Respiración: el momento principal del rol ---
+   Antes vivía en un <style> dentro de respiracion.php. Los anillos son
+   box-shadow, así que crecen y se encogen junto con el círculo. */
+.rol-estudiante .panel-respiracion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--espacio-2xl) var(--espacio-md);
+}
+.rol-estudiante .circulo-respiracion {
+    animation: none; /* panel_apoyo.css anima este mismo círculo en Recursos y pisaría las fases guiadas */
+    width: 160px;
+    height: 160px;
+    margin: var(--espacio-xl) 0 var(--espacio-2xl);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--est-tinta);
+    font-weight: 700;
+    font-size: var(--texto-md);
+    box-shadow: 0 0 0 14px rgba(232, 185, 35, 0.20),
+                0 0 0 30px rgba(232, 185, 35, 0.10),
+                var(--sombra-lg);
+    transition: transform 4s ease-in-out;
+}
+.rol-estudiante .circulo-respiracion.inhalar   { transform: scale(1.4); transition-duration: 4s; }
+.rol-estudiante .circulo-respiracion.sostener  { transform: scale(1.4); transition-duration: 0.3s; }
+.rol-estudiante .circulo-respiracion.exhalar   { transform: scale(1);   transition-duration: 6s; }
+.rol-estudiante .controles-respiracion { display: flex; gap: var(--espacio-sm); }
+.rol-estudiante .controles-respiracion .boton-secundario { padding: 10px 18px; font-size: var(--texto-sm); }
+
+/* --- Celular --- */
+@media (max-width: 480px) {
+    .rol-estudiante .tarjetas-resumen { grid-template-columns: repeat(2, 1fr); gap: var(--espacio-sm); }
+    .rol-estudiante .tarjeta { padding: var(--espacio-md) var(--espacio-sm); }
+    .rol-estudiante .tarjeta-numero { font-size: var(--texto-lg); }
+    .rol-estudiante .recuadro-calendario { padding: var(--espacio-md) var(--espacio-sm); }
+    .rol-estudiante .grilla-calendario { gap: 3px; }
+    .rol-estudiante .nivel-dia { font-size: 0.6rem; }
+    .rol-estudiante .circulo-respiracion { width: 130px; height: 130px; }
+    .rol-estudiante .selector-horas-sueno { gap: 6px; }
+}

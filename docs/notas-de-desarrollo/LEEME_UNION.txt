@@ -1,0 +1,32 @@
+SERENA · UNIÓN: SIMAT/SIMPADE (colega) + IA con OpenRouter, ayuda con IA y manual ampliado
+==========================================================================================
+
+MIGRACIONES SQL (phpMyAdmin, en este orden; todas se pueden repetir sin dañar nada)
+  038_codigo_matricula.sql   código de matrícula (Seguimiento). Si ya la tienes, omítela.
+  041_simat_simpade.sql      SIMAT y SIMPADE (colega).   Requiere 034, 036, 038 y 040.
+  042_ia_registro.sql        bitácora del ecosistema IA. (antes se llamaba 041: renumerada para no chocar con SIMAT)
+  043_documento_login.sql    inicio de sesión con documento (usuarios.documento + relleno desde hoja de vida e inscripciones)
+
+.ENV (src/config/.env)
+  Ya trae OPENROUTER_API_KEY. Gemini se eliminó por completo (gemini.php y prueba_gemini.php ya no existen).
+  Cambia las claves que estuvieron expuestas en el antiguo .env.example (BD, Brevo, reCAPTCHA, 2FA).
+
+QUÉ SE UNIÓ
+  Colega:  public/simat*.php, public/simpade*.php, src/modelos/Simat.php, Simpade.php, simat.css, menú Informes → SIMAT/SIMPADE,
+           gancho en Academico.php (un retiro de matrícula queda como novedad SIMAT), PDF habilitado para simat/simpade.
+  Mías:    src/helpers/ia.php, ayuda_ia.php, public/api/ayuda_ia.php, public/administrador/prueba_ia.php, "Pregúntale a Serena",
+           manual ampliado (v1.3), tools/capturar_ayuda.py, Academico::asegurarCodigosMatricula().
+  Ambos hicieron la fusión de planilla.php en Seguimiento: se conservó la versión del colega de seguimiento.php
+  (recalcula también al guardar/quitar logros) con un seguro para asegurarCodigosMatricula().
+
+MANUAL
+  SIMAT y SIMPADE quedaron documentados en los roles que realmente los ven:
+  SIMAT: secretaría académica, administrador, rector.  SIMPADE: esos tres + coordinador, psicología y orientación.
+  (El colega los había puesto bajo «docente», que no tiene acceso.)  Ver CAPTURAS_PENDIENTES.md y tools/capturar_ayuda.py (las pestañas de SIMAT/SIMPADE se capturan solas con ?vista=).
+
+INICIO DE SESIÓN CON DOCUMENTO (todos los roles)
+  El campo de login ahora es «Correo o documento». Mismo mensaje de error para cualquier fallo (no revela si la cuenta existe).
+  Si un documento está en dos colegios, la contraseña decide cuál es. «Olvidé mi contraseña» también acepta documento
+  (el enlace llega siempre al correo de la cuenta; máx. 5 solicitudes por sesión cada 10 min).
+  Estudiantes: el documento se llena solo desde la hoja de vida / inscripción. Personal: administrador > Usuarios > Crear/Editar,
+  o columna opcional «documento» en los CSV de importación.

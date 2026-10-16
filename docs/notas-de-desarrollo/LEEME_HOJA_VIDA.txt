@@ -1,0 +1,57 @@
+SERENA - Hoja de vida del estudiante (estructura Master2000)
+============================================================
+
+ORDEN DE APLICACION
+1. Respaldo de la base de datos y de estudiante_ficha.php y casos.php.
+2. Ejecutar sql/migraciones/038_hoja_vida_master.sql (reejecutable; requiere la 036). Funciona en MySQL y MariaDB.
+3. Subir los archivos respetando rutas (src/uploads/evidencias/ debe poder escribirse; el .gitignore ya viene).
+4. Ctrl+F5.
+
+QUE CAMBIA
+/estudiante_ficha.php ahora es la hoja de vida con pestanas, como el Panel acudiente de Master2000:
+ Matricula (subpestanas: Datos del estudiante, Familia, Caracteristicas, Salud) · Desarrollo · Aprobacion ant. ·
+ Observaciones · Aula de apoyo · Anecdotario · Hoja de vida (observador) · Procesos disciplinarios · Horas formativas · Asistencia.
+ - Cabecera con estudiante, matricula, grupo, documento y "ultima modificacion".
+ - Anecdotario / Hoja de vida / Procesos: filtro Ano y Periodo, columna Evidencias (imagenes), Situacion (tipo I, II, III),
+   "Pasar a" (anecdotario -> observador o proceso; anotacion -> proceso; proceso -> orientacion o comite) y Folio automatico.
+ - Hoja de vida: tabla de Revisiones de coordinacion.
+ - Desarrollo: 14 criterios por semestre con valoracion (Muy bueno, Bueno, Regular, Deficiente) y tratamiento familiar e institucional.
+ - Aprobacion anticipada: registra la constancia (acta, grados, motivo). NO cambia grado ni grupo: eso sigue en Matriculas.
+ - Observaciones: temporales (no se conservan) y para certificados.
+ - Los enlaces de casos.php ahora abren la pestana correcta.
+NUEVOS: src/modelos/HojaVida.php, public/parciales/hv_*.php, public/evidencia_ver.php, public/assets/css/hoja_vida.css.
+Expediente.php NO se modifica (sus metodos siguen sirviendo a otras pantallas).
+
+QUIEN VE Y ESCRIBE QUE (src/modelos/HojaVida.php > permisos)
+ - Directivos (coordinador, rector, administrador) y orientacion: todo; escriben todo salvo lo reservado a directivos
+   (gestionar convivencia, revisiones, borrar anotaciones).
+ - Secretaria academica: Matricula (sin salud sensible), Aprobacion, Observaciones; no ve anecdotario, procesos ni apoyo.
+ - Docente: solo EPS, RH, alergias y contactos; Observaciones temporales; Anecdotario y Hoja de vida (puede anotar);
+   Aula de apoyo (solo ajustes); en Procesos solo REPORTA a coordinacion. Desarrollo solo si es director de grupo de ese estudiante.
+ - Acudiente: Matricula (solo lectura salvo ventana abierta), Aprobacion, Observaciones para certificados y las anotaciones
+   marcadas "visible para el acudiente". NO ve Desarrollo, Aula de apoyo, Procesos ni salud sensible (se conserva la decision de la Tanda 3).
+   Para cambiarlo: HojaVida::ACUDIENTE_VE (desarrollo, procesos, salud_sensible).
+ - Estudiante: solo Horas y Asistencia (igual que antes).
+ - Datos de religion, grupo etnico y poblacion vulnerable: solo directivos, orientacion, secretaria academica y el acudiente de ese estudiante.
+ - Cada consulta por personal con acceso a datos sensibles queda en auditoria (quien consulto a quien, nunca el contenido).
+
+VENTANA DE MODIFICACION (como en Master2000)
+ En Matricula > Datos, directivos y secretaria academica fijan "desde / hasta". Dentro de esas fechas el acudiente puede editar los datos
+ no institucionales (direccion, contacto, familia, caracteristicas, salud no sensible y contactos de emergencia). Sin fechas = solo lectura.
+ No edita: numero de matricula, folio, fechas de matricula, metodologia, especialidad ni nada reservado.
+
+DECISIONES QUE DEBES REVISAR (datos de menores)
+ - Omitidos a proposito del modelo Master2000: "Ingresos" de los padres y la seccion "Hijos" del estudiante (datos innecesarios o muy delicados).
+   Responsable de pagos y Codeudor tampoco (colegio publico); se agregan en HojaVida::FAMILIARES sin migracion.
+ - "Campos dinamicos": su contenido no venia en lo que pegaste, por eso no se implemento.
+ - La escala de Desarrollo (Muy bueno... Deficiente) es una suposicion: ajusta HojaVida::ESCALA si tu colegio usa otra.
+ - Evidencias: solo imagenes (jpg, png, webp, gif; 5 MB; maximo 5 por registro), guardadas fuera de public y servidas con control de acceso.
+   Si necesitas PDF hay que ampliar el helper de subida.
+ - Procesos nunca se borran; las anotaciones solo las elimina coordinacion/rectoria/administracion (con auditoria).
+ - Dictado por voz desactivado (data-sin-voz) en salud, apoyo, desarrollo y procesos.
+ - El Folio se asigna por estudiante (observador sin contar anecdotario; procesos aparte). La migracion numera lo que ya existia.
+ - "Periodo" de cada registro se calcula por la fecha segun los periodos del ano lectivo; no hay columna nueva.
+
+NO SE PROBO contra base de datos real ni en navegador (el entorno donde se armo no tiene PHP ni MySQL; solo se valido la sintaxis
+con un parser). Revisar, en este orden: ejecutar la 038 sin errores; abrir un estudiante con cada rol; guardar cada subpestana de Matricula;
+crear anotacion con evidencia, pasarla a proceso y verla en Procesos; ventana de modificacion con un acudiente; impresion (Ctrl+P).

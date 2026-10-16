@@ -1,0 +1,48 @@
+SERENA - Acceso denegado con formato, menus completos y alcance por rol
+========================================================================
+ORDEN: 1) Respaldo de los archivos que se reemplazan.
+       2) Subir los archivos respetando rutas (no hay migracion SQL).
+       3) Ctrl+F5.
+
+1) PAGINA "SIN PERMISO" (antes: texto suelto sobre fondo blanco)
+ - Ahora usa el formato de la plataforma (barra, menu, colores, modo oscuro) y lleva sola al panel
+   principal del rol en 6 segundos. Botones: "Ir a mi panel ahora" y "Quedarme aqui" (cancela la cuenta).
+ - Aplica a: requiereRol() (todas las paginas), demo.php, elegir_rol.php, estudiante_detalle del docente,
+   las conversaciones ajenas del chat (7 roles) y "elige un colegio" del superadmin/secretaria.
+ - Si la peticion es fetch/XHR responde texto corto (sin HTML). Si el panel mismo es el negado, no redirige
+   (evita bucle).
+ NUEVOS: src/helpers/acceso_denegado.php, public/assets/css/acceso_denegado.css, public/assets/js/acceso_denegado.js
+ MODIFICADOS: src/helpers/auth.php, src/helpers/colegio.php, public/demo.php, public/elegir_rol.php,
+   public/docente/estudiante_detalle.php, public/{estudiante,orientador,docente,administrador,rector,psicologo,coordinador}/mensajes.php
+
+2) MODULOS CONSTRUIDOS QUE NO APARECIAN EN EL MENU (src/helpers/navegacion.php)
+ - Estudiante: Mi asistencia, Mi horario.            - Acudiente: Asistencia, Horario.
+ - Docente: Mi horario, Reporte de asistencia.
+ - Coordinacion: grupo "Horarios y asistencia" (Horarios, Horario, Reporte de asistencia).
+ - Rectoria, Administracion, Secretaria academica: grupo "Horarios y asistencia" (Horarios, Horario,
+   Asistencia, Reporte de asistencia).
+ - Rectoria y Administracion: "Plantillas de certificados" (en Academico).
+ - Superadmin: "Diagnostico de IA" (en Sistema).
+ Cada enlace se verifico contra el requiereRol() de su pagina: ningun rol ve un enlace que luego le niegue el paso.
+
+3) ALCANCE POR ROL
+ - Salud del sistema (administrador/salud.php):
+     superadmin    -> plataforma completa (copias, base de datos, disco, correo, servidor).
+     administrador -> solo SU colegio (usuarios, accesos, sesiones, solicitudes, alertas) y si el correo funciona.
+   Se acoto lo que estaba sin filtrar: sesiones abiertas y solicitudes de cambio contaban todos los colegios.
+ - Configuracion (administrador/configuracion.php): el administrador ve solo los textos de correo de su colegio
+   (las copias de seguridad ya eran solo del superadmin; ahora el texto de la pagina lo dice).
+ - Diagnostico de IA (administrador/prueba_ia.php): pasa de administrador a SUPERADMIN (usa la clave global de
+   OpenRouter y la bitacora de llamadas).
+ MODIFICADOS: public/administrador/salud.php, configuracion.php, prueba_ia.php
+
+NO SE TOCO (decision tuya)
+ - public/administrador/prueba_gemini.php: es la prueba antigua de Gemini; ia.php la reemplazo. Sigue solo
+   para administrador y sin menu. Si ya no la usas, borrala.
+ - public/docente/planilla.php: ningun enlace llega a ella (el LEEME_SEGUIMIENTO la sustituyo por
+   docente/seguimiento.php). Sigue accesible escribiendo la direccion; no se agrego al menu.
+
+NO SE EJECUTO NADA: ni el servidor, ni pruebas, ni revision de sintaxis. Revisa en navegador:
+ a) entra como docente y escribe /administrador/usuarios.php -> pagina con formato y salto al panel.
+ b) administrador -> Salud del sistema (sin copias ni servidor); superadmin -> completa.
+ c) los grupos nuevos del menu en celular (el menu lateral ahora tiene un grupo mas).

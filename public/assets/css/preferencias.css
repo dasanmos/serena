@@ -1,0 +1,40 @@
+/* ============================================================
+   SERENA — preferencias.css
+   Tema, accesibilidad y notificaciones por correo (public/preferencias.php).
+   ============================================================ */
+
+.grupo-radios {
+    border: none;
+    margin: 0 0 var(--espacio-sm);
+    padding: 0;
+}
+.grupo-radios legend {
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: var(--color-texto);
+    padding: 0 0 4px;
+}
+
+.opcion-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+    padding: 10px 0;
+    font-size: var(--texto-sm);
+    cursor: pointer;
+}
+.opcion-radio input { width: auto; flex: 0 0 auto; }
+
+/* Copia local de .opcion-consentimiento (definida en login.css, que no se
+   carga en el panel) — mismo aspecto, para no depender de esa hoja aquí. */
+.opcion-consentimiento {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: var(--texto-sm);
+    margin-top: var(--espacio-md);
+    cursor: pointer;
+}
+.opcion-consentimiento input { width: auto; margin-top: 3px; flex: 0 0 auto; }
+
+.panel-seccion form button[type="submit"] { margin-top: var(--espacio-md); }

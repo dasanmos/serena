@@ -1,0 +1,185 @@
+/* ============================================================
+   SERENA — simat.css
+   SIMAT (matrícula) y SIMPADE (permanencia).
+
+   AISLAMIENTO: todas las reglas cuelgan de .sm-modulo (el contenedor que envuelve
+   simat.php y simpade.php), así nada de este archivo se escapa a otras páginas y,
+   al revés, las reglas globales de base.css (input/select a 100 %, label con
+   margen superior, a:hover subrayado, button con transform, .panel-seccion:hover)
+   se neutralizan aquí solo dentro del módulo.
+   Usa los tokens de base.css: sigue solo el modo oscuro y el contraste alto.
+   ============================================================ */
+
+/* ---- Reseteos locales de reglas globales ---- */
+.sm-modulo { min-width: 0; }
+.sm-modulo *, .sm-modulo *::before, .sm-modulo *::after { box-sizing: border-box; }
+
+/* label global: display:block + margin-top:14px. En filtros y filas flex no debe empujar. */
+.sm-modulo .acad-filtros label,
+.sm-modulo .acad-acciones label,
+.sm-modulo .sm-check,
+.sm-modulo .sm-factor { margin-top: 0; margin-bottom: 0; }
+.sm-modulo .acad-filtros label { min-width: 0; color: var(--color-texto-suave, #6B6B6B); }
+.sm-modulo .acad-filtros input:not([type="checkbox"]):not([type="radio"]),
+.sm-modulo .acad-filtros select { width: auto; min-width: 9rem; max-width: 100%; }
+.sm-modulo .acad-filtros .sm-ancho input,
+.sm-modulo .acad-filtros .sm-ancho textarea { width: 100%; }
+
+/* input global: width:100% + padding. Casillas y radios vuelven a su tamaño natural. */
+.sm-modulo input[type="checkbox"],
+.sm-modulo input[type="radio"] { width: auto; min-width: 0; height: auto; padding: 0; margin: 0; flex: 0 0 auto;
+    background-image: none; box-shadow: none; accent-color: var(--color-dorado-oscuro, #E8B923); cursor: pointer; }
+
+/* Botones: sin el «salto» global dentro de tablas y filas de acciones; margen de preferencias.css fuera. */
+.sm-modulo .acad-filtros button,
+.sm-modulo .acad-acciones button,
+.sm-modulo .acad-tabla button,
+.sm-modulo .sm-sugerencia button { margin-top: 0; }
+.sm-modulo .acad-tabla button:hover,
+.sm-modulo .acad-acciones button:hover { transform: none; }
+.sm-modulo .acad-acciones form { align-items: center; }
+
+/* Enlaces del módulo: sin subrayado global al pasar el mouse en pestañas y botones. */
+.sm-modulo .sm-tabs a:hover,
+.sm-modulo a.boton:hover,
+.sm-modulo a.boton-secundario:hover { text-decoration: none; }
+
+/* Las secciones no deben «saltar» de sombra al pasar el mouse (panel.css) ni pegarse a las tablas. */
+.sm-modulo .panel-seccion { margin-bottom: var(--espacio-md, 16px); }
+.sm-modulo .panel-seccion:hover { box-shadow: var(--sombra-md); }
+.sm-modulo .panel-seccion .acad-filtros label { display: flex; flex-direction: column; gap: 4px; margin-top: 0; }   /* anula .rol-docente .panel-seccion form label */
+.sm-modulo .panel-seccion label.sm-check,
+.sm-modulo .panel-seccion label.sm-factor { display: flex; flex-direction: row; margin-top: 0; }
+.sm-modulo .panel-seccion > form > label,
+.sm-modulo .panel-seccion > form > label textarea { width: 100%; }
+
+/* Tablas: que scrolleen dentro de su envoltura y no ensanchen toda la página. */
+.sm-modulo .acad-tabla-envoltura { max-width: 100%; }
+.sm-modulo .acad-tabla { min-width: 520px; }
+.sm-modulo .acad-tabla select,
+.sm-modulo .acad-tabla input[type="text"] { width: 100%; }
+
+/* ---- Aviso de «año sin matrículas activas» ---- */
+.sm-modulo .sm-diagnostico { align-items: flex-start; line-height: 1.5; }
+.sm-modulo .sm-diagnostico a { font-weight: 700; text-decoration: underline; color: inherit; }
+
+/* ---- Pestañas ---- */
+.sm-modulo .sm-tabs { display: flex; flex-wrap: nowrap; gap: var(--espacio-xs, 4px); margin: var(--espacio-md, 16px) 0; padding: 0 0 2px;
+    border-bottom: 2px solid var(--color-borde, #E0DCCB); overflow-x: auto; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.sm-modulo .sm-tabs a { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; margin-bottom: -2px; text-decoration: none; white-space: nowrap;
+    color: var(--color-texto, #2B2B2B); font-weight: 600; font-size: var(--texto-sm, .875rem); border-radius: var(--radio-borde-sm, 8px) var(--radio-borde-sm, 8px) 0 0;
+    border-bottom: 2px solid transparent; transition: background-color var(--velocidad-rapida, .15s), border-color var(--velocidad-rapida, .15s); }
+.sm-modulo .sm-tabs a:hover { background: var(--color-fondo-alterno, #FAF7EE); border-bottom-color: var(--color-dorado-oscuro, #E8B923); color: var(--color-texto, #2B2B2B); }
+.sm-modulo .sm-tabs a:focus-visible { outline: 3px solid var(--color-dorado-oscuro, #E8B923); outline-offset: -3px; }
+.sm-modulo .sm-tabs a.activa { background: var(--color-dorado-medio, #F0C63E); color: #2B2B2B; border-bottom-color: var(--color-dorado-oscuro-texto, #6E5400); }
+html[data-tema="oscuro"] .sm-modulo .sm-tabs a.activa { color: #1C1A16; }
+.sm-modulo .sm-badge { display: inline-block; min-width: 1.3rem; padding: 1px 6px; border-radius: var(--radio-pill, 999px); background: var(--color-peligro, #C0392B);
+    color: var(--color-sobre-peligro, #fff); font-size: .72rem; font-weight: 700; line-height: 1.3; text-align: center; }
+
+/* ---- Tarjetas de indicadores ---- */
+.sm-modulo .sm-tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--espacio-sm, 8px); margin: var(--espacio-md, 16px) 0; }
+.sm-modulo .sm-tarjeta { display: flex; flex-direction: column; gap: 2px; padding: var(--espacio-md, 16px); border: 1px solid var(--color-borde, #E0DCCB);
+    border-left: 5px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); background: var(--color-superficie, #fff); box-shadow: var(--sombra-sm); }
+.sm-modulo .sm-tarjeta strong { font-family: var(--fuente-titulos, Georgia, serif); font-size: 2rem; line-height: 1.05; color: var(--color-texto, #2B2B2B); }
+.sm-modulo .sm-tarjeta span { font-size: var(--texto-sm, .875rem); color: var(--color-texto-suave, #6B6B6B); }
+.sm-modulo .sm-tarjeta.sm-ok { border-left-color: var(--color-exito, #337038); }
+.sm-modulo .sm-tarjeta.sm-aviso { border-left-color: var(--color-aviso, #8C5F09); }
+.sm-modulo .sm-tarjeta.sm-error { border-left-color: var(--color-peligro, #C0392B); }
+.sm-modulo .sm-tarjeta.sm-info { border-left-color: var(--color-info, #2E6E8E); }
+
+/* ---- Barra de avance (matrículas listas para reportar) ---- */
+.sm-modulo .sm-progreso { margin: var(--espacio-sm, 8px) 0 var(--espacio-md, 16px); }
+.sm-modulo .sm-progreso-pista { height: 12px; border-radius: var(--radio-pill, 999px); background: var(--color-fondo-alterno, #FAF7EE); border: 1px solid var(--color-borde, #E0DCCB); overflow: hidden; }
+.sm-modulo .sm-progreso-relleno { height: 100%; border-radius: var(--radio-pill, 999px); background: var(--color-exito, #337038); transition: width var(--velocidad-lenta, .5s) var(--curva-suave, ease); }
+.sm-modulo .sm-progreso small { display: block; margin-top: 4px; color: var(--color-texto-suave, #6B6B6B); }
+
+/* ---- Lista «Antes de reportar» ---- */
+.sm-modulo .sm-chequeo { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espacio-sm, 8px); }
+.sm-modulo .sm-chequeo li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-radius: var(--radio-borde-sm, 8px); background: var(--color-fondo-alterno, #FAF7EE); }
+.sm-modulo .sm-chequeo li span[aria-hidden] { flex: 0 0 auto; font-weight: 700; }
+.sm-modulo .sm-chk-ok { color: var(--color-exito, #337038); background: var(--color-exito-fondo, #E9F5EA) !important; }
+.sm-modulo .sm-chk-aviso { color: var(--color-aviso, #8C5F09); background: var(--color-aviso-fondo, #FCF3DA) !important; }
+.sm-modulo .sm-chk-error { color: var(--color-peligro, #C0392B); background: var(--color-peligro-fondo, #FBEAE8) !important; font-weight: 600; }
+
+/* ---- Errores y avisos por estudiante ---- */
+.sm-modulo .sm-problemas { margin: 0; padding-left: 1.1rem; font-size: var(--texto-sm, .875rem); display: grid; gap: 2px; }
+.sm-modulo .sm-p-error li::marker { color: var(--color-peligro, #C0392B); }
+.sm-modulo .sm-p-aviso li::marker { color: var(--color-aviso, #8C5F09); }
+.sm-modulo .sm-p-error { color: var(--color-peligro, #C0392B); }
+
+/* ---- Formularios de las vistas ---- */
+.sm-modulo .sm-columnas { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 16px; margin: var(--espacio-sm, 8px) 0 var(--espacio-md, 16px); }
+.sm-modulo .sm-check { display: flex; align-items: flex-start; gap: 8px; font-size: var(--texto-sm, .875rem); color: var(--color-texto, #2B2B2B); cursor: pointer; }
+.sm-modulo .sm-check input { margin-top: 3px; }
+.sm-modulo .sm-datos-tabla select,
+.sm-modulo .sm-datos-tabla input[type="text"] { width: 100%; min-width: 110px; }
+.sm-modulo .sm-ancho { flex: 1 1 280px; }
+.sm-modulo .sm-ancho input, .sm-modulo .sm-ancho textarea { width: 100%; }
+.sm-modulo .sm-sticky-guardar { position: sticky; bottom: 0; z-index: var(--z-elevado, 10); padding: 10px 0; background: linear-gradient(to top, var(--color-fondo, #F5F3EC) 70%, transparent); }
+
+/* ---- Detección (SIMPADE) ---- */
+.sm-modulo .sm-sugerencia { margin: var(--espacio-sm, 8px) 0; padding: 0; border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); background: var(--color-superficie, #fff); overflow: hidden; }
+.sm-modulo .sm-sugerencia summary { cursor: pointer; padding: 12px 16px; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.sm-modulo .sm-sugerencia summary::-webkit-details-marker { display: none; }
+.sm-modulo .sm-sugerencia summary::before { content: "▸"; color: var(--color-dorado-texto, #8A6A00); transition: transform var(--velocidad-rapida, .15s); }
+.sm-modulo .sm-sugerencia[open] summary::before { transform: rotate(90deg); }
+.sm-modulo .sm-sugerencia summary:hover { background: var(--color-fondo-alterno, #FAF7EE); }
+.sm-modulo .sm-sugerencia summary:focus-visible { outline: 3px solid var(--color-dorado-oscuro, #E8B923); outline-offset: -3px; }
+.sm-modulo .sm-sugerencia[open] summary { border-bottom: 1px solid var(--color-borde, #E0DCCB); }
+.sm-modulo .sm-sugerencia form { padding: 12px 16px 16px; }
+.sm-modulo .sm-factor { display: flex; align-items: flex-start; gap: 8px; color: var(--color-texto, #2B2B2B); font-size: inherit; }
+.sm-modulo .sm-factor input { margin-top: 4px; }
+
+/* ---- Casos y seguimiento (SIMPADE) ---- */
+.sm-modulo .sm-vencido { display: inline-block; margin-top: 4px; padding: 1px 8px; border-radius: var(--radio-pill, 999px); font-size: .72rem; font-weight: 700;
+    color: var(--color-peligro, #C0392B); background: var(--color-peligro-fondo, #FBEAE8); border: 1px solid currentColor; }
+.sm-modulo .sm-proximo { display: block; margin-top: 4px; font-size: var(--texto-xs, .78rem); color: var(--color-info, #2E6E8E); }
+.sm-modulo .sm-linea { list-style: none; margin: var(--espacio-md, 16px) 0 0; padding: 0 0 0 18px; border-left: 2px solid var(--color-borde, #E0DCCB); display: grid; gap: var(--espacio-md, 16px); }
+.sm-modulo .sm-linea li { position: relative; padding: 10px 14px; border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde-sm, 8px); background: var(--color-superficie, #fff); }
+.sm-modulo .sm-linea li::before { content: ""; position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--color-dorado-medio, #F0C63E); border: 2px solid var(--color-superficie, #fff); box-shadow: 0 0 0 1px var(--color-dorado-oscuro-texto, #6E5400); }
+.sm-modulo .sm-linea small { color: var(--color-texto-suave, #6B6B6B); }
+.sm-modulo .sm-causas { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.sm-modulo .sm-causas li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.sm-modulo .sm-causas .sm-barra { grid-column: 1 / -1; height: 8px; border-radius: var(--radio-pill, 999px); background: var(--color-fondo-alterno, #FAF7EE); border: 1px solid var(--color-borde, #E0DCCB); overflow: hidden; }
+.sm-modulo .sm-causas .sm-barra i { display: block; height: 100%; background: var(--color-dorado-oscuro, #E8B923); }
+
+/* ---- Conciliación ---- */
+.sm-modulo .sm-detalle-dif { max-width: 62ch; }
+
+/* ---- Error visible del módulo (smPanelError) ---- */
+.sm-modulo .sm-falla { align-items: flex-start; line-height: 1.5; }
+.sm-modulo .sm-falla code { padding: 1px 6px; border-radius: 6px; background: var(--color-superficie, #fff); word-break: break-word; user-select: all; }
+
+/* ---- Estados SIMAT y pasos de reporte ---- */
+.sm-modulo .sm-estados { list-style: none; margin: var(--espacio-sm, 8px) 0; padding: 0; display: grid; gap: 8px; }
+.sm-modulo .sm-estados li { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.sm-modulo .sm-pasos { margin: var(--espacio-md, 16px) 0 0; padding-left: 1.3rem; display: grid; gap: 6px; }
+
+/* ---- Filas ocultas por el filtro en vivo (simat.js): ningún display global debe mostrarlas ---- */
+.sm-modulo tr[hidden] { display: none !important; }
+.sm-modulo input[type="search"] { -webkit-appearance: none; appearance: none; }
+
+/* ---- Móvil ---- */
+@media (max-width: 600px) {
+    .sm-modulo .sm-tabs a { padding: 9px 12px; font-size: .85rem; }
+    .sm-modulo .sm-tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sm-modulo .sm-tarjeta strong { font-size: 1.6rem; }
+    .sm-modulo .sm-linea { padding-left: 14px; }
+    .sm-modulo .sm-linea li::before { left: -22px; }
+    .sm-modulo .acad-filtros label,
+    .sm-modulo .acad-filtros input:not([type="checkbox"]):not([type="radio"]),
+    .sm-modulo .acad-filtros select { width: 100%; }
+}
+
+/* ---- Movimiento reducido ---- */
+@media (prefers-reduced-motion: reduce) {
+    .sm-modulo .sm-progreso-relleno, .sm-modulo .sm-tabs a, .sm-modulo .sm-sugerencia summary::before { transition: none; }
+}
+
+/* ---- Impresión ---- */
+@media print {
+    .sm-modulo .sm-tabs, .sm-modulo .sm-sticky-guardar, .sm-modulo .sm-badge, .sm-modulo .sm-diagnostico { display: none !important; }
+    .sm-modulo .sm-tarjeta, .sm-modulo .sm-sugerencia, .sm-modulo .sm-linea li { box-shadow: none; break-inside: avoid; }
+    .sm-modulo .sm-sugerencia > *:not(summary) { display: block; }
+}

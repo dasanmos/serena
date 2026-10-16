@@ -1,0 +1,229 @@
+/* ============================================================
+   SERENA — chat.css
+   Chat interno estudiante <-> psicólogo/orientador.
+   ============================================================ */
+
+#chat-mensajes, #mensajes {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-dorado-claro) transparent;
+}
+#chat-mensajes::-webkit-scrollbar, #mensajes::-webkit-scrollbar { width: 6px; }
+#chat-mensajes::-webkit-scrollbar-thumb, #mensajes::-webkit-scrollbar-thumb {
+    background: var(--color-dorado-claro);
+    border-radius: var(--radio-pill);
+}
+
+.ventana-chat {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: var(--sombra-md);
+    margin-bottom: var(--espacio-md);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.burbuja {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: var(--radio-borde);
+    font-size: var(--texto-sm);
+    line-height: 1.4;
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+    word-wrap: break-word;
+}
+
+.burbuja-otro {
+    align-self: flex-start;
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto);
+    border-bottom-left-radius: 4px;
+}
+
+.burbuja-propia {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    color: var(--color-texto);
+    border-bottom-right-radius: 4px;
+}
+
+.burbuja-hora {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--color-texto-suave);
+    margin-top: 3px;
+    opacity: 0.8;
+}
+.burbuja-propia .burbuja-hora { color: rgba(43, 43, 43, 0.65); }
+
+.chat-vacio {
+    margin: auto;
+    text-align: center;
+    color: var(--color-texto-suave);
+    font-size: var(--texto-sm);
+}
+
+/* --- Indicador "escribiendo..." (decorativo, listo para conectarse a polling real).
+   Nombrado ".indicador-escribiendo" (no ".escribiendo" a secas) a propósito: esa clase
+   genérica chocaba con la clase "escribiendo" que usa el efecto de escritura de los
+   saludos (base.js/base.css) — como este archivo se carga después de base.css, sus
+   reglas (display:inline-flex + padding) le ganaban por orden de cascada al saludo
+   mientras estaba animando, rompiéndole el layout en cualquier pantalla ancha donde
+   el desajuste se nota más. --- */
+.indicador-escribiendo {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+    padding: 10px 14px;
+}
+.indicador-escribiendo span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-texto-suave);
+    animation: rebote-punto 1.2s infinite ease-in-out;
+}
+.indicador-escribiendo span:nth-child(2) { animation-delay: 0.15s; }
+.indicador-escribiendo span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes rebote-punto {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+.form-chat { display: flex; gap: 10px; }
+.form-chat input { flex: 1; }
+
+/* --- Lista de conversaciones (lado psicólogo/orientador) --- */
+.lista-conversaciones a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: var(--radio-borde-sm);
+    margin-bottom: 4px;
+    color: var(--color-texto);
+    transition: background var(--velocidad-rapida) var(--curva-suave);
+}
+.lista-conversaciones a:hover { background: var(--color-fondo-alterno); text-decoration: none; }
+.lista-conversaciones a.activa { background: var(--color-dorado-claro); font-weight: 600; }
+
+.badge-no-leidos {
+    background: var(--color-peligro);
+    color: var(--color-sobre-peligro);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: var(--radio-pill);
+    animation: latido 1.6s ease-in-out infinite;
+}
+
+@media (max-width: 600px) {
+    .ventana-chat { height: 320px; }
+    .burbuja { max-width: 88%; }
+}
+
+/* --- Selector de personas para iniciar chat nuevo (personal, nunca estudiantes) --- */
+.selector-personas { margin-top: var(--espacio-lg); }
+.lista-selector-personas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+}
+.item-selector-persona { margin: 0; }
+.item-selector-persona button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto);
+    box-shadow: none;
+    padding: 10px 16px;
+}
+.item-selector-persona button:hover { background: var(--color-dorado-claro); }
+.nombre-persona { font-weight: 600; font-size: var(--texto-sm); }
+
+/* ============================================================
+   AMPLIACIÓN — Estado de entrega/lectura del mensaje propio
+   ============================================================ */
+.burbuja-propia .estado-mensaje {
+    font-size: 0.6rem;
+    margin-left: 4px;
+    opacity: 0.75;
+}
+.estado-mensaje.leido { color: var(--color-info); opacity: 1; }
+
+/* --- Adjuntos dentro de una burbuja (imagen o archivo) --- */
+.adjunto-mensaje-imagen {
+    max-width: 220px;
+    border-radius: var(--radio-borde-sm);
+    margin-top: 6px;
+    display: block;
+    cursor: pointer;
+    transition: transform var(--velocidad-rapida) var(--curva-suave);
+}
+.adjunto-mensaje-imagen:hover { transform: scale(1.02); }
+.adjunto-mensaje-archivo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.35);
+    border-radius: var(--radio-borde-sm);
+    padding: 8px 10px;
+    margin-top: 6px;
+    font-size: var(--texto-xs);
+}
+
+/* --- Separador de fecha dentro de la conversación --- */
+.separador-fecha-chat {
+    align-self: center;
+    background: var(--color-fondo-alterno);
+    color: var(--color-texto-suave);
+    font-size: var(--texto-xs);
+    padding: 3px 12px;
+    border-radius: var(--radio-pill);
+    margin: 6px 0;
+}
+
+/* --- Distingue conversaciones estudiante↔psicólogo/orientador de las
+   conversaciones internas personal↔personal (canal académico y de
+   coordinación de convivencia), para que no se confundan de un vistazo --- */
+.lista-conversaciones a.canal-academico { border-left: 3px solid var(--color-rol-docente); padding-left: 9px; }
+.lista-conversaciones a.canal-bienestar { border-left: 3px solid var(--color-rol-psicologo); padding-left: 9px; }
+.lista-conversaciones a.canal-interno { border-left: 3px solid var(--color-rol-administrador); padding-left: 9px; }
+.etiqueta-canal-chat {
+    font-size: var(--texto-xs);
+    color: var(--color-texto-suave);
+}
+
+/* --- Cabecera de conversación activa (nombre + rol + acciones) --- */
+.cabecera-conversacion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-sm);
+    padding-bottom: var(--espacio-sm);
+    margin-bottom: var(--espacio-sm);
+    border-bottom: 1px solid var(--color-borde);
+}
+.cabecera-conversacion .info-contacto-chat { display: flex; align-items: center; gap: 10px; }
+.cabecera-conversacion .nombre-contacto-chat { font-weight: 700; font-size: var(--texto-sm); }
+
+/* --- Chat en pantalla completa en móvil: lista y ventana no compiten
+   por espacio en pantallas angostas --- */
+@media (max-width: 700px) {
+    .diseno-chat { display: block; }
+    .diseno-chat .panel-lista-conversaciones,
+    .diseno-chat .panel-ventana-chat { width: 100%; }
+    .diseno-chat.mostrando-conversacion .panel-lista-conversaciones { display: none; }
+    .diseno-chat:not(.mostrando-conversacion) .panel-ventana-chat { display: none; }
+    .boton-volver-lista-chat { display: inline-flex; margin-bottom: var(--espacio-sm); }
+}
+@media (min-width: 701px) {
+    .diseno-chat { display: grid; grid-template-columns: 280px 1fr; gap: var(--espacio-lg); align-items: start; }
+    .boton-volver-lista-chat { display: none; }
+}

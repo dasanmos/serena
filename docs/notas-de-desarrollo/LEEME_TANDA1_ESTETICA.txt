@@ -1,0 +1,16 @@
+SERENA - Tanda 1 de estetica (tokens y base)
+============================================
+ORDEN: 1) Respaldo de public/assets/css. 2) Subir los 9 CSS respetando rutas. 3) Ctrl+F5 (limpia cache).
+NO toca PHP ni base de datos.
+
+QUE CAMBIA
+ base.css: tokens nuevos (--color-tinta-fija, --gradiente-dorado*, --anillo-foco, --objetivo-tactil);
+   titulos fluidos (--texto-xl/2xl con clamp); color-scheme (controles nativos oscuros en modo oscuro);
+   ::selection dorada; text-wrap balance/pretty; objetivos tactiles de 44px solo en pantallas tactiles;
+   sin blur con prefers-reduced-transparency; prefers-contrast:more.
+ ayuda, docente, elegir_rol, login_pro, mapas, panel, psicologo, superadmin (.css):
+   degradados dorados y tinta #2B2B2B pasan a tokens (antes fijos).
+SE DEJO FIJO A PROPOSITO: impresion (#fff/#000/#999), mapa de calor, seccion oscura de la landing, globos de Leaflet.
+
+A REVISAR A OJO (no se probo en navegador): lado dorado del login y botones dorados en MODO OSCURO,
+ahora algo mas atenuados; contraste minimo de la tinta sobre ellos: 5.44:1.

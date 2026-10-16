@@ -1,0 +1,36 @@
+SERENA - Funciones EDUCORE, Tanda 2: HORARIOS
+==============================================
+ORDEN: 1) Respaldo de la base de datos y de los archivos que se reemplazan.
+       2) Ejecutar en phpMyAdmin: sql/migraciones/037_horarios.sql (una vez; es reejecutable).
+       3) Subir los archivos respetando rutas. 4) Ctrl+F5.
+Requiere 034 y 035 (existentes). Sube DESPUES de la Tanda 1 de EDUCORE (asistencia): ambas modifican
+src/helpers/navegacion.php y esta version incluye los enlaces de las dos.
+
+PRIMER PASO EN EL COLEGIO: Horarios > "Franjas horarias" (viene precargada una propuesta de 6 horas + descanso;
+ajusta las horas y guarda). Luego Horarios > "Horario por grupo".
+
+QUE HACE
+ - Franjas horarias del colegio (horas de timbre, con marca de descanso). No deja quitar una franja con clases.
+ - Editor por grupo: cuadricula dia x franja; en cada celda eliges la clase (asignatura + docente del Plan
+   academico) y, opcionalmente, el salon. Muestra en vivo las horas por semana de cada asignatura frente a su
+   intensidad horaria ("faltan 2", "sobran 1", "✓"). Opcion "Mostrar sabado".
+ - Deteccion de cruces al guardar (todo o nada): el mismo DOCENTE en dos grupos a la misma hora, el mismo SALON
+   en dos grupos a la misma hora (ignora mayusculas y espacios) y clases en el DESCANSO. Explica cada cruce.
+ - Panel "Cruces que debes resolver": detecta los que aparecen DESPUES (por ejemplo, al cambiar el docente de una
+   clase en Plan academico).
+ - Vistas: estudiante (su grupo), acudiente (el de sus hijos), docente ("Mi horario"), y personal directivo
+   (cualquier grupo o docente). Marca el dia de hoy con texto, se imprime bien.
+ - Acciones del editor quedan en auditoria. Solo administrador, rector, coordinador y secretaria academica editan.
+
+ARCHIVOS NUEVOS: 037_horarios.sql, src/modelos/Horario.php, public/horarios_admin.php, public/horario.php,
+ public/assets/css/horarios.css
+ARCHIVO MODIFICADO: src/helpers/navegacion.php (enlaces "Horarios", "Mi horario", "Horario").
+
+PRUEBAS REALIZADAS (MariaDB + servidor PHP local, modo ONLY_FULL_GROUP_BY como MySQL 8):
+ 26 del modelo (franjas, cruces, todo-o-nada, reemplazo, franjas en uso), 24 de integracion HTTP (permisos por
+ rol y colegio, CSRF, escape de HTML, auditoria) y 9 de JavaScript en DOM simulado (conteo de horas, cambios sin
+ guardar). NO se vio en navegador ni se probo con tus datos reales: revisa el editor en celular (la tabla
+ se desplaza horizontalmente) y en modo oscuro.
+
+NO INCLUYE: generacion automatica de horarios, disponibilidad horaria de docentes, salones como catalogo,
+ horarios distintos por jornada o semana A/B.

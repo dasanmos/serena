@@ -1,0 +1,68 @@
+/* ============================================================
+   SERENA — docente.css
+   Rol docente (body.rol-docente, lo pone encabezado.php; se carga solo para
+   este rol). El docente entra entre clases, con poco tiempo: necesita
+   encontrar a un estudiante, abrir su resumen y, si algo le preocupa, avisar
+   a psicología sin dudar. No ve emociones, así que la pantalla es de lista y
+   de acción, no de análisis.
+   ============================================================ */
+
+:root { --doc-tinta: #2B2B2B; } /* texto sobre dorado: --color-texto es claro en modo oscuro */
+
+/* --- Panel: cifras alineadas a la izquierda y etiquetas en minúscula normal --- */
+.rol-docente .tarjetas-resumen .tarjeta { text-align: left; padding: var(--espacio-md) var(--espacio-lg); }
+.rol-docente .tarjetas-resumen .tarjeta-icono { margin-left: 0; }
+.rol-docente .tarjeta-numero { font-variant-numeric: tabular-nums; }
+.rol-docente .tarjeta-etiqueta { text-transform: none; letter-spacing: 0; font-size: var(--texto-sm); }
+.rol-docente .tarjeta:hover { transform: none; }
+.rol-docente .panel-seccion:hover { box-shadow: var(--sombra-md); }
+
+/* --- Mi grupo: cada estudiante es una fila con dos zonas ---
+   Arriba el nombre (abre su resumen); abajo, aparte, el aviso a psicología.
+   Así el botón importante no compite con el nombre ni se parte en celular. */
+.rol-docente .roster-grupo { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.rol-docente .tarjeta-estudiante-roster {
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--espacio-sm);
+}
+.rol-docente .tarjeta-estudiante-roster:hover { transform: none; box-shadow: var(--sombra-sm); }
+.rol-docente .tarjeta-estudiante-roster > a { flex: 1 1 100%; padding: var(--espacio-xs) 0; }
+.rol-docente .tarjeta-estudiante-roster > a:hover { text-decoration: none; }
+.rol-docente .tarjeta-estudiante-roster > a:hover .nombre-estudiante-roster { color: var(--color-dorado-texto); }
+.rol-docente .tarjeta-estudiante-roster > a:focus-visible { outline-offset: 4px; }
+.rol-docente .tarjeta-estudiante-roster .nombre-estudiante-roster { font-size: var(--texto-base); }
+.rol-docente .tarjeta-estudiante-roster .detalle-roster { display: block; font-size: var(--texto-sm); margin-top: 2px; }
+.rol-docente .tarjeta-estudiante-roster form {
+    flex: 1 1 100%;
+    padding-top: var(--espacio-sm);
+    border-top: 1px solid var(--color-fondo-alterno);
+}
+.rol-docente .tarjeta-estudiante-roster form .boton-secundario {
+    width: 100%;
+    min-height: 40px;
+    font-size: var(--texto-sm);
+    padding: 8px 14px;
+}
+
+/* --- Aviso de confidencialidad (arriba de Mi grupo): informa, no alarma --- */
+.rol-docente .recordatorio-criterio-humano { line-height: 1.5; }
+
+/* --- Resumen de un estudiante --- */
+.rol-docente .nota-vista-docente { max-width: 68ch; margin-bottom: var(--espacio-lg); }
+.rol-docente .lista-simple li { font-size: var(--texto-base); animation: none; }
+
+/* --- Pulso de grupo --- */
+.rol-docente .panel-seccion form label { display: block; margin-top: var(--espacio-md); font-weight: 600; }
+.rol-docente .panel-seccion form label:first-of-type { margin-top: 0; }
+.rol-docente .pista-barra-pulso { height: 14px; }
+.rol-docente .numero-barra-pulso { font-variant-numeric: tabular-nums; }
+.rol-docente .lista-historial-pulso li { animation: none; }
+/* Párrafos explicativos: líneas de largo cómodo */
+.rol-docente h1 + p.texto-suave { max-width: 68ch; }
+
+@media (max-width: 600px) {
+    .rol-docente .tarjetas-resumen { grid-template-columns: repeat(2, 1fr); gap: var(--espacio-sm); }
+    .rol-docente .tarjetas-resumen .tarjeta { padding: var(--espacio-md); }
+    .rol-docente .roster-grupo { grid-template-columns: 1fr; }
+}

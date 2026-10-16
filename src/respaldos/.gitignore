@@ -1,0 +1,4 @@
+# No subir copias de seguridad reales al repositorio — contienen todos los datos
+# personales de usuarios y estudiantes (Ley 1581), igual que src/uploads/diario/.
+*
+!.gitignore

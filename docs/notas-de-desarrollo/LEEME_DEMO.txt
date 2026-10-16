@@ -1,0 +1,34 @@
+SERENA - MODO DEMOSTRACION (una sola cuenta, todos los roles)
+=============================================================
+
+NO REQUIERE MIGRACION SQL NUEVA (usa las existentes; la 030 de usuario maestro y la 034-038 del modulo academico deben estar aplicadas).
+
+COMO SE USA
+ 1. Inicia sesion con la cuenta MAESTRA (superadmin con es_maestro = 1). Aparece el selector de rol, con el enlace "Modo demostracion".
+ 2. En demo.php pulsa "Preparar datos de demostracion" (la primera vez; despues sirve para "Restablecer").
+ 3. Elige un rol y pulsa "Entrar": la sesion pasa a ser el usuario demo de ese rol (Estudiante, Acudiente, Docente, Orientador,
+    Psicologo, Coordinador, Rector, Secretaria academica, Administrador; ademas Secretaria de Educacion y Superadmin con tu propia cuenta).
+ 4. Dentro de la demo, la barra superior permite CAMBIAR DE ROL al instante (lista desplegable), abrir el GUION del rol y "Salir de la demo".
+ 5. "Ver guion" lista, por rol, las funciones que conviene mostrar, con enlace directo a cada una.
+
+DATOS DE DEMOSTRACION (colegio ficticio aparte, DANE 999999999999, "Colegio Demostracion SERENA")
+ - 1 usuario por rol (correos demo.<rol>@serena-demo.test) + 2 docentes, 24 estudiantes en Sexto A/B y Decimo A/B, 1 acudiente (Valentina y Sofia).
+ - Ano lectivo 2026 con 4 periodos, escala 1.0-5.0, 5 asignaturas por grupo, actividades y notas; periodos cerrados con boletin publicado.
+ - En el periodo en curso, "Evaluacion escrita" queda SIN notas a proposito: sirve para mostrar el DICTADO DE NOTAS POR VOZ.
+ - Numero de matricula y documento de identidad (ficticios) de cada estudiante.
+ - Bienestar: 21 dias de emociones y sueno, habitos con rachas, metas, diario, una alerta alta (Mateo), una cita y un chat con el psicologo.
+ - NO se siembran: encuestas, inscripciones publicas, observador/disciplina, asistencia, planeaciones, insignias. Se pueden mostrar creandolos en vivo.
+ - "Restablecer" borra y recrea SOLO el colegio demo: lo que cambies durante la presentacion vuelve a su estado inicial.
+
+SEGURIDAD
+ - Los usuarios demo tienen una contrasena aleatoria que nadie conoce: solo se llega a ellos desde la cuenta maestra (se valida en la BD en cada solicitud).
+ - Ningun correo sale hacia direcciones @serena-demo.test (enviarCorreo las ignora).
+ - Entrar y sembrar quedan en la auditoria.
+ - Superadmin y Secretaria de Educacion muestran los colegios REALES: para una presentacion publica, evitalos.
+
+ARCHIVOS
+ Nuevos:      public/demo.php, public/assets/css/demo.css, src/helpers/demo.php, LEEME_DEMO.txt
+ Modificados: src/helpers/auth.php (demo.php permitido antes de elegir rol), src/helpers/correo.php (no enviar a cuentas demo),
+              public/elegir_rol.php (enlace al modo demo), public/parciales/encabezado.php (barra de demo con cambio de rol)
+
+PENDIENTE: paquete armado sin ejecutar pruebas. Antes de presentar, hacer un ensayo: preparar datos, entrar a cada rol y revisar.

@@ -1,0 +1,50 @@
+SERENA - Pestana "Seguimiento" (antes "Planilla de notas")
+===========================================================
+
+MIGRACION SQL (una vez, reejecutable): sql/migraciones/038_codigo_matricula.sql
+  Agrega usuarios.codigo_matricula (el numero de matricula). La foto usa la columna que ya existia (usuarios.foto).
+  Si la 038 no se ha ejecutado, Seguimiento sigue funcionando y muestra el id del estudiante como codigo de respaldo.
+
+ARCHIVOS NUEVOS
+ sql/migraciones/038_codigo_matricula.sql
+ public/docente/seguimiento.php         Pagina principal: Periodo > Grupo > Asignatura (> Evaluacion), tabla y panel.
+ public/docente/foto_estudiante.php     Sirve la foto del estudiante (con permisos) o una silueta si no tiene.
+ public/assets/css/seguimiento.css
+ public/assets/js/seguimiento.js
+ src/helpers/fotosEstudiantes.php       Subir / reemplazar / quitar foto.
+ src/uploads/fotos_estudiantes/         Carpeta de fotos (con .htaccess que niega el acceso directo). Debe poder escribirse (755/775).
+
+ARCHIVOS MODIFICADOS
+ src/helpers/navegacion.php             "Planilla de notas" / "Planillas" ahora dicen "Seguimiento" (docente, rector, admin, secretaria academica).
+ public/docente/planilla.php            Ahora se titula "Actividades y logros" y tiene enlace "Volver a Seguimiento".
+ public/administrador/salud.php         Muestra el espacio que ocupan las fotos.
+ src/modelos/Academico.php              Nuevo asegurarCodigosMatricula() y se llama al matricular.
+ src/ayuda/contenido.json               Textos de ayuda actualizados.
+
+COMO FUNCIONA
+ - Elige Periodo, luego Grupo, luego Asignatura: la tabla (Codigo, Estudiante, Escala valorativa, Nota) se carga sola.
+ - "Evaluacion": "Evaluacion de periodo" (nota calculada, solo lectura) o una actividad (se califica).
+ - Al tocar un estudiante, el panel derecho muestra su foto, su nota parcial (editable si es una actividad) y la fecha.
+ - "Copiar nota" rellena la tabla (a todos o solo a los que no tienen nota); se guarda con "Confirmar" (arriba a la derecha).
+ - Las actividades y logros se crean en "Actividades y logros" (enlace a la derecha de los selectores).
+ - CODIGO = NUMERO DE MATRICULA: un consecutivo por colegio (000001, 000002...), fijo para siempre. Se asigna solo al matricular
+   (Academico::matricularDesdeInscripcion) y, a los estudiantes que ya existen, la primera vez que se abre Seguimiento (en orden de id).
+ - DOCUMENTO: tipo y numero (ej. "TI 1021345678"), tomados de la hoja de vida; si no hay, de la ultima inscripcion.
+   Ojo: son datos de menores; solo los ve el personal con acceso a Seguimiento.
+ - DICTADO DE NOTAS (como el Master 2000): elige una actividad en "Evaluacion", pulsa "Dictar notas" y di: "Juan Perez 4.5".
+   Reconoce tambien "cuatro punto cinco", "cuatro y medio" y varias notas seguidas. En escala descriptiva: "Juan Perez alto".
+   Busca el nombre entre los estudiantes del grupo (sin tildes, en cualquier orden, tolera un error de letra). Si el nombre coincide con
+   varios o no aparece, no aplica nada y lo avisa en la lista de abajo. Una nota fuera de la escala tampoco se aplica.
+   Por defecto cada nota se guarda al reconocerla (casilla "Guardar cada nota al reconocerla"); si la desmarcas, quedan en la tabla
+   hasta pulsar "Confirmar". Tambien se puede escribir la frase en el recuadro y pulsar Aplicar (sirve en navegadores sin voz).
+   Necesita Chrome o Edge y permiso de microfono (el audio lo procesa Google/Microsoft; Serena no lo guarda).
+
+FOTOS (configuradas, sin subir ninguna por ahora)
+ - Mientras un estudiante no tenga foto se ve una silueta azul. No se guarda nada en el hosting.
+ - Cuando quieran: en el panel derecho, "Subir foto". Si el servidor tiene GD, la foto se reduce a maximo 480 px y se guarda en JPG
+   (suele quedar en 20-50 KB). Sin GD se exige que pese menos de 600 KB.
+ - Reemplazar o "Quitar" borra el archivo anterior, para no gastar espacio.
+ - Las fotos NO son publicas: solo las ve el personal con acceso a Seguimiento (el docente, solo las de sus grupos).
+
+PENDIENTE / A REVISAR
+ - Este paquete se armo sin ejecutar pruebas (como se pidio). Conviene abrir Seguimiento una vez con un docente y con el administrador.

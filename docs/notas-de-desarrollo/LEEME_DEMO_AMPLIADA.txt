@@ -1,0 +1,60 @@
+SERENA - MODO DEMOSTRACION AMPLIADO (todos los roles, todos los modulos)
+=========================================================================
+SIN MIGRACION SQL NUEVA. Subir respetando rutas, Ctrl+F5, y en demo.php pulsar "Restablecer datos de demostracion"
+(es necesario para que se creen los datos nuevos).
+
+1) SELECTOR DE ROL (elegir_rol.php)
+ - Ahora incluye Secretaria academica (antes faltaba) y los roles quedan agrupados:
+   Plataforma y territorio / Direccion y administracion / Bienestar y aula.
+ - Estudiante y Acudiente aparecen como tarjetas "solo en modo demostracion" (necesitan un grupo y vinculos
+   familiares, por eso no se entra con ellos a un colegio real).
+ - Cada rol muestra cuantos modulos tiene; enlaces a la demo y al Mapa de modulos.
+
+2) PANTALLA DE DEMO (demo.php)
+ - Roles agrupados por familia, con numero de modulos y 4 destacados.
+ - GUION POR ROL: todos los modulos agrupados como el menu lateral. Cada uno trae: que es, QUE DECIR (texto para
+   leer en voz alta), que mirar con los datos demo, casilla "Presentado" (se guarda en el navegador), buscador,
+   barra de avance, imprimir y navegacion al rol anterior/siguiente.
+ - Recorrido sugerido de ~8 minutos al inicio de cada guion.
+ - "Entrar y abrir": entra con ese rol y abre directamente el modulo (solo acepta rutas del guion de ese rol).
+ - MAPA DE MODULOS (demo.php?mapa=1): matriz modulo x rol con buscador.
+
+3) QUE MODULOS CUBRE EL GUION (11 roles, cada uno con "Cuenta": Seguridad, Mis sesiones, Preferencias, Ayuda)
+ Estudiante: inicio, emociones, sueno, diario, habitos, metas, recordatorios, citas, encuestas, chat, recursos de apoyo,
+   respiracion, ayuda urgente, estadisticas, calendario, notificaciones, perfil, notas, horario, asistencia, hoja de vida.
+ Acudiente: panel, hoja de vida, boletines, asistencia, horario.
+ Docente: panel, mi grupo, tomar asistencia, reporte de asistencia, planeador, seguimiento (dictado por voz), horario,
+   informes, refuerzos, hoja de vida, pulso.
+ Orientador y Psicologo: paneles, alertas, estudiantes, casos, seguimientos, caracterizacion, informes, SIMPADE, agenda,
+   encuestas, reportes.
+ Coordinador: panel, reportes, casos, caracterizacion, boletines, refuerzos, horarios, reporte de asistencia, informes,
+   SIMPADE, restaurante.
+ Rector / Secretaria academica / Administrador: matricula (inscripciones, matriculas, aprobaciones), academico (anios,
+   plan, evaluacion, seguimiento, refuerzos, boletines, certificados, plantillas), horarios y asistencia, informes,
+   SIMAT, SIMPADE, restaurante, cartera, institucion, grupos, usuarios, importar, promocion, auditoria, ver como,
+   lugares de ayuda, configuracion, salud del sistema.
+ Secretaria de Educacion y Superadmin: paneles, comparativo, reportes, colegios, personal, secretarias, territorio,
+   comunicados, traslados, salud, diagnostico de IA, respaldos y ajustes, datos de prueba.
+
+4) DATOS NUEVOS EN "PREPARAR / RESTABLECER" (antes esos modulos salian vacios)
+ Perfil institucional; horarios (7 franjas, clases de los 4 grupos sin cruces); asistencia (10 dias habiles, Mateo con
+ 4 ausencias sin justificar -> alerta de ausentismo); hoja de vida (contacto, salud basica, contactos de emergencia);
+ observador (5 anotaciones); convivencia (2 procesos); horas formativas; 1 apoyo pedagogico (PIAR); refuerzos
+ (pendiente, presentado, aprobado) y plan de mejoramiento; caracterizacion (6); restaurante (10 beneficiarios,
+ asistencia y pagos); cartera (cargos y pagos completos/parciales); pulso de grupo; encuesta de clima escolar con
+ respuestas; 4 inscripciones. Ya existian: notas, bienestar, alerta, cita, chat, SIMAT y SIMPADE.
+ Cada bloque es independiente: si a un modulo le falta su migracion, solo ese bloque se omite y el mensaje lo dice.
+ No se siembran (se muestran creandolos en vivo): certificados emitidos, comunicados, informes generados, insignias.
+
+ARCHIVOS
+ NUEVOS:      src/helpers/demo_guion.php, src/helpers/demo_datos.php, public/assets/js/demo.js
+ MODIFICADOS: src/helpers/demo.php, public/demo.php, public/elegir_rol.php, public/assets/css/demo.css,
+              public/assets/css/elegir_rol.css
+ (demo.php y elegir_rol.php ya traen la pagina de "sin permiso" del paquete anterior.)
+
+PARA AGREGAR UN MODULO NUEVO AL GUION: una entrada en demoModulosBase() y su clave en el rol, en src/helpers/demo_guion.php.
+
+NO SE EJECUTO NADA (ni servidor, ni pruebas, ni sintaxis). Ensayo recomendado antes de presentar:
+ a) Restablecer datos y mirar el mensaje: debe decir "Horarios...", "Asistencia...", etc. sin "(... no se pudo sembrar)".
+ b) Abrir un guion, usar "Entrar y abrir" en 3 modulos, marcar "Presentado" y recargar.
+ c) Mapa de modulos y buscador.

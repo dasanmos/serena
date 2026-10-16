@@ -1,0 +1,3 @@
+# Block direct access to src/ and sql/ directories
+RewriteEngine On
+RewriteRule ^(src|sql)/.*$ - [F,L]

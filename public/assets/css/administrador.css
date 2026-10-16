@@ -1,0 +1,164 @@
+/* ============================================================
+   SERENA — administrador.css
+   Panel de administrador: usuarios, grupos, aprobaciones,
+   auditoría. Acciones sensibles necesitan jerarquía visual clara.
+   ============================================================ */
+
+/* --- Filas de solicitudes de aprobación --- */
+.solicitud-cambio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    padding: var(--espacio-md);
+    border-radius: var(--radio-borde);
+    background: var(--color-superficie);
+    box-shadow: var(--sombra-sm);
+    margin-bottom: var(--espacio-sm);
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+}
+
+.solicitud-cambio .detalle-cambio {
+    font-size: var(--texto-sm);
+}
+.solicitud-cambio .valor-anterior { color: var(--color-error); text-decoration: line-through; opacity: 0.7; }
+.solicitud-cambio .valor-nuevo { color: var(--color-exito); font-weight: 600; }
+
+.solicitud-cambio .acciones-solicitud { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* --- Bitácora de auditoría --- */
+.fila-auditoria td:first-child { color: var(--color-texto-suave); font-size: var(--texto-xs); white-space: nowrap; }
+.accion-auditoria {
+    font-family: monospace;
+    font-size: var(--texto-xs);
+    background: var(--color-fondo-alterno);
+    padding: 2px 8px;
+    border-radius: var(--radio-borde-sm);
+}
+
+/* --- Formulario de importación masiva (CSV) --- */
+.zona-carga {
+    border: 2px dashed var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-xl);
+    text-align: center;
+    color: var(--color-texto-suave);
+    transition: border-color var(--velocidad-rapida) var(--curva-suave), background var(--velocidad-rapida) var(--curva-suave);
+}
+.zona-carga:hover, .zona-carga.arrastrando {
+    border-color: var(--color-dorado-oscuro);
+    background: var(--color-fondo-alterno);
+}
+
+/* --- Contador grande de resumen institucional (rector/coordinador) --- */
+.metrica-institucional {
+    text-align: center;
+    padding: var(--espacio-lg);
+}
+.metrica-institucional .valor {
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-2xl);
+    color: var(--color-dorado-texto);
+    display: block;
+    animation: aparecer-rebote var(--velocidad-lenta) var(--curva-rebote);
+}
+.aviso-confidencialidad {
+    background: var(--color-info-fondo);
+    color: var(--color-info);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    font-size: var(--texto-sm);
+    margin-top: var(--espacio-md);
+}
+
+/* --- Encuestas: bloque de opciones dinámico (psicólogo) --- */
+.opciones-area { margin-top: var(--espacio-sm); }
+.opciones-area textarea { margin-top: var(--espacio-xs); }
+
+@media (max-width: 600px) {
+    .solicitud-cambio { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Vista previa de importación masiva CSV antes de
+   confirmar (usuarios nuevos por grupo/grado): reduce el riesgo de
+   cargar datos mal formateados de 1000+ usuarios de una sola vez.
+   ============================================================ */
+.previsualizacion-csv { margin-top: var(--espacio-lg); }
+.resumen-previsualizacion-csv {
+    display: flex;
+    gap: var(--espacio-lg);
+    flex-wrap: wrap;
+    margin-bottom: var(--espacio-md);
+    font-size: var(--texto-sm);
+}
+.resumen-previsualizacion-csv strong { display: block; font-family: var(--fuente-titulos); font-size: var(--texto-lg); }
+.resumen-validos strong { color: var(--color-exito); }
+.resumen-errores strong { color: var(--color-error); }
+.fila-csv-error { background: var(--color-error-fondo) !important; }
+.fila-csv-error:hover { background: var(--color-error-fondo) !important; }
+.detalle-error-csv { color: var(--color-error); font-size: var(--texto-xs); }
+
+/* ============================================================
+   AMPLIACIÓN — Confirmación reforzada para acciones irreversibles
+   (eliminar cuenta y datos por Ley 1581, revertir aprobación masiva)
+   Reutiliza .modal de base.css, agrega estilo de campo "escribe para
+   confirmar".
+   ============================================================ */
+.confirmacion-critica { background: var(--color-error-fondo); border-radius: var(--radio-borde); padding: var(--espacio-md); margin-bottom: var(--espacio-md); }
+.confirmacion-critica p { color: var(--color-error); font-size: var(--texto-sm); margin-bottom: var(--espacio-sm); }
+.campo-confirmacion-texto { font-family: monospace; }
+
+/* ============================================================
+   AMPLIACIÓN — Panel de solicitudes de eliminación de cuenta/datos
+   (derecho de supresión, Ley 1581) — cola separada de las solicitudes
+   de cambio de dato normales.
+   ============================================================ */
+.tarjeta-solicitud-eliminacion {
+    border-left: 4px solid var(--color-peligro);
+}
+.tarjeta-solicitud-eliminacion .motivo-eliminacion { font-size: var(--texto-sm); color: var(--color-texto-suave); margin-top: 4px; }
+.plazo-solicitud-eliminacion { font-size: var(--texto-xs); color: var(--color-aviso); margin-top: 4px; }
+
+/* ============================================================
+   AMPLIACIÓN — Panel de auditoría con filtros por acción/rol/fecha
+   y detalle expandible por fila
+   ============================================================ */
+.filtros-auditoria { display: flex; gap: var(--espacio-sm); flex-wrap: wrap; margin-bottom: var(--espacio-lg); }
+.filtros-auditoria select, .filtros-auditoria input { width: auto; min-width: 140px; }
+.fila-auditoria.expandible { cursor: pointer; }
+.detalle-auditoria-expandido {
+    background: var(--color-fondo-alterno);
+    font-family: monospace;
+    font-size: var(--texto-xs);
+    padding: var(--espacio-sm) var(--espacio-md);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* ============================================================
+   AMPLIACIÓN — Estadísticas institucionales agregadas (rector/
+   coordinador): grilla de métricas más rica que un solo número
+   ============================================================ */
+.grilla-metricas-institucionales {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--espacio-lg);
+}
+.metrica-institucional .tendencia-metrica { font-size: var(--texto-xs); margin-top: 4px; }
+
+/* ============================================================
+   AMPLIACIÓN — Gestión de usuarios: fila con badge de rol + estado
+   de cuenta (activa/suspendida) + acciones rápidas
+   ============================================================ */
+.fila-usuario-admin { display: flex; align-items: center; gap: var(--espacio-sm); }
+.estado-cuenta { font-size: var(--texto-xs); }
+.estado-cuenta.suspendida { color: var(--color-error); }
+.estado-cuenta.activa { color: var(--color-exito); }
+.acciones-fila-usuario { display: flex; gap: 6px; }
+.acciones-fila-usuario button { padding: 6px 10px; font-size: var(--texto-xs); }
+
+@media (max-width: 600px) {
+    .filtros-auditoria { flex-direction: column; align-items: stretch; }
+    .filtros-auditoria select, .filtros-auditoria input { width: 100%; }
+}

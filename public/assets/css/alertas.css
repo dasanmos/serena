@@ -1,0 +1,209 @@
+/* ============================================================
+   SERENA — alertas.css
+   Alertas tempranas: vista del personal (psicólogo, orientador,
+   coordinador). Este es contenido para adultos responsables del
+   bienestar del estudiante, NO para el estudiante mismo — aquí sí
+   se usa una jerarquía de urgencia clara (alta/media/baja), a
+   diferencia del calendario del propio estudiante en estudiante.css,
+   que deliberadamente evita un semáforo rojo-verde alarmante.
+   ============================================================ */
+
+/* --- Resumen de alertas activas (tarjetas de conteo por severidad) --- */
+.resumen-alertas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--espacio-md);
+    margin-bottom: var(--espacio-xl);
+}
+.tarjeta-resumen-alerta {
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    text-align: center;
+    box-shadow: var(--sombra-sm);
+}
+.tarjeta-resumen-alerta .numero-alerta {
+    display: block;
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-xl);
+}
+.tarjeta-resumen-alerta .etiqueta-alerta {
+    font-size: var(--texto-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.resumen-severidad-alta { background: var(--color-severidad-alta-fondo); }
+.resumen-severidad-alta .numero-alerta, .resumen-severidad-alta .etiqueta-alerta { color: var(--color-severidad-alta); }
+.resumen-severidad-media { background: var(--color-severidad-media-fondo); }
+.resumen-severidad-media .numero-alerta, .resumen-severidad-media .etiqueta-alerta { color: var(--color-severidad-media); }
+.resumen-severidad-baja { background: var(--color-severidad-baja-fondo); }
+.resumen-severidad-baja .numero-alerta, .resumen-severidad-baja .etiqueta-alerta { color: var(--color-severidad-baja); }
+
+/* --- Tarjeta de alerta individual --- */
+.tarjeta-alerta {
+    background: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md) var(--espacio-lg);
+    box-shadow: var(--sombra-sm);
+    margin-bottom: var(--espacio-sm);
+    border-left: 4px solid var(--color-borde);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both;
+    transition: box-shadow var(--velocidad-media) var(--curva-suave);
+}
+.tarjeta-alerta:hover { box-shadow: var(--sombra-md); }
+.tarjeta-alerta.severidad-alta,
+.tarjeta-alerta.severidad-alto { border-left-color: var(--color-severidad-alta); }
+.tarjeta-alerta.severidad-media,
+.tarjeta-alerta.severidad-medio { border-left-color: var(--color-severidad-media); }
+.tarjeta-alerta.severidad-baja,
+.tarjeta-alerta.severidad-bajo { border-left-color: var(--color-severidad-baja); }
+.tarjeta-alerta.severidad-alta:not(.atendida),
+.tarjeta-alerta.severidad-alto:not(.atendida) { animation: deslizar-arriba var(--velocidad-media) var(--curva-suave) both, destello-alerta 2.4s ease-in-out infinite; }
+@keyframes destello-alerta {
+    0%, 100% { box-shadow: var(--sombra-sm); }
+    50% { box-shadow: 0 0 0 4px var(--color-severidad-alta-fondo); }
+}
+
+.tarjeta-alerta .info-alerta { flex: 1; min-width: 220px; }
+.tarjeta-alerta .estudiante-alerta { font-weight: 700; font-size: var(--texto-base); }
+.tarjeta-alerta .motivo-alerta { color: var(--color-texto-suave); font-size: var(--texto-sm); margin-top: 2px; }
+.tarjeta-alerta .fecha-alerta { color: var(--color-texto-suave); font-size: var(--texto-xs); margin-top: 6px; }
+.tarjeta-alerta.atendida { opacity: 0.6; }
+.tarjeta-alerta.atendida .estudiante-alerta::after { content: ' — atendida'; font-weight: 400; color: var(--color-exito); font-size: var(--texto-xs); }
+
+/* --- Pill de severidad, reutiliza el patrón .pill de base.css --- */
+.pill-severidad-alta, .pill-severidad-alto { background: var(--color-severidad-alta-fondo); color: var(--color-severidad-alta); }
+.pill-severidad-media, .pill-severidad-medio { background: var(--color-severidad-media-fondo); color: var(--color-severidad-media); }
+.pill-severidad-baja, .pill-severidad-bajo { background: var(--color-severidad-baja-fondo); color: var(--color-severidad-baja); }
+
+/* --- Insignia para alertas que el propio estudiante disparó con el botón
+   "Ayuda urgente" (AlertaTemprana::TIPO_AYUDA_URGENTE), para distinguirlas de
+   las automáticas o las creadas a mano por el personal de un vistazo. --- */
+.pill-pedida-por-estudiante {
+    background: var(--color-peligro-fondo);
+    color: var(--color-peligro);
+    font-weight: 700;
+}
+
+/* --- Flujo de estado de una alerta: pendiente → en seguimiento → resuelta --- */
+.linea-tiempo-alerta {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: var(--espacio-lg) 0;
+    overflow-x: auto;
+}
+.paso-tiempo-alerta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.punto-tiempo-alerta {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--color-fondo-alterno);
+    border: 2px solid var(--color-borde);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    color: var(--color-texto-suave);
+    flex-shrink: 0;
+}
+.paso-tiempo-alerta.completado .punto-tiempo-alerta {
+    background: linear-gradient(135deg, var(--color-dorado-claro), var(--color-dorado-oscuro));
+    border-color: var(--color-dorado-texto);
+    color: var(--color-texto);
+}
+.paso-tiempo-alerta .etiqueta-tiempo-alerta { font-size: var(--texto-xs); color: var(--color-texto-suave); white-space: nowrap; }
+.paso-tiempo-alerta.completado .etiqueta-tiempo-alerta { color: var(--color-texto); font-weight: 600; }
+.conector-tiempo-alerta { width: 32px; height: 2px; background: var(--color-borde); flex-shrink: 0; }
+.conector-tiempo-alerta.completado { background: var(--color-dorado-oscuro); }
+
+/* --- Formulario de seguimiento / nota clínica breve --- */
+.form-seguimiento-alerta { margin-top: var(--espacio-md); }
+.form-seguimiento-alerta textarea { min-height: 90px; }
+.notas-seguimiento-alerta { list-style: none; padding: 0; margin-top: var(--espacio-md); }
+.notas-seguimiento-alerta li {
+    padding: var(--espacio-sm);
+    border-radius: var(--radio-borde-sm);
+    background: var(--color-fondo-alterno);
+    margin-bottom: 6px;
+    font-size: var(--texto-sm);
+}
+.notas-seguimiento-alerta .autor-nota { font-weight: 700; font-size: var(--texto-xs); color: var(--color-dorado-texto); }
+.notas-seguimiento-alerta .fecha-nota { font-size: var(--texto-xs); color: var(--color-texto-suave); float: right; }
+
+/* --- Asignar alerta a un profesional --- */
+.selector-asignar-alerta { display: flex; gap: var(--espacio-sm); align-items: center; flex-wrap: wrap; }
+.selector-asignar-alerta select { width: auto; min-width: 180px; }
+
+/* --- Recordatorio permanente visible en cualquier vista de alertas: esto
+   no reemplaza el criterio profesional humano. --- */
+.recordatorio-criterio-humano {
+    background: var(--color-info-fondo);
+    color: var(--color-info);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-md);
+    font-size: var(--texto-sm);
+    margin-bottom: var(--espacio-lg);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+@media (max-width: 600px) {
+    .tarjeta-alerta { flex-direction: column; }
+    .linea-tiempo-alerta { padding-bottom: 4px; }
+}
+
+/* ============================================================
+   AMPLIACIÓN — Plan de seguimiento (public/psicologo/estudiante_detalle.php
+   y public/psicologo/seguimientos.php): tareas de control con fecha límite y
+   estado, para psicólogo/orientador. Privado por autor, igual que las notas
+   de sesión — ver src/modelos/PlanSeguimiento.php.
+   ============================================================ */
+.form-nueva-tarea-seguimiento label { font-size: var(--texto-sm); font-weight: 600; margin-top: var(--espacio-sm); display: block; }
+.form-nueva-tarea-seguimiento input[type="date"] { max-width: 220px; }
+
+.lista-plan-seguimiento { list-style: none; display: flex; flex-direction: column; gap: var(--espacio-md); }
+.tarea-seguimiento {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--espacio-md);
+    flex-wrap: wrap;
+    padding: var(--espacio-md);
+    border-radius: var(--radio-borde);
+    border-left: 3px solid var(--color-borde);
+    background: var(--color-fondo-alterno);
+}
+.tarea-seguimiento.tarea-en_curso { border-left-color: var(--color-info); }
+.tarea-seguimiento.tarea-completado { opacity: 0.65; }
+.tarea-seguimiento.tarea-completado strong { text-decoration: line-through; }
+.tarea-seguimiento.tarea-vencida { border-left-color: var(--color-severidad-alta); }
+.info-tarea-seguimiento { flex: 1; min-width: 220px; }
+.info-tarea-seguimiento p { margin-top: 4px; color: var(--color-texto-suave); font-size: var(--texto-sm); }
+.acciones-tarea-seguimiento { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-start; }
+.acciones-tarea-seguimiento form { display: inline; }
+.acciones-tarea-seguimiento button { font-size: var(--texto-xs); padding: 6px 12px; }
+
+.pill-estado-pendiente { background: var(--color-severidad-media-fondo); color: var(--color-severidad-media); }
+.pill-estado-en_curso { background: var(--color-info-fondo); color: var(--color-info); }
+.pill-estado-completado { background: var(--color-exito-fondo); color: var(--color-exito); }
+
+/* --- Página «Mis seguimientos»: agrupa las tareas de todos los estudiantes --- */
+.grupo-seguimientos { margin-bottom: var(--espacio-xl); }
+.grupo-seguimientos h2 { margin-bottom: var(--espacio-sm); }
+.tarea-seguimiento .estudiante-tarea-seguimiento { font-size: var(--texto-xs); color: var(--color-texto-suave); display: block; }
+
+/* ============================================================
+   AMPLIACIÓN — Registro de accesos a la ficha (sección «Quién ha visto
+   esta ficha» en public/psicologo/estudiante_detalle.php).
+   ============================================================ */
+.lista-accesos-ficha { list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: var(--texto-sm); }
+.lista-accesos-ficha li { display: flex; justify-content: space-between; gap: var(--espacio-md); padding: 6px 0; border-bottom: 1px solid var(--color-borde); }
+.lista-accesos-ficha li:last-child { border-bottom: none; }

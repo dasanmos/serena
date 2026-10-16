@@ -1,0 +1,23 @@
+/* Territorio: resumen, importadores y árbol Secretaría → Núcleos / Municipios → Zonas. Solo tokens de base.css. */
+.terr-resumen { display: grid; gap: var(--espacio-sm, 8px); grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin: var(--espacio-md, 16px) 0; }
+.terr-dato { padding: var(--espacio-md, 16px); border-radius: var(--radio-borde, 12px); text-align: center;
+    background: var(--color-superficie, #fff); border: 1px solid var(--color-borde, #E0DCCB); }
+.terr-dato strong { display: block; font-size: 1.6rem; line-height: 1.1; color: var(--color-texto, #2B2B2B); }
+.terr-dato span { font-size: .8rem; color: var(--color-texto-suave, #6B6B6B); }
+.terr-dato.terr-alerta strong { color: var(--color-peligro, #C0392B); }
+.terr-importar { display: grid; gap: var(--espacio-md, 16px); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.terr-importar form { margin: 0; }
+.terr-arbol details { border: 1px solid var(--color-borde, #E0DCCB); border-radius: var(--radio-borde, 12px); margin-bottom: var(--espacio-sm, 8px);
+    background: var(--color-superficie, #fff); }
+.terr-arbol details > summary { padding: 10px 14px; cursor: pointer; font-weight: 600; }
+.terr-arbol .terr-cuerpo { padding: 0 14px 14px; }
+.terr-meta { font-weight: 400; font-size: .85rem; color: var(--color-texto-suave, #6B6B6B); }
+.terr-lista { list-style: none; margin: 4px 0 var(--espacio-md, 16px); padding: 0; display: grid; gap: 4px; }
+.terr-lista li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-size: .9rem; }
+.terr-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.terr-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 10px; border-radius: 999px; font-size: .78rem;
+    background: var(--color-info-fondo, #E7F1F6); color: var(--color-texto, #2B2B2B); }
+.terr-form-x { display: inline; margin: 0; }
+.terr-x { background: none; border: 0; box-shadow: none; padding: 0 6px; cursor: pointer; color: var(--color-peligro, #C0392B); font-size: 1rem; line-height: 1; }
+.terr-aviso-cifra { border-left: 4px solid var(--color-dorado-oscuro, #E8B923); padding: 8px 12px; background: var(--color-fondo-alterno, #FAF7EE); border-radius: 8px; font-size: .9rem; }
+.terr-sub { margin: 12px 0 4px; font-size: .95rem; }
