@@ -107,7 +107,7 @@ require __DIR__ . '/../parciales/encabezado.php';
                         · <?= number_format($r['tamano'] / 1024, 0) ?> KB
                     </p>
                 </div>
-                <a href="respaldo_descargar.php?archivo=<?= urlencode($r['nombre']) ?>" class="boton-secundario">⬇️ Descargar</a>
+                <a href="<?= BASE_URL ?>/superadmin/respaldo_descargar.php?archivo=<?= urlencode($r['nombre']) ?>" class="boton-secundario">⬇️ Descargar</a>
             </li>
             <?php endforeach; ?>
         </ul>
@@ -121,7 +121,7 @@ require __DIR__ . '/../parciales/encabezado.php';
 
     <p class="texto-suave" style="margin-top:var(--espacio-md)">
         ¿Prefieres descargar un archivo sin guardar nada en el servidor?
-        <a href="respaldo.php">Descarga directa aquí</a>.
+        <a href="<?= BASE_URL ?>/superadmin/respaldo.php">Descarga directa aquí</a>.
     </p>
 </section>
 <?php endif; ?>

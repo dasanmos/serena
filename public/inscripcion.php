@@ -54,7 +54,6 @@ $grados = $colegio !== null ? Academico::grados($pdo, (int) $colegio['id']) : []
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/base.css?v=<?= assetVersion('/assets/css/base.css') ?>">
     <link rel="stylesheet" href="assets/css/login.css?v=<?= assetVersion('/assets/css/login.css') ?>">
-    <link rel="stylesheet" href="assets/css/login_pro.css?v=<?= assetVersion('/assets/css/login_pro.css') ?>">
     <link rel="stylesheet" href="assets/css/academico.css?v=<?= assetVersion('/assets/css/academico.css') ?>">
     <meta name="theme-color" content="#E8B923">
     <script>window.SERENA_BASE_URL = <?= json_encode(BASE_URL) ?>;</script>

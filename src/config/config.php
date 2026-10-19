@@ -54,6 +54,33 @@ if (!defined('BASE_URL')) {
     }
 }
 
+/**
+ * URL absoluta del sitio para enlaces que salen por correo (recuperación, credenciales,
+ * alertas, QR de certificados). Usa APP_URL del .env (solo el dominio, p. ej.
+ * https://serena.example.com, SIN /public) y NO la cabecera Host de la petición:
+ * esa cabecera la controla quien hace la petición y permitía "envenenar" los enlaces
+ * de recuperación para que apuntaran a un dominio ajeno y robar el token.
+ * Sin APP_URL (desarrollo local) cae al Host, igual que antes.
+ */
+if (!function_exists('origenSitio')) {
+function origenSitio(): string
+{
+    $base = rtrim(entornoServer('APP_URL'), '/');
+    if ($base === '') {
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+        $host = preg_replace('/[^A-Za-z0-9.\-:]/', '', (string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+        $base = ($https ? 'https' : 'http') . '://' . ($host !== '' ? $host : 'localhost');
+    }
+    return $base;
+}
+
+function urlAbsoluta(string $ruta = ''): string
+{
+    return origenSitio() . (defined('BASE_URL') ? BASE_URL : '') . $ruta;
+}
+}
+
 // Hash de integridad (SRI) del face-api.js que carga public/assets/js/rostro.js
 // desde jsdelivr. Vacío por defecto = sin verificación (funciona igual, pero sin
 // esta defensa extra). Para activarla, corre esto una vez y pega el resultado:

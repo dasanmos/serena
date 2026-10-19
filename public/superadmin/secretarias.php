@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 /** Envía la contraseña temporal por correo; si falla, la devuelve para mostrarla UNA vez. */
 function enviarCredenciales(PDO $pdo, string $nombre, string $correo, string $temporal, string $intro): array
 {
-    $enlace = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . (defined('BASE_URL') ? BASE_URL : '') . '/login.php';
+    $enlace = urlAbsoluta('/login.php');
     $texto = "Hola {$nombre},\n\n{$intro}\n\nCorreo: {$correo}\nContraseña temporal: {$temporal}\n\nCámbiala apenas inicies sesión.\n\n— Serena";
     $html = plantillaCorreoHtml('Tu acceso a Serena',
         '<p>Hola <strong>' . htmlspecialchars($nombre) . '</strong>,</p><p>' . htmlspecialchars($intro) . '</p>'

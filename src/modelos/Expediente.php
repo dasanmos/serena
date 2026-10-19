@@ -38,28 +38,57 @@ class Expediente
     // ------------------------------------------------------------------
 
     /** Qué puede hacer cada rol. Cualquier rol no listado no tiene ninguna capacidad. */
+    /** Grupos a cargo de un orientador (2 parámetros: su id dos veces). */
+    private const SQL_GRUPOS_ORIENTADOR = 'SELECT pg.grupo_id FROM personal_grupos pg WHERE pg.usuario_id = ?
+        UNION SELECT uo.grupo_id FROM usuarios uo WHERE uo.id = ? AND uo.grupo_id IS NOT NULL';
+
+    /** Ids de los grupos a cargo de un orientador. */
+    public static function gruposOrientador(PDO $pdo, int $usuarioId): array
+    {
+        $q = $pdo->prepare(self::SQL_GRUPOS_ORIENTADOR);
+        $q->execute([$usuarioId, $usuarioId]);
+        return array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
+     * Ids de estudiantes (activos o retirados) de los grupos de un orientador, en su colegio.
+     * Para filtrar listados de SIMPADE y similares donde también aparecen estudiantes ya retirados.
+     */
+    public static function idsEstudiantesOrientador(PDO $pdo, int $usuarioId, int $colegioId): array
+    {
+        $q = $pdo->prepare("SELECT u.id FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id AND r.nombre = 'estudiante'
+                             WHERE u.colegio_id = ? AND u.grupo_id IN (" . self::SQL_GRUPOS_ORIENTADOR . ')');
+        $q->execute([$colegioId, $usuarioId, $usuarioId]);
+        return array_fill_keys(array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN)), true);
+    }
+
     public static function capacidades(string $rol): array
     {
-        $directivos = in_array($rol, ['coordinador', 'rector', 'administrador'], true);
         $orient = in_array($rol, ['psicologo', 'orientador'], true);
+        $directivos = in_array($rol, ['coordinador', 'rector', 'administrador'], true);
+        // Información clínica (salud, desarrollo, seguimiento reservado, aula de apoyo): solo
+        // psicología/orientación y la dirección pedagógica (coordinador, rector). El administrador
+        // gestiona la plataforma y NO necesita ver datos de salud de menores (Ley 1581, dato sensible).
+        $clinico = $orient || in_array($rol, ['coordinador', 'rector'], true);
         $docente = $rol === 'docente';
         $sec = $rol === 'secretaria_academica';
-        $plat = in_array($rol, ['secretaria', 'superadmin'], true); // solo lectura de la hoja de vida
+        // Solo el superadmin (equipo de Serena) lee hojas de vida; la Secretaría de Educación ve únicamente cifras agrupadas.
+        $plat = $rol === 'superadmin'; // solo lectura de la hoja de vida
         return [
             'personal' => $directivos || $orient || $docente || $sec || $plat,
             'editar_hoja' => $directivos || $orient || $sec,
-            'salud_sensible' => $directivos || $orient,           // condiciones de salud, medicamentos y desarrollo
+            'salud_sensible' => $clinico,           // condiciones de salud, medicamentos y desarrollo
             'ver_observador' => $directivos || $orient || $docente,
-            'ver_obs_reservado' => $directivos || $orient,        // tipo «seguimiento»
+            'ver_obs_reservado' => $clinico,        // tipo «seguimiento»
             'escribir_observador' => $directivos || $orient || $docente,
             'ver_obs_familia' => $rol === 'acudiente',
             'ver_convivencia' => $directivos || $orient,
             'gestionar_convivencia' => $directivos,
             'reportar_convivencia' => $docente,
             'escribir_horas' => $directivos || $sec || $docente,
-            'ver_apoyo_completo' => $directivos || $orient,
+            'ver_apoyo_completo' => $clinico,
             'ver_apoyo_ajustes' => $docente,
-            'escribir_apoyo' => $directivos || $orient,
+            'escribir_apoyo' => $clinico,
             'ver_asistencia' => true,
             'ver_horas' => true,
         ];
@@ -81,6 +110,14 @@ class Expediente
         }
         $base = "SELECT 1 FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id AND r.nombre = 'estudiante'
                   WHERE u.id = ? AND u.colegio_id = ? AND u.activo = 1";
+        if ($rol === 'orientador') {
+            // El orientador solo abre estudiantes de los grupos que tiene a cargo (personal_grupos o su
+            // grupo_id), igual que en psicologo/estudiante_detalle.php. Antes podía abrir a TODO el colegio,
+            // incluidas las secciones de salud.
+            $q = $pdo->prepare($base . ' AND u.grupo_id IN (' . self::SQL_GRUPOS_ORIENTADOR . ')');
+            $q->execute([$estudianteId, $colegioId, $usuarioId, $usuarioId]);
+            return (bool) $q->fetchColumn();
+        }
         if ($rol !== 'docente') {
             $q = $pdo->prepare($base);
             $q->execute([$estudianteId, $colegioId]);
@@ -108,6 +145,10 @@ class Expediente
                 EXISTS (SELECT 1 FROM asignaciones_academicas a INNER JOIN anios_lectivos y ON y.id = a.anio_lectivo_id AND y.actual = 1
                          WHERE a.grupo_id = u.grupo_id AND a.docente_id = ?)
                 OR EXISTS (SELECT 1 FROM grupos gg WHERE gg.id = u.grupo_id AND gg.docente_id = ?))';
+            array_push($p, $usuarioId, $usuarioId);
+        }
+        if ($rol === 'orientador') {
+            $sql .= ' AND u.grupo_id IN (' . self::SQL_GRUPOS_ORIENTADOR . ')';
             array_push($p, $usuarioId, $usuarioId);
         }
         if ($grupoId > 0) {
@@ -346,7 +387,7 @@ class Expediente
 
     public static function listarProcesos(PDO $pdo, int $colegioId, string $estado, string $situacion): array
     {
-        $sql = 'SELECT p.*, u.nombre AS estudiante, g.nombre AS grupo, gr.nombre AS grado
+        $sql = 'SELECT p.*, u.nombre AS estudiante, u.grupo_id AS est_grupo_id, g.nombre AS grupo, gr.nombre AS grado
                   FROM procesos_disciplinarios p INNER JOIN usuarios u ON u.id = p.estudiante_id
                   LEFT JOIN grupos g ON g.id = u.grupo_id LEFT JOIN grados gr ON gr.id = g.grado_id
                  WHERE p.colegio_id = ?';
@@ -465,7 +506,7 @@ class Expediente
 
     public static function listarApoyos(PDO $pdo, int $colegioId, string $estado): array
     {
-        $sql = 'SELECT a.id, a.estudiante_id, a.estado, a.piar_fecha, u.nombre AS estudiante, g.nombre AS grupo, gr.nombre AS grado, r.nombre AS responsable,
+        $sql = 'SELECT a.id, a.estudiante_id, a.estado, a.piar_fecha, u.nombre AS estudiante, u.grupo_id AS est_grupo_id, g.nombre AS grupo, gr.nombre AS grado, r.nombre AS responsable,
                        (SELECT MAX(s.fecha) FROM apoyo_seguimientos s WHERE s.apoyo_id = a.id) AS ultimo_seguimiento
                   FROM apoyos_pedagogicos a INNER JOIN usuarios u ON u.id = a.estudiante_id
                   LEFT JOIN grupos g ON g.id = u.grupo_id LEFT JOIN grados gr ON gr.id = g.grado_id LEFT JOIN usuarios r ON r.id = a.responsable_id

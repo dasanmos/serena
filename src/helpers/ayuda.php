@@ -334,22 +334,24 @@ function ayudaHtmlPagina(array $libro, array $ctx): string
     $sufijoRol = ($esAdmin && $rolVista !== '') ? '&rol=' . rawurlencode($rolVista) : '';
 
     $h = '<div class="ayuda" id="ayuda">';
-    $h .= '<header class="ayuda-cabecera"><h1>Ayuda</h1>';
-    $h .= '<p class="ayuda-intro">Aquí encuentras cómo funciona cada sección de Serena y qué puedes hacer en ella.';
+    $h .= '<header class="ayuda-cabecera">';
+    $h .= '<h1>Ayuda de Serena</h1>';
+    $h .= '<p class="ayuda-intro">Busca lo que necesitas o recorre la guía por capítulos.';
     if ($logueado && !$verGeneral && $nombreRol !== '') {
         $h .= ' Estás viendo la guía para <strong>' . ayudaH(mb_strtolower($nombreRol)) . '</strong>.';
     } elseif (!$logueado) {
-        $h .= ' <a href="' . ayudaH(BASE_URL . '/login.php') . '">Inicia sesión</a> para ver la guía de tu rol.';
+        $h .= ' <a href="' . ayudaH(BASE_URL . '/login.php') . '">Inicia sesión</a> para ver también la guía de tu rol.';
     }
-    $h .= '</p></header>';
+    $h .= '</p>';
 
     if ($logueado && $nombreRol !== '') {
+        $h .= '<div class="ayuda-controles">';
         $h .= '<nav class="ayuda-pestanas" aria-label="Tipo de guía">';
-        $h .= '<a href="' . ayudaH(BASE_URL . '/ayuda.php' . ($sufijoRol !== '' ? '?' . ltrim($sufijoRol, '&') : '')) . '" class="' . ($verGeneral ? '' : 'activa') . '">Mi guía · ' . ayudaH($nombreRol) . '</a>';
-        $h .= '<a href="' . ayudaH(BASE_URL . '/ayuda.php?ambito=general') . '" class="' . ($verGeneral ? 'activa' : '') . '">Guía general</a>';
+        $h .= '<a href="' . ayudaH(BASE_URL . '/ayuda.php' . ($sufijoRol !== '' ? '?' . ltrim($sufijoRol, '&') : '')) . '" class="' . ($verGeneral ? '' : 'activa') . '"' . ($verGeneral ? '' : ' aria-current="page"') . '>Mi guía: ' . ayudaH($nombreRol) . '</a>';
+        $h .= '<a href="' . ayudaH(BASE_URL . '/ayuda.php?ambito=general') . '" class="' . ($verGeneral ? 'activa' : '') . '"' . ($verGeneral ? ' aria-current="page"' : '') . '>Guía general</a>';
         $h .= '</nav>';
         if ($esAdmin) {
-            $h .= '<form class="ayuda-selector-rol" action="' . ayudaH(BASE_URL . '/ayuda.php') . '" method="GET"><label for="ayuda-rol">Ver la guía de:</label> <select id="ayuda-rol" name="rol" onchange="this.form.submit()">';
+            $h .= '<form class="ayuda-selector-rol" action="' . ayudaH(BASE_URL . '/ayuda.php') . '" method="GET"><label for="ayuda-rol">Ver la guía de</label> <select id="ayuda-rol" name="rol" onchange="this.form.submit()">';
             foreach (ayudaRolesVisibles((string) ($ctx['rolSesion'] ?? '')) as $r) {
                 if (!ayudaRolValido($r)) {
                     continue;
@@ -358,42 +360,55 @@ function ayudaHtmlPagina(array $libro, array $ctx): string
             }
             $h .= '</select><noscript> <button type="submit">Ver</button></noscript></form>';
         }
+        $h .= '</div>';
     }
 
-    // Descargas
-    $h .= '<section class="ayuda-descargas" aria-label="Descargar la ayuda">';
-    if ($logueado && $nombreRol !== '') {
-        $h .= '<div class="ayuda-descarga"><strong>Manual de ' . ayudaH(mb_strtolower($nombreRol)) . '</strong><span>Guía general + tu rol + tu cuenta</span>';
-        $h .= '<a class="ayuda-boton" href="' . ayudaH(ayudaUrlDescarga('pdf', 'rol', $esAdmin ? $rolVista : null)) . '">PDF</a> ';
-        $h .= '<a class="ayuda-boton ayuda-boton-sec" href="' . ayudaH(ayudaUrlDescarga('html', 'rol', $esAdmin ? $rolVista : null)) . '">HTML</a></div>';
-    }
-    $h .= '<div class="ayuda-descarga"><strong>Guía general</strong><span>Lo que todas las personas deben saber</span>';
-    $h .= '<a class="ayuda-boton" href="' . ayudaH(ayudaUrlDescarga('pdf', 'general', null)) . '">PDF</a> ';
-    $h .= '<a class="ayuda-boton ayuda-boton-sec" href="' . ayudaH(ayudaUrlDescarga('html', 'general', null)) . '">HTML</a></div>';
-    $h .= '</section>';
-
-    // Buscador: visible siempre, encima del índice y del libro
+    // Buscador: lo primero que se usa. Sin JavaScript no se muestra (el índice sigue funcionando).
     $h .= '<div class="ayuda-busqueda" role="search">';
     $h .= '<label class="ayuda-sr" for="ayuda-buscar">Buscar en la ayuda</label>';
     $h .= '<span class="ayuda-busqueda-icono" aria-hidden="true">🔍</span>';
-    $h .= '<input type="search" id="ayuda-buscar" class="ayuda-buscar" placeholder="Buscar en la ayuda: contraseña, cita, diario…" autocomplete="off" enterkeyhint="search" aria-describedby="ayuda-resultados">';
+    $h .= '<input type="search" id="ayuda-buscar" class="ayuda-buscar" placeholder="Escribe una palabra: contraseña, cita, boletín…" autocomplete="off" enterkeyhint="search" aria-describedby="ayuda-resultados">';
     $h .= '<button type="button" class="ayuda-busqueda-limpiar" id="ayuda-limpiar" hidden aria-label="Borrar búsqueda">✕</button>';
     $h .= '<kbd class="ayuda-busqueda-atajo" aria-hidden="true" title="Pulsa / para buscar">/</kbd>';
     $h .= '<p class="ayuda-resultados" id="ayuda-resultados" role="status" aria-live="polite"></p>';
     $h .= '</div>';
+    // Temas frecuentes: ayuda.js oculta los que no tienen resultados en esta guía.
+    $temas = ['contraseña', 'verificación en 2 pasos', 'cita', 'diario', 'boletín', 'asistencia', 'matrícula', 'certificado', 'chat', 'alerta'];
+    $h .= '<div class="ayuda-temas" id="ayuda-temas" hidden><span class="ayuda-temas-etq">Temas frecuentes:</span>';
+    foreach ($temas as $t) {
+        $h .= '<button type="button" class="ayuda-tema" data-buscar="' . ayudaH($t) . '">' . ayudaH(mb_strtoupper(mb_substr($t, 0, 1)) . mb_substr($t, 1)) . '</button>';
+    }
+    $h .= '</div>';
+    $h .= '</header>';
 
+    $h .= '<div class="ayuda-apoyo">';
     // Asistente con IA: responde dudas de uso a partir de este mismo manual
     $h .= '<section class="ayuda-ia" id="ayuda-ia" aria-labelledby="ayuda-ia-titulo"'
         . ' data-endpoint="' . ayudaH(BASE_URL . '/api/ayuda_ia.php') . '"'
         . ' data-csrf="' . ayudaH(tokenCSRF()) . '"'
         . ' data-rol="' . ayudaH($esAdmin ? $rolVista : '') . '">';
-    $h .= '<h2 id="ayuda-ia-titulo">✨ Pregúntale a Serena</h2>';
-    $h .= '<p class="ayuda-ia-sub">Escribe tu duda de uso y te respondo con lo que dice este manual. No escribas datos personales ni cuentes cosas privadas.</p>';
+    $h .= '<h2 id="ayuda-ia-titulo">Pregúntale a Serena</h2>';
+    $h .= '<p class="ayuda-ia-sub">Escribe tu duda con tus palabras y te respondo con lo que dice esta guía. No escribas datos personales.</p>';
     $h .= '<div class="ayuda-ia-fila"><label class="ayuda-sr" for="ayuda-ia-pregunta">Tu pregunta</label>';
-    $h .= '<input type="text" id="ayuda-ia-pregunta" maxlength="300" placeholder="Ej.: ¿cómo dicto las notas por voz?" autocomplete="off" enterkeyhint="send">';
+    $h .= '<input type="text" id="ayuda-ia-pregunta" maxlength="300" placeholder="Ej.: ¿cómo cambio mi contraseña?" autocomplete="off" enterkeyhint="send">';
     $h .= '<button type="button" id="ayuda-ia-enviar" class="ayuda-boton">Preguntar</button></div>';
     $h .= '<div class="ayuda-ia-respuesta" id="ayuda-ia-respuesta" role="status" aria-live="polite" hidden></div>';
     $h .= '</section>';
+
+    $h .= '<aside class="ayuda-lateral" aria-label="Descargas y ayuda inmediata">';
+    $h .= '<h2>Descargar la guía</h2><ul class="ayuda-descargas">';
+    if ($logueado && $nombreRol !== '') {
+        $h .= '<li><span>Manual de ' . ayudaH(mb_strtolower($nombreRol)) . '<small>Guía general, tu rol y tu cuenta</small></span>';
+        $h .= '<span class="ayuda-descarga-botones"><a class="ayuda-boton" href="' . ayudaH(ayudaUrlDescarga('pdf', 'rol', $esAdmin ? $rolVista : null)) . '">PDF</a>';
+        $h .= '<a class="ayuda-boton ayuda-boton-sec" href="' . ayudaH(ayudaUrlDescarga('html', 'rol', $esAdmin ? $rolVista : null)) . '">HTML</a></span></li>';
+    }
+    $h .= '<li><span>Guía general<small>Lo que todas las personas deben saber</small></span>';
+    $h .= '<span class="ayuda-descarga-botones"><a class="ayuda-boton' . ($logueado ? ' ayuda-boton-sec' : '') . '" href="' . ayudaH(ayudaUrlDescarga('pdf', 'general', null)) . '">PDF</a>';
+    $h .= '<a class="ayuda-boton ayuda-boton-sec" href="' . ayudaH(ayudaUrlDescarga('html', 'general', null)) . '">HTML</a></span></li>';
+    $h .= '</ul>';
+    $h .= '<p class="ayuda-urgente"><strong>¿Es urgente?</strong> Llama gratis a la <a href="tel:106">Línea 106</a> (salud mental, 24 horas) o al <a href="tel:123">123</a>.</p>';
+    $h .= '</aside>';
+    $h .= '</div>';
 
     // Índice + libro
     $h .= '<div class="ayuda-layout">';

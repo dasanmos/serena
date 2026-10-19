@@ -62,8 +62,8 @@ function revisarYEnviarResumenSemanal(PDO $pdo, array $usuario): void
         return;
     }
 
-    $esquema  = (($_SERVER['HTTPS'] ?? '') === 'on') ? 'https://' : 'http://';
-    $urlPanel = $esquema . ($_SERVER['HTTP_HOST'] ?? '') . BASE_URL . rutaDashboardPorRol($rol);
+    // rutaDashboardPorRol() ya incluye BASE_URL: antes se sumaba dos veces (/public/public/...).
+    $urlPanel = origenSitio() . rutaDashboardPorRol($rol);
 
     $cuerpoHtml = '<p>' . nl2br(htmlspecialchars($texto)) . '</p>' . botonCorreoHtml('Ver mi panel', $urlPanel);
 

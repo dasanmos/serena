@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/helpers/colegio.php';
 require_once __DIR__ . '/../src/modelos/Expediente.php';
 
 // Directorio de estudiantes para abrir su expediente. El docente solo ve a los de sus grupos.
-requiereRol('docente', 'coordinador', 'rector', 'administrador', 'secretaria_academica', 'psicologo', 'orientador', 'secretaria', 'superadmin');
+requiereRol('docente', 'coordinador', 'rector', 'administrador', 'secretaria_academica', 'psicologo', 'orientador', 'superadmin');
 $rol = (string) $_SESSION['rol'];
 $colegioId = colegioParaCrear();
 $grupoId = (int) ($_GET['grupo'] ?? 0);

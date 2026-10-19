@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
+
 require_once __DIR__ . '/../helpers/validaciones.php';
 require_once __DIR__ . '/Usuario.php';
 
@@ -533,8 +535,16 @@ class Academico
             // Acudiente: se reutiliza si ya es acudiente de este colegio; si el correo es de otro rol, se detiene.
             $acudiente = ['nombre' => $i['acudiente_nombre'], 'correo' => $i['acudiente_correo'], 'password' => null, 'nuevo' => false];
             if ($existente) {
-                if ((int) $existente['rol_id'] !== $rolAcud || (int) $existente['colegio_id'] !== $colegioId) {
-                    throw new RuntimeException('El correo del acudiente ya pertenece a otra cuenta que no es de acudiente en este colegio.');
+                if ((int) $existente['colegio_id'] !== $colegioId) {
+                    throw new RuntimeException('El correo del acudiente pertenece a una cuenta de otro colegio. Usa otro correo para el acudiente.');
+                }
+                if ((int) $existente['rol_id'] !== $rolAcud) {
+                    // Personal del colegio que también es familia (cuenta con varios roles, migración 044).
+                    $errRol = RolesUsuario::agregar($pdo, (int) $existente['id'], 'acudiente', $usuarioId);
+                    if ($errRol !== '') {
+                        throw new RuntimeException('El correo del acudiente ya es de otra cuenta y no se le pudo dar el rol de familia: ' . $errRol);
+                    }
+                    $acudiente['multirol'] = true;
                 }
                 $acudienteId = (int) $existente['id'];
             } else {

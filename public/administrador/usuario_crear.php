@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../src/helpers/csrf.php';
 require_once __DIR__ . '/../../src/helpers/validaciones.php';
 require_once __DIR__ . '/../../src/modelos/Usuario.php';
 require_once __DIR__ . '/../../src/modelos/Grupo.php';
+require_once __DIR__ . '/../../src/modelos/RolesUsuario.php';
 
 requiereRol('administrador');
 
@@ -33,18 +34,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'El correo no es válido.';
     } elseif (trim($_POST['documento'] ?? '') !== '' && !Usuario::documentoValido(Usuario::normalizarDocumento((string) $_POST['documento']))) {
         $error = 'El documento no es válido (4 a 20 letras o números).';
-    } elseif (trim($_POST['documento'] ?? '') !== '' && Usuario::documentoEnUso($pdo, Usuario::normalizarDocumento((string) $_POST['documento']), colegioParaCrear())) {
-        $error = 'Ya hay otra cuenta con ese documento en este colegio.';
     } elseif (!validarPassword($password)) {
         $error = mensajeRequisitosPassword();
     } elseif ($nombre === '' || $rolId === 0) {
         $error = 'Completa nombre y rol.';
     } else {
-        $consultaExiste = $pdo->prepare('SELECT id FROM usuarios WHERE correo = :correo LIMIT 1');
-        $consultaExiste->execute(['correo' => $correo]);
+        // ¿Ya tiene cuenta? Primero por DOCUMENTO en este colegio, luego por correo: si es la misma persona
+        // se le suma el rol a su cuenta (multirol) en lugar de crear otra o de rechazar.
+        $persona = RolesUsuario::cuentaDeLaPersona($pdo, (int) colegioParaCrear(), $correo, Usuario::normalizarDocumento((string) ($_POST['documento'] ?? '')));
+        $existente = $persona['cuenta'] ?? null;
 
-        if ($consultaExiste->fetch()) {
-            $error = 'Ya existe una cuenta con ese correo.';
+        if (!empty($persona['conflicto'])) {
+            $error = $persona['conflicto'];
+        } elseif ($existente) {
+            // La misma persona con otro rol en este colegio: se le suma el rol a SU cuenta (multirol).
+            $rolNuevo = '';
+            foreach ($rolesDisponibles as $rd) { if ((int) $rd['id'] === $rolId) { $rolNuevo = (string) $rd['nombre']; } }
+            if ((int) $existente['colegio_id'] !== (int) colegioParaCrear()) {
+                $error = 'Ese correo ya lo usa una cuenta de otra institución. Para que esta persona también tenga cuenta aquí, usa otro correo: con su mismo documento, al iniciar sesión elegirá a qué institución entrar.';
+            } elseif ($existente['rol'] === $rolNuevo || in_array($rolNuevo, RolesUsuario::adicionales($pdo, (int) $existente['id']), true)) {
+                $error = 'Esa persona ya tiene ese rol.';
+            } else {
+                $errRol = RolesUsuario::agregar($pdo, (int) $existente['id'], $rolNuevo, (int) $_SESSION['usuario_id']);
+                if ($errRol !== '') {
+                    $error = $errRol;
+                } else {
+                    header('Location: usuarios.php?rol_agregado=' . (int) $existente['id']);
+                    exit;
+                }
+            }
         } else {
             $consulta = $pdo->prepare(
                 'INSERT INTO usuarios
@@ -88,11 +106,12 @@ require __DIR__ . '/../parciales/encabezado.php';
     <input type="text" id="nombre" name="nombre" required value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>">
 
     <label for="correo">Correo</label>
-    <input type="email" id="correo" name="correo" required value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>
+    <input type="email" id="correo" name="correo" required value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>">
+    <small class="texto-suave">Si ya existe una cuenta con este correo en tu colegio (por ejemplo, la de un padre de familia), se le agrega este rol: tendrá una sola cuenta y elegirá con qué rol entrar.</small>
+
     <label for="documento">Documento (opcional)</label>
     <input type="text" id="documento" name="documento" maxlength="20" autocomplete="off" value="<?= htmlspecialchars($_POST['documento'] ?? '') ?>">
     <small class="texto-suave">Con este número también podrá iniciar sesión. Sin puntos ni espacios.</small>
-">
 
     <label for="rol_id">Rol</label>
     <select id="rol_id" name="rol_id" required>

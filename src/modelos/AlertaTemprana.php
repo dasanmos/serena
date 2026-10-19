@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
 require_once __DIR__ . '/../helpers/colegio.php';
 
 class AlertaTemprana
@@ -50,7 +51,7 @@ class AlertaTemprana
         if (!empty($estudiante['colegio_id'])) {
             $cp = $pdo->prepare(
                 "SELECT correo FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
-                 WHERE r.nombre = 'psicologo' AND u.activo = 1 AND u.colegio_id = :col"
+                 WHERE (r.nombre = 'psicologo'" . RolesUsuario::sqlAdicional($pdo, 'u', 'psicologo') . ") AND u.activo = 1 AND u.colegio_id = :col"
             );
             $cp->execute(['col' => (int) $estudiante['colegio_id']]);
             $psicologos = $cp->fetchAll(PDO::FETCH_COLUMN);
@@ -67,8 +68,7 @@ class AlertaTemprana
             return;
         }
 
-        $esquema  = (($_SERVER['HTTPS'] ?? '') === 'on') ? 'https://' : 'http://';
-        $urlAlertas = $esquema . ($_SERVER['HTTP_HOST'] ?? '') . BASE_URL . '/psicologo/alertas.php';
+        $urlAlertas = urlAbsoluta('/psicologo/alertas.php');
 
         $asunto = $pedidaPorEstudiante ? 'Un estudiante pidió ayuda urgente en Serena' : 'Alerta urgente en Serena';
         $introHtml = $pedidaPorEstudiante

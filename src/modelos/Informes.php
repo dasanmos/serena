@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
 require_once __DIR__ . '/Academico.php';
 require_once __DIR__ . '/Evaluacion.php';
 require_once __DIR__ . '/Expediente.php';
@@ -118,7 +119,7 @@ final class Informes
     {
         foreach ($tablas as $t) {
             if (!self::tablaExiste($pdo, $t)) {
-                throw new InformeError("Este informe necesita la tabla «{$t}». Aplica sql/migraciones/038_informes.sql (y las anteriores).");
+                throw new InformeError("Este informe necesita la tabla «{$t}». Aplica sql/migraciones/040_informes.sql (y las anteriores).");
             }
         }
     }
@@ -224,8 +225,8 @@ final class Informes
 
     public static function docentes(PDO $pdo, int $colegioId): array
     {
-        $q = $pdo->prepare("SELECT u.id, u.nombre, u.correo, u.telefono FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id AND r.nombre = 'docente'
-                             WHERE u.colegio_id = ? AND u.activo = 1 ORDER BY u.nombre");
+        $q = $pdo->prepare("SELECT u.id, u.nombre, u.correo, u.telefono FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
+                             WHERE (r.nombre = 'docente'" . RolesUsuario::sqlAdicional($pdo, 'u', 'docente') . ") AND u.colegio_id = ? AND u.activo = 1 ORDER BY u.nombre");
         $q->execute([$colegioId]);
         return $q->fetchAll();
     }

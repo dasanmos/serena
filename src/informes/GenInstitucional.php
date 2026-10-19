@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../modelos/RolesUsuario.php';
 require_once __DIR__ . '/GenBase.php';
 
 /** Categoría 15: administración, control e información institucional. */
@@ -36,7 +37,7 @@ final class GenInstitucional extends GenBase
             }
             $filas[] = array_merge([$x['grado']], array_map('strval', $row));
         }
-        $q = $pdo->prepare("SELECT COUNT(*) FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id AND r.nombre = 'docente' WHERE u.colegio_id = ? AND u.activo = 1");
+        $q = $pdo->prepare("SELECT COUNT(*) FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id WHERE (r.nombre = 'docente'" . RolesUsuario::sqlAdicional($pdo, 'u', 'docente') . ") AND u.colegio_id = ? AND u.activo = 1");
         $q->execute([$ctx['colegioId']]);
         $doc = (int) $q->fetchColumn();
         return ['bloques' => [

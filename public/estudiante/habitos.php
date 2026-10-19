@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $h = Habito::buscarPorId($pdo, $hid, $uid);
         if ($h) {
             Habito::marcarCompletado($pdo, $hid, date('Y-m-d'), $completado);
-            $exito = 'Hábito actualizado.';
+            $exito = $completado ? '¡Hábito cumplido hoy! ✨' : 'Hábito desmarcado para hoy.';
             if ($completado) evaluarInsignias($pdo, $uid);
         }
     } elseif ($accion === 'archivar') {

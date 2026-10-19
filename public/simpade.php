@@ -8,12 +8,20 @@ require_once __DIR__ . '/../src/helpers/auditor.php';
 require_once __DIR__ . '/../src/helpers/colegio.php';
 require_once __DIR__ . '/../src/helpers/captura.php';
 require_once __DIR__ . '/../src/modelos/Simpade.php';
+require_once __DIR__ . '/../src/modelos/Expediente.php';
 
 // SIMPADE: permanencia escolar. El sistema SUGIERE estudiantes en riesgo; una persona decide, hace el seguimiento y registra el retiro.
 requiereRol('administrador', 'rector', 'coordinador', 'orientador', 'psicologo', 'secretaria_academica');
 $rol = (string) $_SESSION['rol'];
 $usuarioId = (int) $_SESSION['usuario_id'];
 $colegioId = colegioParaCrear();
+// El orientador solo trabaja SIMPADE con los estudiantes de sus grupos (los indicadores del panel
+// siguen siendo cifras agregadas del colegio). null = sin restricción.
+$soloEstudiantes = $rol === 'orientador' ? Expediente::idsEstudiantesOrientador($pdo, $usuarioId, $colegioId) : null;
+$estudiantePermitido = static fn (int $id): bool => $soloEstudiantes === null || isset($soloEstudiantes[$id]);
+$filtrarPorEstudiante = static fn (array $filas, string $clave = 'estudiante_id'): array => $soloEstudiantes === null
+    ? $filas
+    : array_values(array_filter($filas, static fn (array $f): bool => isset($soloEstudiantes[(int) ($f[$clave] ?? 0)])));
 $e = static fn ($v): string => htmlspecialchars((string) $v, ENT_QUOTES);
 
 require_once __DIR__ . '/parciales/sm_error.php';
@@ -54,6 +62,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $volver($vista, '', 'Falta ejecutar la migración sql/migraciones/041_simat_simpade.sql o crear un año lectivo.');
     }
     $resp = (int) ($_POST['responsable_id'] ?? 0) ?: null;
+    if ($soloEstudiantes !== null) {
+        $estPost = 0;
+        if (in_array($accion, ['caso_abrir', 'retiro_registrar'], true)) {
+            $estPost = (int) ($_POST['estudiante_id'] ?? 0);
+        } elseif (in_array($accion, ['caso_actualizar', 'seguimiento_agregar'], true)) {
+            $casoPost = Simpade::caso($pdo, (int) ($_POST['caso_id'] ?? 0), $colegioId);
+            $estPost = $casoPost ? (int) $casoPost['estudiante_id'] : 0;
+        } elseif ($accion === 'retiro_reportado') {
+            $qr = $pdo->prepare('SELECT estudiante_id FROM simpade_retiros WHERE id = ? AND colegio_id = ?');
+            $qr->execute([(int) ($_POST['retiro_id'] ?? 0), $colegioId]);
+            $estPost = (int) $qr->fetchColumn();
+        }
+        if ($accion !== '' && !$estudiantePermitido($estPost)) {
+            $volver($vista, '', 'Ese estudiante no pertenece a tus grupos.');
+        }
+    }
 
     if ($accion === 'caso_abrir') {
         $factores = array_map('strval', (array) ($_POST['factores'] ?? []));
@@ -169,7 +193,7 @@ $pillNivel = static fn (string $n): string => '<span class="estado-pill ' . ($n 
     </section>
 
 <?php elseif ($vista === 'deteccion'): ?>
-    <?php $sug = $listo ? Simpade::sugerencias($pdo, $colegioId, $anioId) : []; ?>
+    <?php $sug = $listo ? $filtrarPorEstudiante(Simpade::sugerencias($pdo, $colegioId, $anioId)) : []; ?>
     <p class="texto-suave">Estudiantes con matrícula activa cuyo conjunto de señales (inasistencia, notas perdidas, repitencia, extraedad, convivencia, trabajo, entorno) alcanza el umbral. Revisa el detalle, ajusta y <strong>confirma</strong> solo los casos que tú consideres reales. Nada se marca en riesgo automáticamente.</p>
     <?php if (!$sug): ?>
         <div class="estado-vacio"><p>No hay sugerencias nuevas. Los estudiantes con caso abierto no se vuelven a sugerir.</p></div>
@@ -199,7 +223,7 @@ $pillNivel = static fn (string $n): string => '<span class="estado-pill ' . ($n 
 
     <section class="panel-seccion">
         <h2>Abrir un caso manualmente</h2>
-        <?php $activos = $listo ? Simpade::estudiantesActivos($pdo, $colegioId, $anioId) : []; ?>
+        <?php $activos = $listo ? $filtrarPorEstudiante(Simpade::estudiantesActivos($pdo, $colegioId, $anioId), 'id') : []; ?>
         <form action="simpade.php" method="POST" novalidate>
             <?php campoCSRF(); ?>
             <input type="hidden" name="accion" value="caso_abrir"><input type="hidden" name="anio" value="<?= $anioId ?>"><input type="hidden" name="vista" value="casos"><input type="hidden" name="origen" value="manual">
@@ -221,6 +245,9 @@ $pillNivel = static fn (string $n): string => '<span class="estado-pill ' . ($n 
 <?php elseif ($vista === 'casos'): ?>
     <?php
     $detalle = $casoId > 0 && $listo ? Simpade::caso($pdo, $casoId, $colegioId) : null;
+    if ($detalle && !$estudiantePermitido((int) $detalle['estudiante_id'])) {
+        $detalle = null;
+    }
     if ($detalle !== null):
         $segs = Simpade::seguimientos($pdo, $casoId);
     ?>
@@ -261,7 +288,7 @@ $pillNivel = static fn (string $n): string => '<span class="estado-pill ' . ($n 
     <?php else:
         $fe = (string) ($_GET['estado'] ?? '');
         $fn = (string) ($_GET['nivel'] ?? '');
-        $casos = $listo ? Simpade::casos($pdo, $colegioId, $anioId, $fe, $fn) : [];
+        $casos = $listo ? $filtrarPorEstudiante(Simpade::casos($pdo, $colegioId, $anioId, $fe, $fn)) : [];
     ?>
         <form action="simpade.php" method="GET" class="acad-filtros">
             <input type="hidden" name="anio" value="<?= $anioId ?>"><input type="hidden" name="vista" value="casos">
@@ -299,8 +326,8 @@ $pillNivel = static fn (string $n): string => '<span class="estado-pill ' . ($n 
 
 <?php elseif ($vista === 'retiros'): ?>
     <?php
-    $retiros = $listo ? Simpade::retiros($pdo, $colegioId, $anioId) : [];
-    $activos = $listo ? Simpade::estudiantesActivos($pdo, $colegioId, $anioId) : [];
+    $retiros = $listo ? $filtrarPorEstudiante(Simpade::retiros($pdo, $colegioId, $anioId)) : [];
+    $activos = $listo ? $filtrarPorEstudiante(Simpade::estudiantesActivos($pdo, $colegioId, $anioId), 'id') : [];
     ?>
     <p class="texto-suave">El rector informa por escrito y con motivo cada retiro (la causa se reporta en SIMPADE); guarda el soporte en la carpeta del estudiante. Registra aquí la causa y lo que se intentó para que permaneciera. Si marcas «Retirar la matrícula», Serena la pasa a retirada y deja la novedad de retiro pendiente en SIMAT.</p>
     <section class="panel-seccion">

@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
                 $admins++;
                 auditarAccion($pdo, 'crear_admin_colegio', 'usuarios', (int) $pdo->lastInsertId(), [], ['correo' => $adminCorreo, 'colegio_id' => $colegioId]);
 
-                $enlaceLogin = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . (defined('BASE_URL') ? BASE_URL : '') . '/login.php';
+                $enlaceLogin = urlAbsoluta('/login.php');
                 $texto = "Hola {$adminNombre},\n\nSe creó tu cuenta de administrador de {$nombre} en Serena.\n\n"
                     . "Correo: {$adminCorreo}\nContraseña temporal: {$temporal}\n\nCámbiala apenas inicies sesión.\n\n— Serena";
                 $html = plantillaCorreoHtml('Bienvenido/a a Serena',

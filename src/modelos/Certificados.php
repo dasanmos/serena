@@ -103,8 +103,7 @@ class Certificados
         if ($u !== '' && preg_match('#^https?://#i', $u)) {
             return rtrim($u, '/');
         }
-        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
-        return ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . (defined('BASE_URL') ? BASE_URL : '');
+        return urlAbsoluta();
     }
 
     // ------------------------------------------------------------------

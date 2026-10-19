@@ -25,7 +25,7 @@ declare(strict_types=1);
 //   OPENROUTER_MODELOS=            lista fija separada por comas (anula el descubrimiento)
 //   OPENROUTER_DATA_COLLECTION=deny   deny (recomendado) | allow
 //   OPENROUTER_MAX_INTENTOS=4      cuántos modelos probar por consulta
-//   APP_URL=https://tu-dominio     (cabecera HTTP-Referer; opcional)
+//   APP_URL=https://serena.infinityfreeapp.com     (cabecera HTTP-Referer; opcional)
 // ============================================================================
 
 const IA_BASE_URL        = 'https://openrouter.ai/api/v1';
@@ -294,7 +294,7 @@ function iaPeticion(string $modelo, string $prompt, float $temperatura, int $max
 
     $referer = entornoServer('APP_URL');
     if ($referer === '' && !empty($_SERVER['HTTP_HOST'])) {
-        $referer = 'https://' . $_SERVER['HTTP_HOST'];
+        $referer = origenSitio();
     }
 
     $ch = curl_init(IA_BASE_URL . '/chat/completions');

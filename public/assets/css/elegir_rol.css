@@ -1,7 +1,7 @@
 /* ============================================================
    SERENA — elegir_rol.css
    Selector de rol del usuario maestro. Se carga después de
-   login.css y login_pro.css y reutiliza su estructura de dos
+   login.css (que ya incluye la antigua login_pro.css) y reutiliza su estructura de dos
    columnas (marca + formulario); aquí solo van las piezas propias.
    ============================================================ */
 
@@ -90,3 +90,42 @@
 .elegir-rol a.rol-demo { text-decoration: none; color: inherit; display: block; }
 .elegir-rol a.rol-demo .rol-tarjeta { border-style: dashed; }
 .elegir-rol a.rol-demo:hover .rol-tarjeta, .elegir-rol a.rol-demo:focus-visible .rol-tarjeta { border-color: var(--color-dorado-oscuro, #E8B923); }
+
+/* Selector para cuentas con varios roles (ingresar_como.php): cada rol es un botón de un toque */
+.roles-multiples { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: var(--espacio-md); }
+.card-login .rol-boton,
+.card-login .rol-boton:hover,
+.login-pro .card-login button.rol-boton[type="submit"],
+.login-pro .card-login button.rol-boton[type="submit"]:hover {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+    transform: none;
+    filter: none;
+}
+.card-login .rol-boton::after,
+.login-pro .card-login button.rol-boton[type="submit"]::after { display: none; }
+.login-pro .card-login button.rol-boton[type="submit"] { min-height: 0; }
+.rol-boton:hover .rol-tarjeta,
+.rol-boton:focus-visible .rol-tarjeta { border-color: var(--color-dorado-oscuro); transform: translateY(-1px); }
+.rol-boton:focus-visible { outline: none; }
+.rol-boton:focus-visible .rol-tarjeta { outline: 3px solid var(--color-dorado-oscuro); outline-offset: 2px; }
+.rol-boton.rol-actual .rol-tarjeta { border-color: var(--color-dorado-oscuro); background: var(--color-aviso-fondo); }
+
+/* Institución con otra contraseña (elegir_colegio.php) */
+.colegio-con-clave { margin-top: 10px; display: grid; gap: 8px; }
+.colegio-con-clave .rol-tarjeta { border-style: dashed; }
+.colegio-clave-fila { display: flex; gap: 8px; align-items: stretch; }
+.colegio-clave-fila > input,
+.colegio-clave-fila > .campo-password-wrapper { flex: 1 1 auto; min-width: 0; margin: 0; }
+.colegio-clave-fila .campo-password-wrapper input { width: 100%; margin: 0; }
+.login-pro .card-login .colegio-clave-fila button.boton-entrar-colegio[type="submit"],
+.card-login .colegio-clave-fila button.boton-entrar-colegio {
+    width: auto; flex: 0 0 auto; margin: 0; padding: 0 22px; min-height: 0;
+}

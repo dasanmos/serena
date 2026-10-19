@@ -6,7 +6,7 @@ declare(strict_types=1);
 // exec()/shell_exec() por seguridad, así que no se puede confiar en tener el binario
 // de mysqldump disponible. Esto funciona en cualquier hosting.
 //
-// Se usa tanto para la descarga directa (administrador/respaldo.php) como para la
+// Se usa tanto para la descarga directa (superadmin/respaldo.php) como para la
 // copia guardada en disco (administrador/configuracion.php) — una sola fuente de
 // verdad para la lista de tablas y el formato del volcado.
 function tablasParaRespaldo(): array

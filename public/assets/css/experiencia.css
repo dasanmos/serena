@@ -1,0 +1,641 @@
+/* ============================================================
+   SERENA — experiencia.css
+   Capa común a todos los paneles (se carga después de los CSS de cada
+   rol y antes de responsive.css). Tres ideas:
+     1. Calma: el fondo, el aire y el dorado de Serena no cambian.
+     2. Calidez: cada módulo tiene su color (y cada emoción el suyo),
+        usado en acentos, nunca en fondos completos.
+     3. Movimiento: las cosas entran, responden al tocarlas y celebran
+        los logros. Todo se apaga con «reducir movimiento» del sistema
+        y con el alto contraste.
+   Variables de módulo:
+     --mod          color del módulo (acentos, bordes, iconos)
+     --mod-suave    tinte claro para fondos pequeños
+     --mod-texto    versión legible del color para texto
+   ============================================================ */
+
+body.panel-body {
+    --mod: var(--color-dorado-oscuro);
+    --mod-suave: var(--color-aviso-fondo);
+    --mod-texto: var(--color-dorado-texto);
+    --entrada: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+    body.panel-body {
+        --mod-suave: color-mix(in srgb, var(--mod) 13%, var(--color-superficie));
+        --mod-texto: color-mix(in srgb, var(--mod) 72%, var(--color-texto));
+    }
+}
+
+/* --- Color de cada módulo --- */
+body[data-modulo="emociones"]                 { --mod: #E4685A; }
+body[data-modulo="sueno"]                     { --mod: #5B6CD8; }
+body[data-modulo="diario"],
+body[data-modulo="diario_pin"]                { --mod: #8E6FD1; }
+body[data-modulo="habitos"]                   { --mod: #3E9E68; }
+body[data-modulo="metas"]                     { --mod: #1F97A3; }
+body[data-modulo="recordatorios"]             { --mod: #D98E22; }
+body[data-modulo="citas"],
+body[data-modulo="mensajes"]                  { --mod: #7B5BB5; }
+body[data-modulo="respiracion"]               { --mod: #3E9BD3; }
+body[data-modulo="estadisticas"],
+body[data-modulo="calendario"]                { --mod: #2E7DA6; }
+body[data-modulo="encuestas"]                 { --mod: #CF5A88; }
+body[data-modulo="recursos_apoyo"],
+body[data-modulo="ayuda_urgente"]             { --mod: #2F8F84; }
+body[data-modulo="notificaciones"]            { --mod: #D98E22; }
+html[data-tema="oscuro"] body.panel-body      { --mod-suave: color-mix(in srgb, var(--mod) 22%, var(--color-superficie)); --mod-texto: color-mix(in srgb, var(--mod) 55%, var(--color-texto)); }
+
+/* --- Colores por emoción (botones, historial y la tarjeta que los contiene) --- */
+[data-emocion="feliz"]      { --emo: #E8B923; }
+[data-emocion="tranquilo"]  { --emo: #2FA39A; }
+[data-emocion="motivado"]   { --emo: #F08A24; }
+[data-emocion="ansioso"]    { --emo: #8E6FD1; }
+[data-emocion="triste"]     { --emo: #4A7BD0; }
+[data-emocion="cansado"]    { --emo: #7C8AA5; }
+[data-emocion="estresado"]  { --emo: #E0663F; }
+[data-emocion="enojado"]    { --emo: #D2453F; }
+[data-emocion="confundido"] { --emo: #A06CC4; }
+[data-emocion="agradecido"] { --emo: #D45D8C; }
+
+/* ============================================================
+   Cabecera de módulo (la crea experiencia.js alrededor del primer h1)
+   ============================================================ */
+.cabecera-modulo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-md);
+    margin: 0 0 var(--espacio-lg);
+    padding: var(--espacio-lg) var(--espacio-lg) var(--espacio-lg) var(--espacio-md);
+    border-radius: var(--radio-borde-lg);
+    background: linear-gradient(120deg, var(--mod-suave), transparent 75%);
+    overflow: hidden;
+    isolation: isolate;
+}
+.cabecera-modulo::before,
+.cabecera-modulo::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    background: var(--mod);
+    opacity: 0.12;
+    filter: blur(2px);
+}
+.cabecera-modulo::before { width: 180px; height: 180px; right: -40px; top: -70px; animation: flotar-lento 9s ease-in-out infinite; }
+.cabecera-modulo::after { width: 90px; height: 90px; right: 140px; bottom: -50px; opacity: 0.08; animation: flotar-lento 12s ease-in-out infinite reverse; }
+.cabecera-modulo h1 { margin: 0 !important; line-height: 1.1; }
+.cabecera-modulo-icono {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--color-superficie);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--mod) 28%, transparent);
+    animation: aparecer-icono 0.7s var(--curva-rebote) both;
+}
+.cabecera-modulo-icono img { width: 34px; height: 34px; object-fit: contain; }
+@keyframes flotar-lento { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-14px, 10px); } }
+@keyframes aparecer-icono { from { opacity: 0; transform: scale(0.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
+
+/* ============================================================
+   Superficies: tarjetas y secciones con acento del módulo
+   ============================================================ */
+.rol-estudiante .panel-seccion,
+.rol-acudiente .panel-seccion {
+    border-top: 3px solid color-mix(in srgb, var(--mod) 55%, transparent);
+}
+.panel-seccion,
+.tarjeta,
+.tarjeta-habito,
+.tarjeta-meta {
+    transition: transform 0.35s var(--entrada), box-shadow 0.35s var(--entrada), border-color 0.25s ease;
+}
+@media (hover: hover) {
+    .tarjeta-habito:hover,
+    .tarjeta-meta:hover { transform: translateY(-3px); box-shadow: var(--sombra-lg); }
+}
+.tarjeta::before { background: linear-gradient(90deg, var(--color-dorado-claro), var(--mod)); }
+.tarjeta-icono { display: inline-block; transition: transform 0.4s var(--curva-rebote); }
+.tarjeta:hover .tarjeta-icono { transform: scale(1.18) rotate(-6deg); }
+
+/* Accesos rápidos y botones: respuesta táctil */
+button,
+.boton-acceso,
+.boton-secundario,
+.accesos-rapidos a {
+    position: relative;
+    overflow: hidden;
+}
+button:active:not(:disabled),
+.boton-acceso:active,
+.boton-secundario:active,
+.accesos-rapidos a:active { transform: scale(0.96); }
+.onda-toque {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    background: currentColor;
+    opacity: 0.22;
+    transform: scale(0);
+    animation: onda 0.6s ease-out forwards;
+}
+@keyframes onda { to { transform: scale(2.6); opacity: 0; } }
+
+/* ============================================================
+   Entrada escalonada (solo con JS listo y sin «reducir movimiento»:
+   la clase .exp-anima la pone el <head> antes de pintar)
+   ============================================================ */
+.exp-anima .contenido-panel > .cabecera-modulo,
+.exp-anima .contenido-panel .panel-seccion,
+.exp-anima .contenido-panel .tarjeta,
+.exp-anima .contenido-panel .tarjeta-habito,
+.exp-anima .contenido-panel .tarjeta-meta,
+.exp-anima .contenido-panel .btn-emocion,
+.exp-anima .contenido-panel .lista-simple > li,
+.exp-anima .contenido-panel .accesos-rapidos > *,
+.exp-anima .contenido-panel .barra-sueno-dia {
+    animation: entrar-suave 0.6s var(--entrada) backwards;
+}
+@keyframes entrar-suave {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+/* Escalonado por posición entre hermanos (hasta 10; el resto entra con el último). */
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(2) { animation-delay: 60ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(3) { animation-delay: 120ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(4) { animation-delay: 180ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(5) { animation-delay: 240ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(6) { animation-delay: 300ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(7) { animation-delay: 340ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(8) { animation-delay: 380ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(9) { animation-delay: 420ms; }
+.exp-anima .contenido-panel :is(.panel-seccion, .tarjeta, .tarjeta-habito, .tarjeta-meta, .btn-emocion, .lista-simple > li, .accesos-rapidos > *, .barra-sueno-dia):nth-child(n+10) { animation-delay: 460ms; }
+
+/* Barras que se llenan y crecen */
+.exp-anima .barra-progreso-relleno { transform-origin: left center; animation: llenar-barra 1.1s var(--entrada) 0.3s backwards; }
+.exp-anima .barra-sueno-dia .barra-vertical { transform-origin: bottom center; animation: crecer-barra 0.9s var(--entrada) backwards; animation-delay: inherit; }
+@keyframes llenar-barra { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes crecer-barra { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.barra-progreso-relleno { background: linear-gradient(90deg, var(--color-dorado-claro), var(--mod)); }
+
+/* ============================================================
+   Emociones: cada una con su color; la tarjeta se tiñe con la elegida
+   ============================================================ */
+.grilla-emociones { gap: 10px; }
+.btn-emocion {
+    position: relative;
+    background: color-mix(in srgb, var(--emo, var(--mod)) 10%, var(--color-superficie));
+    border: 2px solid color-mix(in srgb, var(--emo, var(--mod)) 25%, transparent);
+    padding: 9px 16px 9px 12px;
+    font-weight: 500;
+}
+/* El radio queda oculto a la vista pero sigue siendo usable con teclado y lector de pantalla
+   (antes tenía display:none y no se podía elegir una emoción sin mouse). */
+.btn-emocion input[type="radio"] {
+    display: inline-block !important;
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+.btn-emocion:has(input:focus-visible) { outline: 3px solid var(--emo, var(--mod)); outline-offset: 3px; }
+.emoji-emocion { font-size: 1.25em; line-height: 1; display: inline-block; transition: transform 0.35s var(--curva-rebote); }
+.btn-emocion:hover .emoji-emocion { transform: scale(1.25) rotate(-8deg); }
+.btn-emocion.activa,
+.btn-emocion:has(input:checked) {
+    background: var(--emo, var(--mod));
+    border-color: var(--emo, var(--mod));
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--emo, var(--mod)) 40%, transparent);
+    animation: elegir-emocion 0.45s var(--curva-rebote);
+}
+.grilla-emociones .btn-emocion:has(input:checked),
+.grilla-emociones .btn-emocion.activa { color: #fff; }
+.grilla-emociones .btn-emocion[data-emocion="feliz"]:has(input:checked),
+.grilla-emociones .btn-emocion[data-emocion="motivado"]:has(input:checked) { color: #2B2B2B; }
+.btn-emocion:has(input:checked) .emoji-emocion { animation: saltar-emoji 0.6s var(--curva-rebote); }
+@keyframes elegir-emocion { 0% { transform: scale(0.9); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+@keyframes saltar-emoji { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-8px) scale(1.35); } 100% { transform: none; } }
+
+/* La tarjeta del formulario toma el color de la emoción elegida */
+.panel-seccion:has(.btn-emocion input:checked) {
+    transition: background 0.5s ease, border-color 0.5s ease;
+}
+@supports selector(:has(*)) {
+    .panel-seccion:has(.btn-emocion[data-emocion="feliz"] input:checked)      { --emo: #E8B923; }
+    .panel-seccion:has(.btn-emocion[data-emocion="tranquilo"] input:checked)  { --emo: #2FA39A; }
+    .panel-seccion:has(.btn-emocion[data-emocion="motivado"] input:checked)   { --emo: #F08A24; }
+    .panel-seccion:has(.btn-emocion[data-emocion="ansioso"] input:checked)    { --emo: #8E6FD1; }
+    .panel-seccion:has(.btn-emocion[data-emocion="triste"] input:checked)     { --emo: #4A7BD0; }
+    .panel-seccion:has(.btn-emocion[data-emocion="cansado"] input:checked)    { --emo: #7C8AA5; }
+    .panel-seccion:has(.btn-emocion[data-emocion="estresado"] input:checked)  { --emo: #E0663F; }
+    .panel-seccion:has(.btn-emocion[data-emocion="enojado"] input:checked)    { --emo: #D2453F; }
+    .panel-seccion:has(.btn-emocion[data-emocion="confundido"] input:checked) { --emo: #A06CC4; }
+    .panel-seccion:has(.btn-emocion[data-emocion="agradecido"] input:checked) { --emo: #D45D8C; }
+    .panel-seccion:has(.btn-emocion input:checked) {
+        background: linear-gradient(180deg, color-mix(in srgb, var(--emo) 9%, var(--color-superficie)), var(--color-superficie) 60%);
+        border-top-color: var(--emo);
+    }
+    .panel-seccion:has(.btn-emocion input:checked) .slider-nivel { accent-color: var(--emo); }
+}
+
+/* Historial de emociones: punto de color y emoji */
+.registro-emocion { position: relative; padding-left: 4px; }
+.registro-emocion .emoji-emocion {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 6px;
+    border-radius: 50%;
+    font-size: 1rem;
+    background: color-mix(in srgb, var(--emo, var(--mod)) 16%, var(--color-superficie));
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--emo, var(--mod)) 45%, transparent);
+    vertical-align: middle;
+}
+
+/* Control deslizante con el color del módulo */
+.slider-nivel { accent-color: var(--mod); height: 28px; }
+.valor-slider {
+    display: inline-grid;
+    place-items: center;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--mod);
+    color: #fff;
+    font-weight: 700;
+    transition: transform 0.2s var(--curva-rebote);
+}
+.valor-slider.cambio { transform: scale(1.3); }
+
+/* ============================================================
+   Hábitos, rachas y metas
+   ============================================================ */
+.racha { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--mod-texto); }
+.racha[data-dias]:not([data-dias="0"]):not([data-dias="1"]):not([data-dias="2"]) .racha-fuego {
+    display: inline-block;
+    animation: llama 1.4s ease-in-out infinite;
+    transform-origin: 50% 90%;
+}
+@keyframes llama {
+    0%, 100% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 0 rgba(240, 138, 36, 0)); }
+    50% { transform: scale(1.18) rotate(3deg); filter: drop-shadow(0 0 6px rgba(240, 138, 36, 0.7)); }
+}
+.check-habito.marcado,
+.check-habito:has(input:checked) { animation: marcar-pop 0.45s var(--curva-rebote); }
+@keyframes marcar-pop { 0% { transform: scale(1); } 40% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+/* Cifras grandes del inicio */
+.tarjeta-numero { font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   Celebraciones (confeti y destellos que dibuja experiencia.js)
+   ============================================================ */
+.capa-confeti { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+.confeti {
+    position: absolute;
+    width: 9px;
+    height: 14px;
+    border-radius: 2px;
+    opacity: 0.95;
+    animation: caer-confeti var(--dur, 1.6s) cubic-bezier(0.25, 0.6, 0.4, 1) forwards;
+}
+@keyframes caer-confeti {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--dx, 0px), var(--dy, 420px)) rotate(var(--giro, 540deg)); opacity: 0; }
+}
+.mensaje-exito { animation: destello-exito 1.2s ease-out 2; }
+
+/* ============================================================
+   Accesibilidad: sin movimiento ni decoración cuando se pide
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .exp-anima .contenido-panel *,
+    .cabecera-modulo::before,
+    .cabecera-modulo::after,
+    .cabecera-modulo-icono,
+    .racha-fuego,
+    .btn-emocion,
+    .emoji-emocion { animation: none !important; }
+    .capa-confeti { display: none; }
+}
+html[data-contraste="alto"] .cabecera-modulo { background: none; border: 2px solid currentColor; }
+html[data-contraste="alto"] .cabecera-modulo::before,
+html[data-contraste="alto"] .cabecera-modulo::after { display: none; }
+
+@media (max-width: 600px) {
+    .cabecera-modulo { padding: var(--espacio-md); gap: 12px; }
+    .cabecera-modulo-icono { width: 46px; height: 46px; border-radius: 14px; }
+    .cabecera-modulo-icono img { width: 28px; height: 28px; }
+    .cabecera-modulo::after { display: none; }
+}
+
+@media print {
+    .cabecera-modulo { background: none; padding: 0; }
+    .cabecera-modulo::before, .cabecera-modulo::after, .cabecera-modulo-icono, .capa-confeti { display: none; }
+}
+
+/* Inicio del estudiante: cada cifra con el color de su módulo */
+body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta:nth-child(1) { --tono: #3E9E68; }
+body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta:nth-child(2) { --tono: #1F97A3; }
+body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta:nth-child(3) { --tono: #5B6CD8; }
+body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta:nth-child(4) { --tono: #D98E22; }
+body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--tono, var(--mod)) 9%, var(--color-superficie)), var(--color-superficie) 70%);
+}
+body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta::before { background: var(--tono, var(--mod)); opacity: 0.85; }
+body[data-modulo="dashboard"] .tarjetas-resumen .tarjeta-numero { color: color-mix(in srgb, var(--tono, var(--mod)) 75%, var(--color-texto)); }
+@media (hover: hover) {
+    body[data-modulo="dashboard"] .tarjetas-resumen > .tarjeta:hover { border-color: color-mix(in srgb, var(--tono, var(--mod)) 45%, transparent); }
+}
+
+/* ============================================================
+   PANELES DEL PERSONAL
+   Cada rol tiene su color (más específico que el color de módulo, así
+   «mensajes» o «perfil» del personal toman el color del rol).
+   ============================================================ */
+body.panel-body.rol-psicologo            { --mod: #7B5BB5; }
+body.panel-body.rol-orientador           { --mod: #3E9E68; }
+body.panel-body.rol-docente              { --mod: #D98E22; }
+body.panel-body.rol-coordinador          { --mod: #E0663F; }
+body.panel-body.rol-rector               { --mod: #B04A6E; }
+body.panel-body.rol-administrador        { --mod: #4F6D8F; }
+body.panel-body.rol-secretaria_academica { --mod: #1F97A3; }
+body.panel-body.rol-acudiente            { --mod: #2E7DA6; }
+body.panel-body.rol-superadmin           { --mod: #5B6CD8; }
+
+/* Saludo de los paneles: misma cabecera viva que los módulos, con el color del rol */
+.cabecera-saludo {
+    position: relative;
+    margin: 0 0 var(--espacio-lg);
+    padding: var(--espacio-lg);
+    border-radius: var(--radio-borde-lg);
+    background: linear-gradient(120deg, var(--mod-suave), transparent 80%);
+    overflow: hidden;
+    isolation: isolate;
+}
+.cabecera-saludo::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 220px;
+    height: 220px;
+    right: -60px;
+    top: -110px;
+    border-radius: 50%;
+    background: var(--mod);
+    opacity: 0.12;
+    animation: flotar-lento 10s ease-in-out infinite;
+}
+.cabecera-saludo h1 { margin-bottom: 6px !important; }
+.cabecera-saludo > p.texto-suave {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 3px 12px;
+    border-radius: var(--radio-pill);
+    background: var(--color-superficie);
+    color: var(--mod-texto);
+    font-weight: 600;
+    font-size: var(--texto-sm);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mod) 35%, transparent);
+}
+.cabecera-saludo > p.texto-suave::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--mod); }
+
+/* Cifras del panel: icono en burbuja de color y número con el tono del rol */
+body:not([data-modulo="dashboard"]) .tarjetas-resumen > .tarjeta {
+    background: linear-gradient(180deg, var(--mod-suave), var(--color-superficie) 65%);
+}
+body:not([data-modulo="dashboard"]) .tarjetas-resumen > .tarjeta::before { background: var(--mod); opacity: 0.75; }
+body:not([data-modulo="dashboard"]) .tarjetas-resumen .tarjeta-numero { color: var(--mod-texto); }
+.tarjetas-resumen .tarjeta-icono {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--color-superficie);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--mod) 22%, transparent);
+}
+
+/* Gráficos: caja de alto fijo (experiencia.js mete ahí cada canvas de Chart.js) */
+.grafico-caja { position: relative; height: 300px; margin-top: var(--espacio-sm); }
+.grafico-caja--circular { height: 280px; max-width: 520px; margin-inline: auto; }
+.grafico-caja canvas { max-width: 100%; }
+@media (max-width: 600px) { .grafico-caja { height: 240px; } .grafico-caja--circular { height: 240px; } }
+
+/* Tablas: fila que se ilumina con el color del rol y cabecera fija al desplazar */
+.tabla-datos thead th { position: sticky; top: 0; z-index: 1; }
+.tabla-datos tbody tr { transition: background 0.2s ease, box-shadow 0.2s ease; }
+.tabla-datos tbody tr:hover { background: var(--mod-suave); box-shadow: inset 3px 0 0 var(--mod); }
+.exp-anima .contenido-panel .tabla-datos tbody tr { animation: entrar-fila 0.45s var(--entrada) backwards; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(2) { animation-delay: 30ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(3) { animation-delay: 60ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(4) { animation-delay: 90ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(5) { animation-delay: 120ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(6) { animation-delay: 150ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(7) { animation-delay: 180ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(8) { animation-delay: 210ms; }
+.exp-anima .contenido-panel .tabla-datos tbody tr:nth-child(n+9) { animation-delay: 240ms; }
+@keyframes entrar-fila { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+
+/* Iniciales en la primera columna de las tablas de estudiantes (las pone experiencia.js) */
+.avatar-iniciales {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    border-radius: 50%;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--tono-avatar, var(--mod));
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Alertas: las de urgencia alta laten suavemente para que no pasen desapercibidas */
+.tarjeta-alerta,
+.tarjeta-resumen-alerta,
+.tarjeta-estudiante-roster { transition: transform 0.3s var(--entrada), box-shadow 0.3s var(--entrada); }
+@media (hover: hover) {
+    .tarjeta-alerta:hover,
+    .tarjeta-estudiante-roster:hover { transform: translateY(-3px); box-shadow: var(--sombra-lg); }
+}
+.pill-severidad-alto { animation: latido-alerta 2.2s ease-in-out infinite; }
+@keyframes latido-alerta {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(178, 58, 46, 0.35); }
+    50% { box-shadow: 0 0 0 6px rgba(178, 58, 46, 0); }
+}
+.exp-anima .contenido-panel :is(.tarjeta-alerta, .tarjeta-resumen-alerta, .tarjeta-estudiante-roster) { animation: entrar-suave 0.55s var(--entrada) backwards; }
+.exp-anima .contenido-panel :is(.tarjeta-alerta, .tarjeta-resumen-alerta, .tarjeta-estudiante-roster):nth-child(2) { animation-delay: 60ms; }
+.exp-anima .contenido-panel :is(.tarjeta-alerta, .tarjeta-resumen-alerta, .tarjeta-estudiante-roster):nth-child(3) { animation-delay: 120ms; }
+.exp-anima .contenido-panel :is(.tarjeta-alerta, .tarjeta-resumen-alerta, .tarjeta-estudiante-roster):nth-child(4) { animation-delay: 180ms; }
+.exp-anima .contenido-panel :is(.tarjeta-alerta, .tarjeta-resumen-alerta, .tarjeta-estudiante-roster):nth-child(n+5) { animation-delay: 220ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .cabecera-saludo::before,
+    .pill-severidad-alto,
+    .exp-anima .contenido-panel .tabla-datos tbody tr { animation: none !important; }
+}
+html[data-contraste="alto"] .cabecera-saludo { background: none; border: 2px solid currentColor; }
+html[data-contraste="alto"] .cabecera-saludo::before { display: none; }
+@media print {
+    .cabecera-saludo { background: none; padding: 0; }
+    .cabecera-saludo::before { display: none; }
+    .grafico-caja { height: 220px; }
+}
+
+/* ============================================================
+   ADMINISTRACIÓN Y ACADÉMICO: formularios más compactos y claros
+   ============================================================ */
+
+/* Micrófono de dictado dentro del campo (voz.js envuelve el campo en .voz-campo) */
+.voz-campo { position: relative; display: block; width: 100%; min-width: 0; flex: 1 1 auto; }
+.voz-campo > input { padding-right: 46px; }
+.voz-campo > textarea { padding-right: 46px; }
+.voz-campo > .voz-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    background: var(--color-fondo-alterno);
+    border-color: transparent;
+}
+.voz-campo-area > .voz-btn { top: auto; bottom: 8px; transform: none; }
+.voz-campo > .voz-btn:hover,
+.voz-campo > .voz-btn:focus-visible { border-color: var(--mod); transform: translateY(-50%); }
+.voz-campo-area > .voz-btn:hover,
+.voz-campo-area > .voz-btn:focus-visible { transform: none; }
+
+/* Casillas y opciones: base.css daba width:100% a todo <input>, y por eso cada casilla
+   quedaba sola en su línea, centrada encima de su texto. */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    flex-shrink: 0;
+    accent-color: var(--mod);
+    vertical-align: middle;
+    cursor: pointer;
+}
+label:has(> input[type="checkbox"]),
+label:has(> input[type="radio"]) {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+label.opcion-consentimiento:has(> input[type="radio"]) {
+    display: flex !important;
+    align-items: flex-start;
+    width: 100%;
+    padding: 12px 14px;
+    margin: 0 0 8px;
+    border: 1.5px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+label.opcion-consentimiento:has(> input[type="radio"]) input { margin-top: 3px; }
+label.opcion-consentimiento:has(> input:checked) { border-color: var(--mod); background: var(--mod-suave); }
+
+/* Botones de peligro: con contorno en reposo (ya no dominan la pantalla), sólidos al pasar */
+button.boton-peligro,
+.boton-peligro {
+    background: var(--color-superficie);
+    color: var(--color-peligro);
+    border: 1.5px solid color-mix(in srgb, var(--color-peligro) 55%, transparent);
+    box-shadow: none;
+}
+button.boton-peligro:hover,
+.boton-peligro:hover,
+button.boton-peligro:focus-visible {
+    background: var(--color-peligro);
+    color: var(--color-sobre-peligro);
+    border-color: var(--color-peligro);
+    box-shadow: 0 6px 18px rgba(192, 57, 43, 0.25);
+    text-decoration: none;
+}
+
+/* Acciones dentro de tablas y filas: compactas */
+.tabla-datos td button,
+.tabla-datos td .boton-acceso,
+.tabla-datos td .boton-secundario,
+.tabla-datos td .boton-peligro,
+.acad-fila button,
+.acad-acciones > form > button {
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    min-height: 34px;
+}
+
+/* Filas de edición repetidas (asignaturas, periodos, niveles): separadas y alineadas */
+.panel-seccion > .acad-acciones {
+    padding: 12px 0;
+    margin: 0;
+    border-top: 1px solid var(--color-borde);
+    align-items: flex-end;
+}
+.panel-seccion > .acad-acciones:hover { background: linear-gradient(90deg, var(--mod-suave), transparent 70%); }
+.acad-acciones label,
+.acad-filtros label { min-width: 0; }
+
+/* Filtros: en una sola fila y con aire */
+.acad-filtros,
+form.filtro-rol {
+    padding: 12px 14px;
+    border-radius: var(--radio-borde);
+    background: var(--color-fondo-alterno);
+    border: 1px solid var(--color-borde);
+}
+form.filtro-rol > div { flex: 1 1 220px; min-width: 0; }
+form.filtro-rol { max-width: none; align-items: flex-end; }
+form.filtro-rol > button { flex: 0 0 auto; }
+
+/* Fila de edición: el formulario ocupa el ancho y «Quitar» queda al final de la misma fila */
+@media (min-width: 761px) {
+    .panel-seccion > .acad-acciones { flex-wrap: nowrap; }
+    .panel-seccion > .acad-acciones > form:first-of-type { flex: 1 1 auto; min-width: 0; }
+    .panel-seccion > .acad-acciones > form:first-of-type > label:has(> .voz-campo, > input[type="text"]) { flex: 1 1 160px; }
+}
+
+/* Listas académicas: la fila responde y lleva el color del rol */
+.acad-fila { transition: background 0.2s ease, box-shadow 0.2s ease; }
+.acad-fila:hover { background: var(--mod-suave); box-shadow: inset 3px 0 0 var(--mod); }
+.exp-anima .contenido-panel .acad-fila { animation: entrar-fila 0.45s var(--entrada) backwards; }
+.exp-anima .contenido-panel .acad-fila:nth-child(2) { animation-delay: 30ms; }
+.exp-anima .contenido-panel .acad-fila:nth-child(3) { animation-delay: 60ms; }
+.exp-anima .contenido-panel .acad-fila:nth-child(4) { animation-delay: 90ms; }
+.exp-anima .contenido-panel .acad-fila:nth-child(n+5) { animation-delay: 120ms; }
+
+/* Pestañas internas (SIMAT, SIMPADE, Horarios...) con el color del rol */
+.sm-pestanas a.activa,
+.acad-pestanas a.activa,
+.pestanas a.activa { box-shadow: inset 0 -3px 0 var(--mod); }
+
+/* Bloques desplegables «Agregar…»: se notan como acción */
+.panel-seccion details > summary {
+    cursor: pointer;
+    padding: 8px 0;
+    font-weight: 600;
+    color: var(--mod-texto);
+}
+.panel-seccion details[open] > summary { margin-bottom: 8px; }
+@media (min-width: 1000px) {
+    .tabla-datos td[data-etiqueta=""] { flex-wrap: nowrap !important; white-space: nowrap; }
+}

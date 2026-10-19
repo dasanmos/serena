@@ -6,6 +6,7 @@ require_once __DIR__ . '/../src/helpers/auth.php';
 require_once __DIR__ . '/../src/helpers/auditor.php';
 require_once __DIR__ . '/../src/helpers/colegio.php';
 require_once __DIR__ . '/../src/modelos/Simpade.php';
+require_once __DIR__ . '/../src/modelos/Expediente.php';
 
 // Descargas CSV de SIMPADE: casos de riesgo y retiros con su causa.
 requiereRol('administrador', 'rector', 'coordinador', 'orientador', 'psicologo', 'secretaria_academica');
@@ -25,11 +26,15 @@ header('Content-Type: text/csv; charset=utf-8');
 header('Cache-Control: no-store');
 header('Content-Disposition: attachment; filename="serena-simpade-' . $tipo . '-' . (int) $anio['anio'] . '-' . date('Ymd') . '.csv"');
 $salida = fopen('php://output', 'w');
+$datos = $tipo === 'casos' ? Simpade::casos($pdo, $colegioId, (int) $anio['id']) : Simpade::retiros($pdo, $colegioId, (int) $anio['id']);
+// El orientador solo descarga los estudiantes de sus grupos.
+if ($_SESSION['rol'] === 'orientador') {
+    $ids = Expediente::idsEstudiantesOrientador($pdo, (int) $_SESSION['usuario_id'], $colegioId);
+    $datos = array_values(array_filter($datos, static fn (array $f): bool => isset($ids[(int) $f['estudiante_id']])));
+}
 if ($tipo === 'casos') {
-    $datos = Simpade::casos($pdo, $colegioId, (int) $anio['id']);
     Simpade::escribirCsvCasos($salida, $datos, $sep);
 } else {
-    $datos = Simpade::retiros($pdo, $colegioId, (int) $anio['id']);
     Simpade::escribirCsvRetiros($salida, $datos, $sep);
 }
 auditarAccion($pdo, 'simpade_exportar_' . $tipo, 'colegios', $colegioId, [], ['filas' => count($datos)]);

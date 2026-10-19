@@ -80,9 +80,45 @@ const Sonidos = (() => {
 
         // Abrir/cerrar el menú
         menu: () => tono({ frecuencia: 440, duracion: 0.07, volumen: 0.04 }),
+
+        // --- Sonidos de la capa de experiencia (experiencia.js) ---
+        // Elegir una opción (radio, emoción, calidad de sueño...). Recibe un índice para que cada
+        // opción de un mismo grupo suene a una nota distinta de una escala pentatónica: elegir
+        // emociones "suena" como tocar un xilófono suave, nunca desafinado.
+        elegir: (indice = 0) => {
+            const escala = [523, 587, 659, 784, 880, 1047, 1175, 1319, 1568, 1760];
+            tono({ frecuencia: escala[Math.abs(indice) % escala.length], duracion: 0.16, tipo: 'triangle', volumen: 0.055 });
+        },
+        // Mover un control deslizante: un tic más agudo a mayor valor (0 a 1).
+        tic: (valor = 0.5) => tono({ frecuencia: 420 + Math.max(0, Math.min(1, valor)) * 480, duracion: 0.045, tipo: 'sine', volumen: 0.035 }),
+        // Desplegar / recoger un bloque (details, índice, acordeones)
+        abrir: () => {
+            tono({ frecuencia: 494, duracion: 0.08, volumen: 0.045 });
+            tono({ frecuencia: 659, duracion: 0.1, volumen: 0.04, retraso: 0.05 });
+        },
+        cerrar: () => {
+            tono({ frecuencia: 659, duracion: 0.08, volumen: 0.04 });
+            tono({ frecuencia: 494, duracion: 0.1, volumen: 0.035, retraso: 0.05 });
+        },
+        // Ir a otra pantalla desde el menú o un acceso rápido
+        navegar: () => {
+            tono({ frecuencia: 587, duracion: 0.07, tipo: 'sine', volumen: 0.045 });
+            tono({ frecuencia: 880, duracion: 0.12, tipo: 'sine', volumen: 0.035, retraso: 0.045 });
+        },
+        // Escribir en un campo por primera vez (suave, una sola vez por campo)
+        enfoque: () => tono({ frecuencia: 784, duracion: 0.05, tipo: 'sine', volumen: 0.025 }),
+        // Celebración grande: meta cumplida, insignia, racha larga (acompaña al confeti)
+        celebrar: () => {
+            [523, 659, 784, 1047].forEach((f, i) => tono({ frecuencia: f, duracion: 0.32, tipo: 'triangle', volumen: 0.075, retraso: i * 0.09 }));
+            [1568, 2093].forEach((f, i) => tono({ frecuencia: f, duracion: 0.18, tipo: 'sine', volumen: 0.03, retraso: 0.42 + i * 0.07 }));
+        },
     };
 
-    return { reproducir: (nombre) => { if (sonidos[nombre]) sonidos[nombre](); }, estaSilenciado, alternarSilencio };
+    return {
+        reproducir: (nombre, ...args) => { if (sonidos[nombre]) sonidos[nombre](...args); },
+        estaSilenciado,
+        alternarSilencio,
+    };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -106,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Si el texto trae 🎉 (meta completada, logro, etc.) usa el arpegio de logro en vez del genérico.
     const mensajeExito = document.querySelector('.mensaje-exito');
     if (mensajeExito) {
-        Sonidos.reproducir(mensajeExito.textContent.includes('🎉') ? 'logro' : 'exito');
+        Sonidos.reproducir(mensajeExito.textContent.includes('🎉') ? 'celebrar' : (mensajeExito.textContent.includes('✨') ? 'logro' : 'exito'));
     }
     if (document.querySelector('.mensaje-error')) Sonidos.reproducir('error');
 

@@ -44,7 +44,7 @@ $_SESSION['maestro_elegir_rol'] = true;
 // Estudiante y acudiente no están aquí: necesitan un grupo y vínculos familiares, así que solo se presentan en el modo demostración.
 $ROLES = [
     'superadmin'           => ['🛡️', 'Superadministrador',    'Vista global de todos los colegios'],
-    'secretaria'           => ['🏢', 'Secretaría de Educación', 'Secretaría de Educación de Medellín'],
+    'secretaria'           => ['🏢', 'Secretaría de Educación', 'Colegios de la secretaría asociada a tu cuenta'],
     'administrador'        => ['⚙️', 'Administrador',          'Gestión de un colegio'],
     'rector'               => ['🏛️', 'Rector',                 'Vista institucional'],
     'secretaria_academica' => ['🗂️', 'Secretaría académica',   'Inscripciones, matrículas, boletines y SIMAT'],
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         "SELECT 1 FROM usuarios u INNER JOIN secretarias s ON s.id = u.secretaria_id
          WHERE s.activa = 1 AND u.id = " . (int) $_SESSION['usuario_id']
     )->fetchColumn()) {
-        $error = 'Tu cuenta aún no está asociada a la Secretaría de Educación de Medellín. Ejecuta sql/migraciones/031_maestro_secretaria_medellin.sql.';
+        $error = 'Tu cuenta aún no está asociada a ninguna Secretaría de Educación activa. Asóciala desde Secretarías (o con la migración 031).';
     } else {
         $esGlobal = in_array($rol, ['superadmin', 'secretaria'], true);
         $_SESSION['rol'] = $rol;
@@ -119,7 +119,6 @@ $rolMarcado = (string) ($_POST['rol'] ?? '');
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/base.css?v=<?= assetVersion('/assets/css/base.css') ?>">
     <link rel="stylesheet" href="assets/css/login.css?v=<?= assetVersion('/assets/css/login.css') ?>">
-    <link rel="stylesheet" href="assets/css/login_pro.css?v=<?= assetVersion('/assets/css/login_pro.css') ?>">
     <link rel="stylesheet" href="assets/css/elegir_rol.css?v=<?= assetVersion('/assets/css/elegir_rol.css') ?>">
     <meta name="theme-color" content="#E8B923">
     <link rel="apple-touch-icon" href="assets/img/logo/icon-192.png">

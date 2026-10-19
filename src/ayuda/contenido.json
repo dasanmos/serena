@@ -1,7 +1,7 @@
 {
   "titulo": "Manual de Serena",
-  "version": "1.4",
-  "actualizado": "2026-10-16",
+  "version": "1.7",
+  "actualizado": "2026-10-18",
   "general": {
     "capitulos": [
       {
@@ -197,15 +197,15 @@
               "**Orientador:** hace ese mismo acompañamiento, pero solo con los grupos o grados que tiene a cargo.",
               "**Coordinador:** consulta reportes agrupados por grado o grupo, convivencia y horarios, y se comunica con el personal.",
               "**Secretaría académica:** lleva inscripciones, matrículas, años lectivos, boletines y certificados.",
-              "**Rector:** tiene una visión general de la institución (cifras y análisis, sin datos individuales).",
+              "**Rector:** tiene una visión general de la institución (cifras y análisis; nunca las emociones ni el diario de un estudiante).",
               "**Administrador:** gestiona los usuarios, grupos, matrícula, configuración y seguridad de **su colegio**. No ve las pantallas de la Secretaría ni del superadmin."
             ]
           },
           {
             "titulo": "Secretaría y plataforma",
             "puntos": [
-              "**Secretaría de Educación:** ve y gestiona solo los colegios que se le asignan, por municipio o uno a uno. Consulta semáforo, comparativos y reportes mensuales, crea colegios, traslada estudiantes y envía comunicados a rectores y administradores. **Nunca ve datos de un estudiante en particular.**",
-              "**Superadmin (equipo de Serena):** administra toda la plataforma: crea colegios y secretarías, asigna el código DANE, hace los respaldos y supervisa la salud del sistema. Tampoco ve datos individuales de estudiantes."
+              "**Secretaría de Educación:** ve y gestiona solo los colegios que se le asignan, por municipio o uno a uno. Consulta semáforo, comparativos y reportes mensuales, crea colegios, traslada estudiantes y envía comunicados a rectores y administradores. **Nunca ve emociones, sueño ni diario de un estudiante.**",
+              "**Superadmin (equipo de Serena):** administra toda la plataforma: crea colegios y secretarías, asigna el código DANE, hace los respaldos y supervisa la salud del sistema. Tampoco ve emociones, sueño ni diario de los estudiantes."
             ]
           },
           {
@@ -248,7 +248,7 @@
               "**Tu diario** es solo tuyo: nadie más puede leerlo, y además puedes protegerlo con un PIN.",
               "**Tus registros emocionales** pueden verlos el psicólogo, el profesor orientador (de los grupos que tiene a cargo) y el administrador del sistema, porque son quienes pueden acompañarte si algo anda mal.",
               "**Tus docentes** no ven tus emociones, tu sueño ni tu diario. Sí pueden ver la actividad general de tu grupo, como tus metas y hábitos activos.",
-              "**Coordinación y rectoría** solo ven datos agrupados, nunca los de una persona en particular.",
+              "**Coordinación y rectoría** ven tu hoja de vida escolar (notas, asistencia, convivencia), pero tus emociones solo como cifras agrupadas del colegio.",
               "**El chat tiene dos canales separados:** uno emocional con psicología u orientación y otro académico con tu docente de grupo. Tu docente nunca ve el canal emocional."
             ]
           },
@@ -526,6 +526,27 @@
           }
         ],
         "ruta": "/preferencias.php"
+      },
+      {
+        "id": "cuenta-varios-roles",
+        "titulo": "Si tienes varios roles o varias instituciones",
+        "resumen": "Una sola cuenta para trabajar como docente, coordinador o familia, según lo que necesites.",
+        "ruta": "/ingresar_como.php",
+        "secciones": [
+          {
+            "titulo": "Cómo funciona",
+            "pasos": [
+              "Inicia sesión como siempre, con tu correo o tu documento y **tu misma contraseña**.",
+              "Si tu cuenta tiene más de un rol, Serena te pregunta **¿Con qué rol quieres entrar?**: toca el que necesitas.",
+              "Para cambiar sin cerrar sesión, abre **Cuenta → Cambiar de rol**."
+            ],
+            "puntos": [
+              "Cada rol ve solo sus propias pantallas: como **Familia** ves a tus hijos; como **Docente**, tus grupos.",
+              "Cada cambio de rol queda registrado en la auditoría del colegio.",
+              "Si tu **documento** está registrado en **más de una institución**, al entrar con tu documento Serena te pregunta **¿A qué institución quieres entrar?**. Para cambiar de institución, cierra sesión y vuelve a entrar."
+            ]
+          }
+        ]
       }
     ]
   },
@@ -1670,6 +1691,7 @@
               "titulo": "Lo que sí puedes hacer",
               "puntos": [
                 "Ver a los estudiantes de tus grupos, atender **alertas** y hacer **seguimientos**.",
+                "Abrir las **hojas de vida**, los **casos**, la **caracterización** y los casos de **SIMPADE** de los estudiantes de tus grupos (el panel de SIMPADE muestra las cifras de todo el colegio).",
                 "Llevar la **agenda** y consultar **SIMPADE**."
               ]
             },
@@ -2317,25 +2339,26 @@
           "id": "coo-rol",
           "titulo": "Tu rol y sus límites",
           "icono": "🧭",
-          "resumen": "Reportes agrupados y comunicación con el personal.",
+          "resumen": "Hoja de vida de los estudiantes, convivencia, asistencia y reportes agrupados.",
           "secciones": [
             {
               "titulo": "Tu alcance",
               "parrafos": [
-                "Ves la institución **por grado o grupo**, con cifras agrupadas."
+                "Ves la **hoja de vida** de los estudiantes de tu colegio (notas, asistencia, convivencia y salud) y el bienestar del colegio en **cifras agrupadas** por grado o grupo."
               ]
             },
             {
               "titulo": "Lo que sí puedes hacer",
               "puntos": [
-                "Consultar **reportes**, convivencia y casos, **boletines**, horarios y asistencia.",
+                "Consultar **reportes**, convivencia y **casos**, **boletines**, horarios y el **reporte de asistencia**.",
+                "**Tomar asistencia** de cualquier grupo, por ejemplo cuando falta el docente.",
                 "Usar **SIMPADE** y comunicarte con el personal por el **Chat**."
               ]
             },
             {
               "titulo": "Lo que no ves ni puedes hacer",
               "puntos": [
-                "El **detalle individual** de un estudiante: es de psicología y orientación.",
+                "Las **emociones, el sueño y el diario** de un estudiante: son de psicología y orientación.",
                 "La gestión de usuarios o configuración."
               ],
               "aviso": "Para trabajar un caso concreto, coordina con psicología u orientación."
@@ -2374,6 +2397,35 @@
           ],
           "ruta": "/coordinador/panel.php",
           "grupo": "Inicio"
+        },
+        {
+          "id": "coo-asistencia",
+          "titulo": "Asistencia",
+          "icono": "✅",
+          "resumen": "Pasar lista de cualquier grupo, por ejemplo cuando falta el docente.",
+          "secciones": [
+            {
+              "titulo": "Tomar lista",
+              "pasos": [
+                "Entra a **Asistencia**, elige el grupo, la asignatura y la **fecha**.",
+                "Marca **Presente, Ausente, Tarde o Excusa**. Con **Marcar todos presentes** solo cambias las excepciones.",
+                "Si quieres, escribe una nota por estudiante. Revisa el conteo y pulsa **Guardar**."
+              ],
+              "puntos": [
+                "No se puede registrar una fecha futura.",
+                "Si prefieres, usa el modo **Resumen al final del período** y escribe el total de ausencias por estudiante."
+              ]
+            },
+            {
+              "titulo": "Alerta de ausentismo",
+              "puntos": [
+                "Serena avisa cuando un estudiante acumula **3 o más días con ausencia sin justificar en 2 semanas** (un día con varias clases perdidas cuenta como uno).",
+                "La alerta la ve coordinación en el reporte de asistencia y el **director de grupo** en su panel."
+              ]
+            }
+          ],
+          "ruta": "/docente/asistencia.php",
+          "grupo": "Clase"
         },
         {
           "id": "coo-reportes",
@@ -2444,6 +2496,35 @@
             }
           ],
           "grupo": "Estudiantes"
+        },
+        {
+          "id": "coo-cuentas-familia",
+          "titulo": "Cuentas de familia desde la hoja de vida",
+          "resumen": "Madre, padre y acudiente reciben su cuenta al guardarlos en la pestaña Familia.",
+          "ruta": "/estudiantes.php",
+          "secciones": [
+            {
+              "titulo": "Cómo se crean",
+              "pasos": [
+                "Abre **Hojas de vida**, elige al estudiante y entra a **Matrícula → Familia**.",
+                "Despliega **Madre**, **Padre** o **Acudiente**, llena sus datos y pulsa **Guardar**.",
+                "Serena crea su cuenta de familia y la vincula al estudiante como «Madre de…», «Padre de…» o «Acudiente de…».",
+                "Entrega la **contraseña temporal** que aparece arriba: se muestra **una sola vez**. Puedes imprimirla."
+              ]
+            },
+            {
+              "titulo": "Reglas",
+              "puntos": [
+                "Hace falta el **nombre** y un **correo** o **número de documento**. Sin correo, la persona entra con su documento.",
+                "Si el **acudiente es la misma persona** que la madre o el padre (mismo documento, o mismo correo cuando falta el documento), **no se crea otra cuenta**: la existente queda como «Madre y acudiente» o «Padre y acudiente».",
+                "La **madre y el padre no pueden ser la misma persona**: Serena no deja guardar el mismo documento o correo en ambos.",
+                "Si la persona ya tiene cuenta de familia en el colegio (por ejemplo, por un hermano), se **reutiliza** y solo se agrega este estudiante.",
+                "No se crea cuenta para quien está registrado como fallecido («¿Vive? = No»).",
+                "Si la persona ya trabaja en el colegio (por ejemplo, un **docente que también es padre**), no se crea otra cuenta: a su misma cuenta se le **agrega el rol de familia** y, al entrar, elige con qué rol ingresar."
+              ],
+              "aviso": "Cuando el acudiente actualiza los datos desde su propia cuenta, solo se guardan los datos: las cuentas nuevas las crea siempre el personal del colegio."
+            }
+          ]
         },
         {
           "id": "coo-simpade",
@@ -2586,7 +2667,7 @@
     },
     "rector": {
       "nombre": "Rector",
-      "resumen": "Visión general de la institución con cifras y análisis, sin datos individuales.",
+      "resumen": "Visión general de la institución con cifras y análisis, sin ver emociones ni diarios.",
       "capitulos": [
         {
           "id": "rec-rol",
@@ -3034,6 +3115,7 @@
                 "**Las pantallas de la Secretaría de Educación** (comparativo, reportes por colegio, territorio, comunicados a rectores, traslados entre colegios). Son de la Secretaría y del equipo de Serena.",
                 "**Las pantallas del superadmin**: crear o suspender colegios, secretarías, cuenta maestra, respaldos, diagnóstico de IA y datos de prueba.",
                 "**Otros colegios**: ni sus usuarios, ni sus estudiantes, ni sus cifras.",
+                "**Salud, desarrollo, observaciones reservadas ni aula de apoyo (PIAR)** de los estudiantes: son información clínica de psicología, orientación, coordinación y rectoría.",
                 "**Emociones, sueño ni diario** de ningún estudiante, ni siquiera con «Ver como usuario».",
                 "En la **Ayuda**, el selector «Ver la guía de» solo te muestra los roles de colegio; las guías de Secretaría y superadmin no aparecen."
               ],
@@ -3098,7 +3180,7 @@
             {
               "titulo": "Quién ve qué",
               "puntos": [
-                "La **salud sensible** y los diagnósticos de apoyo solo los ven coordinación, rectoría, administración, psicología y orientación.",
+                "La **salud sensible**, el desarrollo y los diagnósticos de apoyo solo los ven coordinación, rectoría, psicología y orientación (el orientador, solo de sus grupos). La administración no los ve.",
                 "Los **docentes** ven alergias, contactos y observador de sus estudiantes, pero no diagnósticos ni procesos disciplinarios.",
                 "Las **familias** no ven procesos de convivencia, salud ni apoyo por la plataforma."
               ],
@@ -3107,6 +3189,35 @@
           ],
           "ruta": "/estudiantes.php",
           "grupo": "Estudiantes"
+        },
+        {
+          "id": "adm-cuentas-familia",
+          "titulo": "Cuentas de familia desde la hoja de vida",
+          "resumen": "Madre, padre y acudiente reciben su cuenta al guardarlos en la pestaña Familia.",
+          "ruta": "/estudiantes.php",
+          "secciones": [
+            {
+              "titulo": "Cómo se crean",
+              "pasos": [
+                "Abre **Hojas de vida**, elige al estudiante y entra a **Matrícula → Familia**.",
+                "Despliega **Madre**, **Padre** o **Acudiente**, llena sus datos y pulsa **Guardar**.",
+                "Serena crea su cuenta de familia y la vincula al estudiante como «Madre de…», «Padre de…» o «Acudiente de…».",
+                "Entrega la **contraseña temporal** que aparece arriba: se muestra **una sola vez**. Puedes imprimirla."
+              ]
+            },
+            {
+              "titulo": "Reglas",
+              "puntos": [
+                "Hace falta el **nombre** y un **correo** o **número de documento**. Sin correo, la persona entra con su documento.",
+                "Si el **acudiente es la misma persona** que la madre o el padre (mismo documento, o mismo correo cuando falta el documento), **no se crea otra cuenta**: la existente queda como «Madre y acudiente» o «Padre y acudiente».",
+                "La **madre y el padre no pueden ser la misma persona**: Serena no deja guardar el mismo documento o correo en ambos.",
+                "Si la persona ya tiene cuenta de familia en el colegio (por ejemplo, por un hermano), se **reutiliza** y solo se agrega este estudiante.",
+                "No se crea cuenta para quien está registrado como fallecido («¿Vive? = No»).",
+                "Si la persona ya trabaja en el colegio (por ejemplo, un **docente que también es padre**), no se crea otra cuenta: a su misma cuenta se le **agrega el rol de familia** y, al entrar, elige con qué rol ingresar."
+              ],
+              "aviso": "Cuando el acudiente actualiza los datos desde su propia cuenta, solo se guardan los datos: las cuentas nuevas las crea siempre el personal del colegio."
+            }
+          ]
         },
         {
           "id": "adm-casos",
@@ -3122,7 +3233,8 @@
               ],
               "puntos": [
                 "Los procesos de convivencia **no se borran**.",
-                "Gestionan los casos coordinación, rectoría y administración; orientación los consulta."
+                "Los procesos de **convivencia** los gestionan coordinación, rectoría y administración; orientación consulta los de sus grupos.",
+                "Los **planes de aula de apoyo** son información clínica: los ven coordinación, rectoría, psicología y orientación, no la administración."
               ],
               "imagenes": [
                 {
@@ -4068,6 +4180,7 @@
               "titulo": "Límites por privacidad",
               "puntos": [
                 "Con estudiantes solo puedes ver como la **cuenta de estudiante de prueba** del sistema; ningún estudiante real aparece en la lista.",
+                "No puedes ver como **psicología, orientación ni otro administrador**: sus notas de sesión y su trabajo son confidenciales.",
                 "Mientras estás viendo como otra persona, no puedes elegir a otra: primero vuelve a tu cuenta.",
                 "Seguridad, Mis sesiones y Preferencias no están disponibles en este modo.",
                 "Solo puedes ver como personal de **tu colegio**. Las cuentas de Secretaría de Educación y de superadmin no están en tu alcance."
@@ -4217,6 +4330,25 @@
           ],
           "ruta": "/administrador/mensajes.php",
           "grupo": "Comunicación"
+        },
+        {
+          "id": "adm-varios-roles",
+          "titulo": "Cuentas con varios roles",
+          "resumen": "Dar o quitar roles a una misma persona sin crear cuentas repetidas.",
+          "ruta": "/administrador/usuarios.php",
+          "secciones": [
+            {
+              "titulo": "Cómo se dan",
+              "puntos": [
+                "En **Crear usuario** o al **importar personal**, Serena reconoce a la persona por su **documento** (y si no lo hay, por su correo): si ya tiene cuenta en tu colegio, se le **agrega el rol** a esa cuenta y conserva su contraseña.",
+                "En **Editar usuario → Roles de esta cuenta** puedes agregar o quitar roles. El primero de la lista es el **principal**.",
+                "Al guardar a un familiar en la hoja de vida, si ya trabaja en el colegio, recibe el rol de **Familia** en su misma cuenta.",
+                "Si el correo es de una persona y el documento de otra, Serena no mezcla las cuentas: te pide revisar los datos.",
+                "Una persona puede tener cuenta en **varias instituciones** con el mismo documento (cada una con su propio correo). Al iniciar sesión con el documento, elige a cuál entrar."
+              ],
+              "aviso": "Los estudiantes, el superadministrador y la Secretaría de Educación no pueden tener varios roles."
+            }
+          ]
         }
       ],
       "faq": [
@@ -4819,7 +4951,8 @@
               "imagenes": [
                 {
                   "archivo": "sup-respaldos-1.jpg",
-                  "pie": "Respaldos y ajustes"
+                  "pie": "Respaldos y ajustes",
+                  "ruta": "/administrador/configuracion.php"
                 }
               ],
               "pasos": [
@@ -4911,7 +5044,7 @@
               "aviso": "La IA solo recibe cifras agregadas y texto de encuestas sin nombres, correos ni números. Aun así, revisa la privacidad configurada en el archivo .env."
             }
           ],
-          "ruta": "/administrador/prueba_ia.php",
+          "ruta": "/superadmin/prueba_ia.php",
           "grupo": "Sistema"
         }
       ],
@@ -4987,6 +5120,7 @@
             {
               "titulo": "Lo que no ves ni puedes hacer",
               "puntos": [
+                "La **hoja de vida** de los estudiantes, sus emociones, su sueño o su diario: solo ves cifras agrupadas por colegio. Para trasladar a alguien verás únicamente su nombre, colegio y grupo.",
                 "**Datos de un estudiante en particular**: emociones, sueño, diario o expediente.",
                 "**Colegios de otras secretarías** o colegios sin secretaría.",
                 "**La operación interna de un colegio** (usuarios, grupos, notas, matrícula): eso lo hace el administrador de cada colegio.",
@@ -5323,7 +5457,8 @@
               "puntos": [
                 "Revisar **inscripciones** y **matricular**; confirmar **renovaciones**.",
                 "Publicar **boletines** y emitir **certificados**.",
-                "Trabajar **SIMAT**, **SIMPADE** e **informes**."
+                "Trabajar **SIMAT**, **SIMPADE** e **informes**.",
+                "Comunicarte con el personal por el **Chat** y actualizar tus datos en **Mi perfil**."
               ]
             },
             {
@@ -5717,6 +5852,54 @@
             }
           ],
           "grupo": "Informes"
+        },
+        {
+          "id": "secad-chat",
+          "titulo": "Chat",
+          "icono": "💬",
+          "resumen": "Comunicación con el personal.",
+          "secciones": [
+            {
+              "titulo": "Cómo funciona",
+              "puntos": [
+                "La lista **Conversaciones** muestra tus conversaciones abiertas.",
+                "Para hablar con alguien del personal, usa **Iniciar conversación nueva** y elige a la persona.",
+                "Escribe en el campo de abajo y pulsa **Enviar**."
+              ],
+              "aviso": "La secretaría académica no chatea con estudiantes: ese contacto lo tienen psicología, orientación y el docente de grupo."
+            }
+          ],
+          "ruta": "/secretaria_academica/mensajes.php",
+          "grupo": "Comunicación"
+        },
+        {
+          "id": "secad-cuentas-familia",
+          "titulo": "Cuentas de familia desde la hoja de vida",
+          "resumen": "Madre, padre y acudiente reciben su cuenta al guardarlos en la pestaña Familia.",
+          "ruta": "/estudiantes.php",
+          "secciones": [
+            {
+              "titulo": "Cómo se crean",
+              "pasos": [
+                "Abre **Hojas de vida**, elige al estudiante y entra a **Matrícula → Familia**.",
+                "Despliega **Madre**, **Padre** o **Acudiente**, llena sus datos y pulsa **Guardar**.",
+                "Serena crea su cuenta de familia y la vincula al estudiante como «Madre de…», «Padre de…» o «Acudiente de…».",
+                "Entrega la **contraseña temporal** que aparece arriba: se muestra **una sola vez**. Puedes imprimirla."
+              ]
+            },
+            {
+              "titulo": "Reglas",
+              "puntos": [
+                "Hace falta el **nombre** y un **correo** o **número de documento**. Sin correo, la persona entra con su documento.",
+                "Si el **acudiente es la misma persona** que la madre o el padre (mismo documento, o mismo correo cuando falta el documento), **no se crea otra cuenta**: la existente queda como «Madre y acudiente» o «Padre y acudiente».",
+                "La **madre y el padre no pueden ser la misma persona**: Serena no deja guardar el mismo documento o correo en ambos.",
+                "Si la persona ya tiene cuenta de familia en el colegio (por ejemplo, por un hermano), se **reutiliza** y solo se agrega este estudiante.",
+                "No se crea cuenta para quien está registrado como fallecido («¿Vive? = No»).",
+                "Si la persona ya trabaja en el colegio (por ejemplo, un **docente que también es padre**), no se crea otra cuenta: a su misma cuenta se le **agrega el rol de familia** y, al entrar, elige con qué rol ingresar."
+              ],
+              "aviso": "Cuando el acudiente actualiza los datos desde su propia cuenta, solo se guardan los datos: las cuentas nuevas las crea siempre el personal del colegio."
+            }
+          ]
         }
       ],
       "faq": [
@@ -5774,7 +5957,8 @@
               "titulo": "Lo que sí puedes hacer",
               "puntos": [
                 "Ver su **hoja de vida**, **boletines**, **asistencia** y **horario**.",
-                "Pedir la **renovación** de matrícula cuando esté abierta."
+                "Pedir la **renovación** de matrícula cuando esté abierta.",
+                "Actualizar tus datos y cambiar tu contraseña en **Mi perfil**."
               ]
             },
             {

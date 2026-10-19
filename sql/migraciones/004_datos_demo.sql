@@ -1,3 +1,5 @@
+-- ⚠️ SOLO PARA DESARROLLO / DEMO. Todas las cuentas de este archivo tienen la
+-- clave «password». Nunca lo ejecutes en la base de producción.
 -- =========================================================
 -- 004_datos_demo.sql — Datos de demostración completos
 -- =========================================================

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
 require_once __DIR__ . '/Simat.php';
 require_once __DIR__ . '/Evaluacion.php';
 
@@ -557,7 +558,7 @@ final class Simpade
     public static function posiblesResponsables(PDO $pdo, int $colegioId): array
     {
         $q = $pdo->prepare("SELECT u.id, u.nombre, r.nombre AS rol FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
-                             WHERE u.colegio_id = ? AND u.activo = 1 AND r.nombre IN ('psicologo', 'orientador', 'coordinador', 'rector', 'docente') ORDER BY r.nombre, u.nombre");
+                             WHERE u.colegio_id = ? AND u.activo = 1 AND (r.nombre IN ('psicologo', 'orientador', 'coordinador', 'rector', 'docente')" . implode('', array_map(static fn (string $r): string => RolesUsuario::sqlAdicional($pdo, 'u', $r), ['psicologo', 'orientador', 'coordinador', 'rector', 'docente'])) . ") ORDER BY r.nombre, u.nombre");
         $q->execute([$colegioId]);
         return $q->fetchAll();
     }

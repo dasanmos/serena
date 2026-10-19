@@ -16,6 +16,13 @@ $estado = (string) ($_GET['estado'] ?? '');
 $situacion = (string) ($_GET['situacion'] ?? '');
 $procesos = ($vista === 'convivencia' && $cap['ver_convivencia']) ? Expediente::listarProcesos($pdo, $colegioId, $estado, $situacion) : [];
 $apoyos = ($vista === 'apoyo' && $cap['ver_apoyo_completo']) ? Expediente::listarApoyos($pdo, $colegioId, $estado) : [];
+if ($rol === 'orientador') {
+    // El orientador solo ve los casos de estudiantes de sus grupos.
+    $misGrupos = Expediente::gruposOrientador($pdo, (int) $_SESSION['usuario_id']);
+    $deMisGrupos = static fn (array $f): bool => in_array((int) ($f['est_grupo_id'] ?? 0), $misGrupos, true);
+    $procesos = array_values(array_filter($procesos, $deMisGrupos));
+    $apoyos = array_values(array_filter($apoyos, $deMisGrupos));
+}
 $e = static fn ($v): string => htmlspecialchars((string) $v);
 
 $tituloPagina = 'Casos';

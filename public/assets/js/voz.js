@@ -197,7 +197,13 @@
         btn.textContent = '🎤';
         pintar(btn, false);
         btn.addEventListener('click', function () { alternar(el, btn); });
-        el.insertAdjacentElement('afterend', btn);
+        // El micrófono va DENTRO del campo (a la derecha), en una envoltura propia: antes quedaba
+        // en una línea aparte debajo de cada campo y alargaba mucho los formularios.
+        var envoltura = document.createElement('span');
+        envoltura.className = 'voz-campo' + (el.tagName === 'TEXTAREA' ? ' voz-campo-area' : '');
+        el.parentNode.insertBefore(envoltura, el);
+        envoltura.appendChild(el);
+        envoltura.appendChild(btn);
     }
 
     function escanear(raiz) {

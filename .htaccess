@@ -1,3 +1,19 @@
-# Block direct access to src/ and sql/ directories
+# Bloquear acceso directo a carpetas internas (código, SQL, herramientas y documentación)
 RewriteEngine On
-RewriteRule ^(src|sql)/.*$ - [F,L]
+RewriteRule ^(src|sql|tools|docs)(/.*)?$ - [F,L]
+
+# Bloquear archivos sensibles o de documentación en cualquier carpeta
+<FilesMatch "\.(env|example|md|txt|py|sql|log|ini|bak|zip|gitignore)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+# Archivos ocultos (.git, .env, .clave_2fa, etc.)
+RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+Options -Indexes
+DirectoryIndex index.php

@@ -130,7 +130,7 @@ require __DIR__ . '/parciales/encabezado.php';
 ?>
 <h1>Refuerzos y planes de mejoramiento</h1>
 <p class="texto-suave">Genera los refuerzos de quienes perdieron una asignatura en el período, registra su resultado y lleva los planes de mejoramiento. Los informes están en <a href="informes.php">Informes</a> (categoría 6).</p>
-<?php if (!$listo): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/038_informes.sql</code>.</p><?php endif; ?>
+<?php if (!$listo): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/040_informes.sql</code>.</p><?php endif; ?>
 <?php if (!$anio): ?><p class="mensaje mensaje-aviso">No hay año lectivo actual.</p><?php endif; ?>
 <?php if ($flash && $flash['error']): ?><p class="mensaje mensaje-error"><?= $e($flash['error']) ?></p><?php endif; ?>
 <?php if ($flash && $flash['exito']): ?><p class="mensaje mensaje-exito"><?= $e($flash['exito']) ?></p><?php endif; ?>

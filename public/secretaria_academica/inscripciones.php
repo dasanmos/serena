@@ -72,6 +72,7 @@ require __DIR__ . '/../parciales/encabezado.php';
         <p><strong>Acudiente:</strong> <?= $e($cr['acudiente']['nombre']) ?><br>
             Usuario: <code><?= $e($cr['acudiente']['correo']) ?></code> ·
             <?php if ($cr['acudiente']['password'] !== null): ?>Contraseña temporal: <code><?= $e($cr['acudiente']['password']) ?></code>
+            <?php elseif (!empty($cr['acudiente']['multirol'])): ?><em>ya tenía cuenta en Serena con otro rol: se le agregó el rol de familia con su misma contraseña. Al entrar elegirá con qué rol ingresar.</em>
             <?php else: ?><em>ya tenía cuenta de acudiente: usa su contraseña actual (el estudiante quedó vinculado).</em><?php endif; ?></p>
         <?php if (!empty($cr['aviso'])): ?><p class="mensaje mensaje-aviso"><?= $e($cr['aviso']) ?></p><?php endif; ?>
         <p class="texto-suave">Pídeles cambiar la contraseña al ingresar (Preferencias → Seguridad). Entrégalas de forma privada.</p>

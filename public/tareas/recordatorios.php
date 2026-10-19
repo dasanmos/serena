@@ -5,7 +5,7 @@ declare(strict_types=1);
 //
 // Un servicio externo (ej. cron-job.org, gratuito) debe llamar a esta URL cada
 // 15 minutos:
-//   https://TU_DOMINIO/public/tareas/recordatorios.php?secreto=TU_SECRETO
+//   https://serena.infinityfreeapp.com/public/tareas/recordatorios.php?secreto=TU_SECRETO
 //
 // El secreto se compara contra RECORDATORIOS_CRON_SECRETO en src/config/.env
 // (ver .env.example). Sin secreto configurado en el servidor, o si no coincide,

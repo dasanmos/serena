@@ -47,6 +47,12 @@ function requiereSesion(): void
         header('Location: ' . BASE_URL . '/elegir_rol.php');
         exit;
     }
+    // Cuenta con varios roles: mientras no elija con cuál entrar, todo lleva al selector.
+    if (!empty($_SESSION['elegir_rol_multiple'])
+        && !in_array(basename((string) ($_SERVER['SCRIPT_NAME'] ?? '')), ['ingresar_como.php', 'logout.php', 'seguridad.php'], true)) {
+        header('Location: ' . BASE_URL . '/ingresar_como.php');
+        exit;
+    }
 }
 
 function requiereRol(string ...$rolesPermitidos): void
@@ -90,6 +96,22 @@ function iniciarSesionUsuario(array $usuario, ?PDO $pdo = null): void
     if ($pdo !== null) {
         require_once __DIR__ . '/../modelos/Grupo.php';
         $_SESSION['grupos_ids'] = Grupo::idsGruposDePersonal($pdo, (int) $usuario['id']);
+    }
+
+    // Cuenta con varios roles (migración 044): antes de entrar elige con cuál (ingresar_como.php).
+    // La cuenta maestra tiene su propio selector (elegir_rol.php) y no pasa por aquí.
+    unset($_SESSION['roles_disponibles'], $_SESSION['elegir_rol_multiple']);
+    if ($pdo !== null && empty($_SESSION['maestro_elegir_rol'])) {
+        try {
+            require_once __DIR__ . '/../modelos/RolesUsuario.php';
+            $rolesCuenta = RolesUsuario::roles($pdo, (int) $usuario['id']);
+            if (count($rolesCuenta) > 1) {
+                $_SESSION['roles_disponibles'] = $rolesCuenta;
+                $_SESSION['elegir_rol_multiple'] = true;
+            }
+        } catch (\Throwable $e) {
+            error_log('RolesUsuario::roles falló: ' . $e->getMessage());
+        }
     }
 
     // Revisa (y envía si toca) el resumen semanal por correo — ver resumen_semanal.php

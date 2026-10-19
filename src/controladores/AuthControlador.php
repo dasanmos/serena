@@ -24,12 +24,25 @@ class AuthControlador
                     }
                 }
                 $coinciden = array_values(array_filter($candidatos, static fn (array $c): bool => password_verify($password, (string) $c['password_hash'])));
-                if (count($coinciden) !== 1) {
+                if (!$coinciden) {
                     foreach ($candidatos as $c) {
                         registrarIntentoLoginFallido($pdo, (int) $c['id']);
                     }
                     return ['exito' => false, 'mensaje' => $mensajeError];
                 }
+                // El documento está en varias instituciones: SIEMPRE se pregunta a cuál entrar.
+                //  - Las cuentas cuya contraseña coincidió entran con un toque.
+                //  - Las demás (otra contraseña en esa institución) piden su propia contraseña en elegir_colegio.php.
+                // Solo se llega aquí si la contraseña coincidió en al menos una: quien no la sabe no ve nada.
+                foreach ($coinciden as $c) {
+                    limpiarIntentosLogin($pdo, (int) $c['id']);
+                }
+                $idsOk = array_map(static fn (array $c): int => (int) $c['id'], $coinciden);
+                $otros = array_values(array_map(static fn (array $c): int => (int) $c['id'], array_filter($candidatos,
+                    static fn (array $c): bool => !in_array((int) $c['id'], $idsOk, true) && (int) $c['activo'] === 1)));
+                session_regenerate_id(true);
+                $_SESSION['login_elegir_colegio'] = ['ids' => $idsOk, 'otros' => $otros, 'expira' => time() + 300];
+                return ['exito' => true, 'elegir_colegio' => true];
                 $usuario = $coinciden[0];
             }
         }
@@ -60,6 +73,29 @@ class AuthControlador
             }
         }
         limpiarIntentosLogin($pdo, (int) $usuario['id']);
+        return self::completarLogin($pdo, $usuario);
+    }
+
+    /**
+     * Pasos que siguen a una contraseña correcta: cuenta activa, colegio activo, secretaría activa,
+     * verificación en 2 pasos e inicio de sesión. También lo usa elegir_colegio.php cuando la persona
+     * eligió en qué institución entrar.
+     */
+    public static function completarLogin(PDO $pdo, array $usuario): array
+    {
+        if ((int) $usuario['activo'] === 0) {
+            return ['exito' => false, 'mensaje' => 'Esta cuenta está desactivada. Contacta al administrador.'];
+        }
+        if ($usuario['colegio_id'] !== null && (int) ($usuario['colegio_activo'] ?? 0) === 0) {
+            return ['exito' => false, 'mensaje' => 'El acceso de tu colegio está suspendido. Contacta al administrador de tu colegio.'];
+        }
+        if ($usuario['rol'] === 'secretaria') {
+            $sec = $pdo->prepare('SELECT activa FROM secretarias WHERE id = :id');
+            $sec->execute(['id' => (int) ($usuario['secretaria_id'] ?? 0)]);
+            if ((int) $sec->fetchColumn() !== 1) {
+                return ['exito' => false, 'mensaje' => 'Tu secretaría no está activa en Serena. Contacta al equipo de la plataforma.'];
+            }
+        }
         // Con verificación en 2 pasos activa (TOTP, correo, WhatsApp o rostro), la
         // contraseña sola NO abre la sesión: se deja un desafío pendiente y
         // verificacion_2pasos.php termina el inicio de sesión. Un usuario solo
@@ -149,7 +185,8 @@ class AuthControlador
             );
             $consulta->execute([
                 'usuario_id' => $usuario['id'],
-                'token'      => $token,
+                // Solo se guarda el hash: quien lea la tabla (respaldo, phpMyAdmin) no puede usar el enlace.
+                'token'      => hash('sha256', $token),
                 'expira_en'  => $expira,
             ]);
             enviarCorreoRecuperacion($usuario['correo'], $token);
@@ -161,7 +198,7 @@ class AuthControlador
         $consulta = $pdo->prepare(
             'SELECT * FROM tokens_recuperacion WHERE token = :token AND usado = 0 LIMIT 1'
         );
-        $consulta->execute(['token' => $token]);
+        $consulta->execute(['token' => hash('sha256', $token)]);
         $registro = $consulta->fetch();
         if (!$registro || strtotime($registro['expira_en']) < time()) {
             return ['exito' => false, 'mensaje' => 'El enlace no es válido o ya expiró.'];
@@ -172,13 +209,15 @@ class AuthControlador
         Usuario::actualizarPassword($pdo, (int) $registro['usuario_id'], $passwordNueva);
         $marcarUsado = $pdo->prepare('UPDATE tokens_recuperacion SET usado = 1 WHERE id = :id');
         $marcarUsado->execute(['id' => $registro['id']]);
+        // Un reset invalida cualquier otro enlace pendiente de la misma persona.
+        $pdo->prepare('UPDATE tokens_recuperacion SET usado = 1 WHERE usuario_id = :u AND usado = 0')
+            ->execute(['u' => (int) $registro['usuario_id']]);
         return ['exito' => true];
     }
 }
 function enviarCorreoRecuperacion(string $correo, string $token): void
 {
-    $base = defined('BASE_URL') ? BASE_URL : '';
-    $enlace = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $base . '/restablecer_password.php?token=' . $token;
+    $enlace = urlAbsoluta('/restablecer_password.php?token=' . $token);
 
     $textoPlano = "Hola,\n\n"
         . "Recibimos una solicitud para restablecer tu contraseña en Serena.\n"

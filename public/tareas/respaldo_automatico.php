@@ -5,7 +5,7 @@ declare(strict_types=1);
 //
 // Un servicio externo (ej. cron-job.org, gratuito) debe llamar a esta URL, por
 // ejemplo una vez al día de madrugada:
-//   https://TU_DOMINIO/public/tareas/respaldo_automatico.php?secreto=TU_SECRETO
+//   https://serena.infinityfreeapp.com/public/tareas/respaldo_automatico.php?secreto=TU_SECRETO
 //
 // El secreto se compara contra RESPALDO_CRON_SECRETO en src/config/.env. Sin
 // secreto configurado, o si no coincide, responde 403 y no hace nada — igual que

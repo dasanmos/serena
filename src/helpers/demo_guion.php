@@ -217,11 +217,11 @@ function demoModulosBase(): array
             'Una red de apoyo común para toda la plataforma.', 'Agrega uno y verifica en el mapa de un estudiante demo.'],
         'sa_salud' => ['Salud de la plataforma', '/administrador/salud.php', 'Copias de seguridad, base de datos, disco, correo, tareas programadas y servidor.',
             'El tablero del equipo técnico: si algo falla, se ve aquí primero.', 'Verás copias, almacenamiento y servidor, que el Administrador no ve.'],
-        'sa_ia' => ['Diagnóstico de IA', '/administrador/prueba_ia.php', 'Estado del servicio de IA, modelos en uso y últimas llamadas.',
+        'sa_ia' => ['Diagnóstico de IA', '/superadmin/prueba_ia.php', 'Estado del servicio de IA, modelos en uso y últimas llamadas.',
             'Transparencia sobre la IA: qué modelos, con qué resultado y qué se registró.', 'Pulsa «Refrescar» para ver los modelos gratis disponibles.'],
         'sa_config' => ['Respaldos y ajustes', '/administrador/configuracion.php', 'Copias de seguridad guardadas, descarga directa y textos de correo.',
             'Las copias se generan, verifican y rotan solas (se conservan las últimas).', 'Crea una copia nueva si lo necesitas.'],
-        'sa_datos' => ['Datos de prueba', '/administrador/generar_datos_prueba.php', 'Genera datos ficticios masivos en un colegio de pruebas, y los elimina.',
+        'sa_datos' => ['Datos de prueba', '/superadmin/generar_datos_prueba.php', 'Genera datos ficticios masivos en un colegio de pruebas, y los elimina.',
             'Para probar con volumen real sin tocar datos de verdad.', 'Solo mirar.'],
 
         // ---------------------------------------------------------------- Cuenta (todos los roles)
@@ -327,7 +327,7 @@ function demoCatalogo(): array
 
         'secretaria' => ['🏢', 'Secretaría de Educación', 'Vista de todos los colegios de su secretaría', [
             'Inicio' => ['sec_panel', 'sec_comparativo', 'sec_reportes'],
-            'Estudiantes' => ['hoja_vida', 'sec_trasladar'],
+            'Estudiantes' => ['sec_trasladar'],
             'Colegios' => ['sec_colegios', 'sec_importar', 'sec_territorio', 'sec_personal'],
             'Comunicación' => ['sec_comunicados'],
         ], ['sec_panel', 'sec_comparativo', 'sec_territorio', 'sec_colegios', 'sec_comunicados']],

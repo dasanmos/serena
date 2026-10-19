@@ -8,10 +8,14 @@ Qué hace
 
 Requisitos (una vez):   pip install playwright   y luego   playwright install chromium
 Uso:
-  python tools/capturar_ayuda.py --url https://serena.infinityfreeapp.com        # toma las que faltan
+  python tools/capturar_ayuda.py --url https://serena.infinityfreeapp.com/public  # toma las que faltan
   python tools/capturar_ayuda.py --url https://... --forzar                       # rehace todas
   python tools/capturar_ayuda.py --url https://... --solo doc-seguimiento         # solo las que empiecen así
   python tools/capturar_ayuda.py --lista                                          # solo regenera CAPTURAS_PENDIENTES.md
+
+Todas las capturas son automáticas: login y registro se toman en un navegador aparte sin sesión
+(con el DANE de la demo, 999999999999), y la pantalla general y el micrófono con el estudiante de la demo.
+Guía completa: docs/GUIA_CAPTURAS.md
 
 Se abre un Chrome visible. Inicia sesión TÚ con la cuenta MAESTRA (así se resuelve el reCAPTCHA y la
 verificación en dos pasos) y pulsa Enter en la terminal: desde ahí el script hace el resto solo.
@@ -24,6 +28,13 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENIDO = os.path.join(RAIZ, 'src', 'ayuda', 'contenido.json')
 CARPETA = os.path.join(RAIZ, 'public', 'assets', 'img', 'ayuda')
 REALES = {'superadmin', 'secretaria'}
+DANE_DEMO = '999999999999'
+# Capturas sin página propia en el manual: aquí se dice dónde tomarlas, para que ninguna quede a mano.
+# Las «públicas» se toman sin sesión (navegador aparte); las demás, con el rol indicado de la demo.
+PUBLICAS = {'gen-login-1.jpg': '/login.php', 'gen-registro-codigo-1.jpg': '/registro.php', 'gen-registro-1.jpg': '/registro.php'}
+CON_ROL = {'gen-pantalla-1.jpg': ('estudiante', '/estudiante/dashboard.php'), 'gen-voz-1.jpg': ('estudiante', '/estudiante/emociones.php')}
+INIT_COOKIES = ("try{localStorage.setItem('serena_cookies','necesarias');"
+                "localStorage.setItem('serena_cookies_fecha',new Date().toISOString().slice(0,10));}catch(e){}")
 
 
 def cargar():
@@ -38,7 +49,7 @@ def entradas(d):
         for c in bloque['capitulos']:
             for s in c['secciones']:
                 for im in s.get('imagenes', []):
-                    salida.append((rol, c['id'], c['titulo'], s['titulo'], c.get('ruta') or '', im['archivo'], im.get('pie', '')))
+                    salida.append((rol, c['id'], c['titulo'], s['titulo'], im.get('ruta') or c.get('ruta') or '', im['archivo'], im.get('pie', '')))  # una imagen puede tener su propia página
     vistos, unicas = set(), []
     for e in salida:  # una imagen compartida por varios roles se toma una sola vez
         if e[5] not in vistos:
@@ -62,7 +73,7 @@ def generar_md(d):
         for r, cid, ct, st, ruta, arch, pie in lista:
             md.append(f'| `{arch}` | {ct} → {st} | `{ruta or "—"}` | {pie} |')
         md.append('')
-    open(os.path.join(RAIZ, 'CAPTURAS_PENDIENTES.md'), 'w', encoding='utf-8').write('\n'.join(md))
+    open(os.path.join(RAIZ, 'docs', 'CAPTURAS_PENDIENTES.md'), 'w', encoding='utf-8').write('\n'.join(md))
     print(f'CAPTURAS_PENDIENTES.md regenerado: {len(filas)} pendientes.')
 
 
@@ -72,6 +83,7 @@ VISTAS_SIMPADE = {'1': 'panel', '2': 'deteccion', '3': 'casos', '4': 'retiros'}
 
 
 def ruta_para(archivo, ruta):
+    ruta = ruta.replace('{rol}', 'estudiante')  # capítulos de «Tu cuenta»: se toman con el estudiante
     m = re.search(r'(?:^|-)simat-(\d)\.jpg$', archivo)
     if m and m.group(1) in VISTAS_SIMAT:
         return ruta + '?vista=' + VISTAS_SIMAT[m.group(1)]
@@ -102,6 +114,12 @@ def preparar(page, archivo):
             if v.count(): v.scroll_into_view_if_needed()
         elif archivo.endswith('-4.jpg'):
             page.evaluate("var d=document.getElementById('seg-actividades'); if(d){d.open=true; d.scrollIntoView();}")
+    elif archivo == 'sup-respaldos-1.jpg':
+        # La sección de respaldos está al final de Configuración.
+        page.evaluate("var h=[...document.querySelectorAll('h2,h3')].find(x=>/respaldo/i.test(x.textContent)); if(h){h.scrollIntoView({block:'start'}); window.scrollBy(0,-90);}")
+    elif archivo == 'gen-voz-1.jpg':
+        # Cuadro de texto con el micrófono a la vista (sin pulsarlo: pediría permiso de micrófono).
+        page.evaluate("var t=document.querySelector('textarea'); if(t){t.scrollIntoView({block:'center'}); t.focus();}")
     elif archivo == 'cta-ayuda-ia-1.jpg':
         page.fill('#ayuda-ia-pregunta', '¿Cómo registro una emoción?')
         page.click('#ayuda-ia-enviar')
@@ -111,6 +129,40 @@ def preparar(page, archivo):
         except Exception:
             pass
         page.evaluate("document.getElementById('ayuda-ia').scrollIntoView()")
+
+
+def capturar_publicas(p, base, lista):
+    """Login y registro: se toman en un navegador aparte, SIN sesión iniciada."""
+    if not lista:
+        return 0
+    nav = p.chromium.launch(headless=True)
+    ctx = nav.new_context(viewport={'width': 1280, 'height': 800}, locale='es-CO', reduced_motion='reduce')
+    ctx.add_init_script(INIT_COOKIES)
+    page = ctx.new_page()
+    hechas = 0
+    print(f'\n== páginas públicas ({len(lista)} capturas)')
+    for archivo in lista:
+        try:
+            page.goto(base + PUBLICAS[archivo], wait_until='load')
+            if archivo.startswith('gen-registro'):
+                page.fill('#codigo_colegio', DANE_DEMO)
+                if archivo == 'gen-registro-1.jpg':
+                    with page.expect_navigation(wait_until='load'):
+                        page.click('form button[type="submit"]')
+                    page.fill('#nombre', 'Laura Gómez Ríos')
+                    page.fill('#correo', 'laura.gomez@correo.test')
+                    page.fill('#fecha_nacimiento', '2013-05-10')
+                    if page.locator('#grupo_id option').count() > 1:
+                        page.select_option('#grupo_id', index=1)
+                    page.evaluate('document.activeElement && document.activeElement.blur()')
+            page.wait_for_timeout(500)
+            page.screenshot(path=os.path.join(CARPETA, archivo), type='jpeg', quality=80)
+            hechas += 1
+            print('  ✓', archivo)
+        except Exception as ex:
+            print('  ✗', archivo, '->', str(ex)[:90])
+    ctx.close(); nav.close()
+    return hechas
 
 
 def main():
@@ -133,6 +185,10 @@ def main():
         sys.exit('Instala Playwright:  pip install playwright   y   playwright install chromium')
 
     pendientes = [e for e in entradas(d) if (a.forzar or not os.path.exists(os.path.join(CARPETA, e[5]))) and e[5].startswith(a.solo)]
+    publicas_hechas = 0
+    publicas = [e[5] for e in pendientes if e[5] in PUBLICAS]
+    pendientes = [(CON_ROL[e[5]][0], e[1], e[2], e[3], CON_ROL[e[5]][1], e[5], e[6]) if e[5] in CON_ROL else e
+                  for e in pendientes if e[5] not in PUBLICAS]
     sin_ruta = [e for e in pendientes if not e[4]]
     por_rol = {}
     for e in pendientes:
@@ -146,12 +202,23 @@ def main():
     os.makedirs(CARPETA, exist_ok=True)
     with sync_playwright() as p:
         ctx = p.chromium.launch_persistent_context(os.path.join(RAIZ, '.perfil_capturas'), headless=False,
-                                                   viewport={'width': 1280, 'height': 800}, locale='es-CO')
+                                                   viewport={'width': 1280, 'height': 800}, locale='es-CO',
+                                                   reduced_motion='reduce')  # sin animaciones a medias ni texto «escribiéndose»
+        # Sin esto el aviso de cookies tapaba parte de cada captura: se da por respondido
+        # ("solo necesarias") antes de cargar cualquier página.
+        ctx.add_init_script(
+            "try{localStorage.setItem('serena_cookies','necesarias');"
+            "localStorage.setItem('serena_cookies_fecha',new Date().toISOString().slice(0,10));}catch(e){}"
+        )
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        publicas_hechas = capturar_publicas(p, base, publicas)
         page.goto(base + '/login.php')
         input('\n1) Inicia sesión con la cuenta MAESTRA en el navegador que se abrió.\n2) Cuando veas tu panel, vuelve aquí y pulsa Enter... ')
         hechas = 0
         for rol, lista in por_rol.items():
+            # El selector de la cuenta maestra (elegir_rol.php) deja la sesión «eligiendo rol»: todo lo que
+            # venga después redirige a él. Por eso esa captura va siempre al final de su grupo.
+            lista = sorted(lista, key=lambda e: e[4] == '/elegir_rol.php')
             page.goto(base + '/demo.php', wait_until='load')
             boton = page.locator(f'form:has(input[name="rol"][value="{rol}"]):not(:has(input[name="guion"])) button[type="submit"]').first
             if not boton.count():
@@ -162,9 +229,11 @@ def main():
             print(f'\n== {rol} ({len(lista)} capturas)')
             for _, cid, ct, st, ruta, archivo, pie in lista:
                 try:
-                    page.goto(base + ruta_para(archivo, ruta), wait_until='load')
+                    page.goto(base + ruta_para(archivo, ruta).replace('{rol}', rol), wait_until='load')
                     page.wait_for_timeout(600)
                     preparar(page, archivo)
+                    # La barra «Modo demostración» no forma parte de la pantalla real: no sale en el manual.
+                    page.add_style_tag(content='.barra-demo{display:none!important}')
                     page.wait_for_timeout(500)
                     page.screenshot(path=os.path.join(CARPETA, archivo), type='jpeg', quality=80)
                     hechas += 1
@@ -178,6 +247,7 @@ def main():
         except Exception:
             pass
         ctx.close()
+    hechas += publicas_hechas
     print(f'\nListo: {hechas} capturas nuevas. Revísalas antes de publicar (que no muestren datos reales).')
     if sin_ruta:
         print('\nSin página asociada (tómalas a mano):', ', '.join(e[5] for e in sin_ruta))

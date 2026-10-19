@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
 require_once __DIR__ . '/../helpers/colegio.php';
 
 class Usuario
@@ -48,7 +49,7 @@ class Usuario
         $c = $pdo->prepare(
             "SELECT u.id, u.nombre, u.correo
              FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
-             WHERE r.nombre = :rol AND u.activo = 1"
+             WHERE (r.nombre = :rol" . RolesUsuario::sqlAdicional($pdo, 'u', $rol) . ") AND u.activo = 1"
             . condicionColegio('u.colegio_id', $params, $colegioId) .
             " ORDER BY u.nombre"
         );
@@ -69,7 +70,7 @@ class Usuario
              FROM usuarios u
              INNER JOIN roles r ON r.id = u.rol_id
              INNER JOIN personal_grupos pg ON pg.usuario_id = u.id
-             WHERE r.nombre = 'orientador' AND u.activo = 1 AND pg.grupo_id = :gid"
+             WHERE (r.nombre = 'orientador'" . RolesUsuario::sqlAdicional($pdo, 'u', 'orientador') . ") AND u.activo = 1 AND pg.grupo_id = :gid"
         );
         $c->execute(['gid' => $grupoId]);
         return $c->fetchAll(PDO::FETCH_COLUMN);
@@ -237,7 +238,7 @@ class Usuario
              FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
              WHERE u.activo = 1
                AND u.id != :excluir_id
-               AND r.nombre NOT IN ('superadmin','secretaria')
+               AND r.nombre NOT IN ('superadmin','secretaria','administrador','psicologo','orientador')
                AND (r.nombre != 'estudiante' OR u.correo = :correo_prueba)"
             . condicionColegio('u.colegio_id', $params) .
             " ORDER BY r.nombre, u.nombre"

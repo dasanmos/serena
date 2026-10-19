@@ -119,6 +119,23 @@ $bloqueSub = static function (string $sk) use ($campo, $hayEditable, $ocultos, $
                 <td><?= $e($f['celular'] ?? '') ?: '—' ?></td><td><?= $e($f['empresa'] ?? '') ?: '—' ?></td></tr>
         <?php endforeach; ?>
         </tbody></table></div>
+    <?php if (!$perm['acudiente']): $ctasFam = CuentasFamilia::cuentasDeEstudiante($pdo, $estId); ?>
+    <h2 class="hv-titulo">Cuentas de familia en Serena</h2>
+    <p class="texto-suave">Al guardar a la madre, el padre o el acudiente se crea su cuenta (o se vincula la que ya tenga). Si el acudiente es la misma persona que la madre o el padre, se usa una sola cuenta.</p>
+    <?php if (!$ctasFam): ?>
+        <p class="texto-suave">Todavía no hay cuentas de familia vinculadas.</p>
+    <?php else: ?>
+    <div class="acad-tabla-envoltura"><table class="acad-tabla">
+        <caption class="sr-only">Cuentas de familia vinculadas</caption>
+        <thead><tr><th scope="col">Parentesco</th><th scope="col">Nombre</th><th scope="col">Usuario</th><th scope="col">Último acceso</th></tr></thead>
+        <tbody><?php foreach ($ctasFam as $cf): ?>
+            <tr><td><strong><?= $e($cf['parentesco']) ?></strong> de <?= $e($est['nombre'] ?? 'este estudiante') ?></td>
+                <td><?= $e($cf['nombre']) ?><?= (int) $cf['activo'] === 1 ? '' : ' <span class="pill pill-neutro">Inactiva</span>' ?></td>
+                <td><?= str_ends_with((string) $cf['correo'], '@serena.local') ? 'Documento ' . $e($cf['documento'] ?? '') : $e($cf['correo']) ?></td>
+                <td><?= $cf['ultimo_acceso'] ? $e(date('d/m/Y', strtotime((string) $cf['ultimo_acceso']))) : 'Nunca' ?></td></tr>
+        <?php endforeach; ?></tbody></table></div>
+    <?php endif; ?>
+    <?php endif; ?>
     <?php foreach (HojaVida::FAMILIARES as $k => $nombre): $f = $fams[$k] ?? []; ?>
     <details class="hv-familiar">
         <summary><strong><?= $e($nombre) ?></strong></summary>

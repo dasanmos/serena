@@ -66,7 +66,7 @@ require __DIR__ . '/parciales/encabezado.php';
 ?>
 <h1>Caracterización poblacional</h1>
 <p class="texto-suave">Información sensible (Ley 1581 de 2012): solo para quienes la necesitan. Cada cambio queda en la auditoría. Alimenta el informe «Estudiantes Víctimas del Conflicto».</p>
-<?php if (!$listo): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/038_informes.sql</code>.</p><?php endif; ?>
+<?php if (!$listo): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/040_informes.sql</code>.</p><?php endif; ?>
 <?php if ($flash && $flash['error']): ?><p class="mensaje mensaje-error"><?= $e($flash['error']) ?></p><?php endif; ?>
 <?php if ($flash && $flash['exito']): ?><p class="mensaje mensaje-exito"><?= $e($flash['exito']) ?></p><?php endif; ?>
 <?php if ($listo): ?>

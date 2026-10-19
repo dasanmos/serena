@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../src/helpers/colegio.php';
 require_once __DIR__ . '/../../src/modelos/Expediente.php';
 
 // Asistencia: registro DIARIO por clase, o RESUMEN al final del período (totales de ausencias por estudiante).
-requiereRol('docente', 'administrador', 'rector', 'secretaria_academica');
+requiereRol('docente', 'coordinador', 'administrador', 'rector', 'secretaria_academica');
 $rol = (string) $_SESSION['rol'];
 $usuarioId = (int) $_SESSION['usuario_id'];
 $colegioId = colegioParaCrear();

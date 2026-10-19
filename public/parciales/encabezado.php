@@ -104,6 +104,7 @@ if (in_array(($_SESSION['rol'] ?? ''), ['superadmin', 'secretaria'], true)) {
     <?php foreach (($cssExtra ?? []) as $cssPagina): ?>
     <link rel="stylesheet" href="<?= BASE_URL . htmlspecialchars($cssPagina) ?>?v=<?= assetVersion($cssPagina) ?>">
     <?php endforeach; ?>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/experiencia.css?v=<?= assetVersion('/assets/css/experiencia.css') ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/responsive.css?v=<?= assetVersion('/assets/css/responsive.css') ?>">
     <script>
         window.SERENA_BASE_URL = <?= json_encode(BASE_URL) ?>;
@@ -144,6 +145,12 @@ if (in_array(($_SESSION['rol'] ?? ''), ['superadmin', 'secretaria'], true)) {
             } else {
                 localStorage.removeItem('serena_contraste');
             }
+
+            // Animaciones de entrada (experiencia.css): solo si el sistema no pide reducir movimiento
+            // y sin alto contraste. Se marca aquí, antes de pintar, para que no haya parpadeo.
+            if (!contrasteServidor && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                document.documentElement.classList.add('exp-anima');
+            }
         })();
     </script>
 </head>
@@ -160,7 +167,12 @@ if (in_array($rolSesionClase, ['psicologo', 'orientador'], true)) {
     $claseRol .= ' rol-acompana'; // psicología y orientación comparten pantallas (alertas, agenda, fichas)
 }
 ?>
-<body class="panel-body<?= $claseRol ?>">
+<?php
+// Módulo actual (nombre del archivo: emociones, sueno, diario...). Lo usa experiencia.css para dar a cada
+// módulo su color propio. Solo letras y guion bajo: nunca llega texto del usuario aquí.
+$moduloActual = preg_replace('/[^a-z_]/', '', basename((string) ($_SERVER['SCRIPT_NAME'] ?? ''), '.php'));
+?>
+<body class="panel-body<?= $claseRol ?>" data-modulo="<?= $moduloActual ?>">
 
 <button type="button" class="barra-acento-superior" id="boton-acento-superior" aria-label="Mostrar información de la cuenta y navegación" aria-expanded="false">
     <span class="barra-acento-visual" aria-hidden="true"></span>

@@ -24,7 +24,7 @@ Para agregar un rol nuevo: (1) añádelo a `AYUDA_ROLES` (y a `AYUDA_ROLES_COLEG
 Si un rol ve las pantallas de otro (como secretaría con superadmin), usa en `ruta` la carpeta propia del rol (`/secretaria/...`).
 
 ## Capturas pendientes
-La lista completa de archivos que faltan, con la página que hay que capturar, está en `CAPTURAS_PENDIENTES.md` en la raíz del proyecto (se genera con `python tools/capturar_ayuda.py --lista`).
+La lista completa de archivos que faltan, con la página que hay que capturar, está en `CAPTURAS_PENDIENTES.md` (se genera a partir del JSON).
 
 ## Qué es de cada nivel (no mezclar)
 - **Administrador (colegio):** usuarios, grupos, matrícula, años, informes, auditoría y salud de su colegio, textos de correos, lugares propios.

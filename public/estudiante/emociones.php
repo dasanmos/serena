@@ -11,6 +11,7 @@ require_once __DIR__ . '/../../src/helpers/notificador.php';
 requiereRol('estudiante');
 $usuarioId = (int)$_SESSION['usuario_id'];
 $emociones = ['feliz','tranquilo','motivado','ansioso','triste','cansado','estresado','enojado','confundido','agradecido'];
+$emojiEmocion = ['feliz' => '😊', 'tranquilo' => '😌', 'motivado' => '💪', 'ansioso' => '😰', 'triste' => '😔', 'cansado' => '😴', 'estresado' => '😣', 'enojado' => '😠', 'confundido' => '😕', 'agradecido' => '🙏'];
 $error = ''; $exito = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -46,8 +47,9 @@ require __DIR__ . '/../parciales/encabezado.php';
     <label>Emoción</label>
     <div class="grilla-emociones">
       <?php foreach ($emociones as $e): ?>
-        <label class="btn-emocion <?= ($_POST['emocion'] ?? '') === $e ? 'activa' : '' ?>">
-          <input type="radio" name="emocion" value="<?= $e ?>" <?= ($_POST['emocion'] ?? '') === $e ? 'checked' : '' ?>> <?= ucfirst($e) ?>
+        <label class="btn-emocion <?= ($_POST['emocion'] ?? '') === $e ? 'activa' : '' ?>" data-emocion="<?= $e ?>">
+          <input type="radio" name="emocion" value="<?= $e ?>" <?= ($_POST['emocion'] ?? '') === $e ? 'checked' : '' ?>>
+          <span class="emoji-emocion" aria-hidden="true"><?= $emojiEmocion[$e] ?></span> <?= ucfirst($e) ?>
         </label>
       <?php endforeach; ?>
     </div>
@@ -74,7 +76,8 @@ require __DIR__ . '/../parciales/encabezado.php';
   <?php else: ?>
     <ul class="lista-simple">
       <?php foreach (array_slice($registros, 0, 10) as $r): ?>
-        <li>
+        <li class="registro-emocion" data-emocion="<?= htmlspecialchars($r['emocion']) ?>">
+          <span class="emoji-emocion" aria-hidden="true"><?= $emojiEmocion[$r['emocion']] ?? '•' ?></span>
           <strong><?= htmlspecialchars(ucfirst($r['emocion'])) ?></strong>
           — nivel <?= $r['nivel'] ?> — <?= htmlspecialchars($r['momento_dia']) ?>
           <small><?= date('d/m H:i', strtotime($r['fecha_hora'])) ?></small>

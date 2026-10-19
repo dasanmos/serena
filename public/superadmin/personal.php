@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->prepare('UPDATE sesiones_activas SET revocada_en = NOW() WHERE usuario_id = ? AND revocada_en IS NULL')->execute([$uid]);
         auditarAccion($pdo, 'restablecer_password_personal', 'usuarios', $uid, [], ['correo' => $u['correo']]);
 
-        $enlace = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . (defined('BASE_URL') ? BASE_URL : '') . '/login.php';
+        $enlace = urlAbsoluta('/login.php');
         $texto = "Hola {$u['nombre']},\n\nSe restableció tu acceso a Serena.\n\nCorreo: {$u['correo']}\nContraseña temporal: {$temporal}\n\nCámbiala apenas inicies sesión.\n\n— Serena";
         $html = plantillaCorreoHtml('Tu acceso a Serena',
             '<p>Hola <strong>' . htmlspecialchars($u['nombre']) . '</strong>,</p><p>Se restableció tu acceso.</p>'

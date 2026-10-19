@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../../src/modelos/RolesUsuario.php';
 require __DIR__ . '/../../src/config/conexion.php';
 require_once __DIR__ . '/../../src/helpers/auth.php';
 require_once __DIR__ . '/../../src/helpers/csrf.php';
@@ -23,8 +24,8 @@ $anio = $anioSel > 0 ? Academico::anio($pdo, $anioSel, $colegioId) : null;
 $flash = $_SESSION['flash_plan'] ?? null;
 unset($_SESSION['flash_plan']);
 
-$docq = $pdo->prepare("SELECT u.id, u.nombre FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id AND r.nombre = 'docente'
-                        WHERE u.colegio_id = ? AND u.activo = 1 ORDER BY u.nombre");
+$docq = $pdo->prepare("SELECT u.id, u.nombre FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
+                        WHERE (r.nombre = 'docente'" . RolesUsuario::sqlAdicional($pdo, 'u', 'docente') . ") AND u.colegio_id = ? AND u.activo = 1 ORDER BY u.nombre");
 $docq->execute([$colegioId]);
 $docentes = $docq->fetchAll();
 

@@ -195,6 +195,29 @@
         } catch (e) { /* se omite */ }
     }
 
+    // --- Temas frecuentes: un toque llena el buscador. Se ocultan los que no aparecen en esta guía. ---
+    var temas = document.getElementById('ayuda-temas');
+    if (temas && campo) {
+        var textoCompleto = modelo.map(function (m) {
+            return m.cabecera + ' ' + m.secciones.map(function (x) { return x.texto; }).join(' ');
+        }).join(' ');
+        var visiblesTemas = 0;
+        Array.prototype.forEach.call(temas.querySelectorAll('[data-buscar]'), function (b) {
+            var palabrasTema = normalizar(b.getAttribute('data-buscar')).split(/\s+/);
+            var existe = palabrasTema.every(function (p) { return textoCompleto.indexOf(p) !== -1; });
+            b.hidden = !existe;
+            if (existe) { visiblesTemas++; }
+            b.addEventListener('click', function () {
+                campo.value = b.getAttribute('data-buscar');
+                filtrar();
+                campo.focus();
+                var primera = raiz.querySelector('mark.ayuda-marca');
+                if (primera && primera.scrollIntoView) { primera.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            });
+        });
+        temas.hidden = visiblesTemas === 0;
+    }
+
     // --- Índice desplegable en móvil ---
     var indice = raiz.querySelector('.ayuda-indice');
     var toggle = raiz.querySelector('.ayuda-indice-toggle');

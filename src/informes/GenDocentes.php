@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../modelos/RolesUsuario.php';
 require_once __DIR__ . '/GenBase.php';
 
 /** Categoría 10: docentes y asignación académica. */
@@ -38,7 +39,7 @@ final class GenDocentes extends GenBase
                    (SELECT COUNT(*) FROM asignaciones_academicas a WHERE a.docente_id = u.id AND a.anio_lectivo_id = ?) AS n,
                    (SELECT COALESCE(SUM(s.intensidad), 0) FROM asignaciones_academicas a INNER JOIN asignaturas s ON s.id = a.asignatura_id WHERE a.docente_id = u.id AND a.anio_lectivo_id = ?) AS horas,
                    (SELECT GROUP_CONCAT(CONCAT(gr.nombre, ' ', g.nombre) SEPARATOR ', ') FROM grupos g INNER JOIN grados gr ON gr.id = g.grado_id WHERE g.docente_id = u.id AND gr.colegio_id = ?) AS dirige
-              FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id AND r.nombre = 'docente' WHERE u.colegio_id = ? AND u.activo = 1 ORDER BY u.nombre");
+              FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id WHERE (r.nombre = 'docente'" . RolesUsuario::sqlAdicional($pdo, 'u', 'docente') . ") AND u.colegio_id = ? AND u.activo = 1 ORDER BY u.nombre");
         $q->execute([$f['anio'], $f['anio'], $ctx['colegioId'], $ctx['colegioId']]);
         $filas = [];
         foreach ($q->fetchAll() as $i => $r) {

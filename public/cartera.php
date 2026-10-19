@@ -99,7 +99,7 @@ require __DIR__ . '/parciales/encabezado.php';
 ?>
 <h1>Cartera</h1>
 <p class="texto-suave">Cargos y pagos de los estudiantes del año actual. Los informes (estados de cuenta, saldos y pensión mensual) están en <a href="informes.php">Informes</a> (categoría 12).</p>
-<?php if (!$listo): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/038_informes.sql</code>.</p><?php endif; ?>
+<?php if (!$listo): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/040_informes.sql</code>.</p><?php endif; ?>
 <?php if (!$anio): ?><p class="mensaje mensaje-aviso">No hay año lectivo actual.</p><?php endif; ?>
 <?php if ($flash && $flash['error']): ?><p class="mensaje mensaje-error"><?= $e($flash['error']) ?></p><?php endif; ?>
 <?php if ($flash && $flash['exito']): ?><p class="mensaje mensaje-exito"><?= $e($flash['exito']) ?></p><?php endif; ?>

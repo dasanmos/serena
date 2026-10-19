@@ -242,18 +242,18 @@ class HojaVida
         $doc = $rol === 'docente';
         $acu = $rol === 'acudiente';
         $est = $rol === 'estudiante';
-        $plat = in_array($rol, ['superadmin', 'secretaria'], true); // solo lectura, del colegio en contexto
+        $plat = $rol === 'superadmin'; // solo lectura, del colegio en contexto
         $director = $doc && self::esDirectorDeGrupo($pdo, $usuarioId, $estudianteId);
         $ventana = $acu ? self::ventana($pdo, $colegioId) : ['desde' => '', 'hasta' => '', 'abierta' => false];
         $p = [
             'rol' => $rol, 'cap' => $cap, 'acudiente' => $acu, 'director' => $director, 'ventana' => $ventana,
             'inst' => $dir || $ori || $sec,
             'edita_datos' => (($dir || $ori || $sec) || ($acu && $ventana['abierta'])),
-            'ver_salud_sens' => $dir || $ori || ($acu && self::ACUDIENTE_VE['salud_sensible']),
+            'ver_salud_sens' => $cap['salud_sensible'] || ($acu && self::ACUDIENTE_VE['salud_sensible']),
             'ver_etnia' => $dir || $ori || $sec || $acu,
             'ver_datos_completos' => $dir || $ori || $sec || $acu || $est || $plat,
-            'ver_desarrollo' => $dir || $ori || $director || ($acu && self::ACUDIENTE_VE['desarrollo']),
-            'escribir_desarrollo' => $dir || $ori || $director,
+            'ver_desarrollo' => $cap['salud_sensible'] || $director || ($acu && self::ACUDIENTE_VE['desarrollo']),
+            'escribir_desarrollo' => $cap['salud_sensible'] || $director,
             'escribir_aprobacion' => $dir || $sec,
             'ver_obs_temporales' => $dir || $ori || $sec || $doc || $plat,
             'escribir_obs_temporales' => $dir || $ori || $sec,

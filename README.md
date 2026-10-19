@@ -1,25 +1,27 @@
 <div align="center">
 
-<img src="public/assets/img/logo/logo.png" alt="Logo de Serena" width="180">
+<img src="public/assets/img/logo/logo.png" alt="Logo de Serena" width="170">
 
 # Serena
 
-### Plataforma web académica y de bienestar emocional para toda la institución educativa
+### Bienestar emocional y gestión académica en una sola plataforma para toda la institución educativa
 
 *Cuerpo · Mente · Bienestar*
 
-[![Demo en vivo](https://img.shields.io/badge/Demo-en%20vivo-39A900?style=for-the-badge&logo=googlechrome&logoColor=white)](https://serena.infinityfreeapp.com/)
-[![Presentación](https://img.shields.io/badge/Presentaci%C3%B3n-SENA-F5B700?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white)](docs/Presentacion_Serena_SENA_final.pptx)
+[![Demo en vivo](https://img.shields.io/badge/▶_Demo-en_vivo-39A900?style=for-the-badge)](https://serena.infinityfreeapp.com/)
+[![Presentación](https://img.shields.io/badge/Presentación-SENA-E8B923?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white)](docs/Presentacion_Serena_SENA_final.pptx)
+[![Instalación](https://img.shields.io/badge/Guía-de_instalación-2B2B2B?style=for-the-badge)](docs/INSTALACION.md)
 
 ![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
-![Sin frameworks](https://img.shields.io/badge/frameworks-ninguno-39A900)
-![Costo](https://img.shields.io/badge/costo%20para%20la%20instituci%C3%B3n-%240-39A900)
+![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?logo=javascript&logoColor=black)
+![Frameworks](https://img.shields.io/badge/frameworks-ninguno-39A900)
+![Ley 1581](https://img.shields.io/badge/datos-Ley_1581_de_2012-8A6A00)
+![Costo](https://img.shields.io/badge/costo_para_la_institución-$0-39A900)
 
-**[Ver la demostración en vivo →](https://serena.infinityfreeapp.com/)**
+<br>
+
+<img src="public/assets/img/ayuda/est-emociones-1.jpg" alt="Registro emocional del estudiante" width="80%">
 
 </div>
 
@@ -27,182 +29,351 @@
 
 ## Tabla de contenido
 
-- [Sobre el proyecto](#sobre-el-proyecto)
-- [Demostración en vivo](#demostraci%C3%B3n-en-vivo)
-- [Qué incluye](#qu%C3%A9-incluye)
-- [Los 11 roles](#los-11-roles)
-- [Seguridad y privacidad](#seguridad-y-privacidad)
-- [Tecnología](#tecnolog%C3%ADa)
-- [Estructura del repositorio](#estructura-del-repositorio)
-- [Instalación local](#instalaci%C3%B3n-local)
-- [Documentación](#documentaci%C3%B3n)
-- [Equipo](#equipo)
+1. [El problema](#-el-problema)
+2. [La solución](#-la-solución)
+3. [Serena en números](#-serena-en-números)
+4. [Capturas](#-capturas)
+5. [Qué incluye](#-qué-incluye)
+6. [Del registro al acompañamiento](#-del-registro-al-acompañamiento)
+7. [Los 11 roles y quién ve qué](#-los-11-roles-y-quién-ve-qué)
+8. [Seguridad y privacidad](#-seguridad-y-privacidad)
+9. [Experiencia y accesibilidad](#-experiencia-y-accesibilidad)
+10. [Arquitectura](#-arquitectura)
+11. [Tecnología y decisiones](#-tecnología-y-decisiones)
+12. [Estructura del repositorio](#-estructura-del-repositorio)
+13. [Instalación rápida](#-instalación-rápida)
+14. [Modo demostración](#-modo-demostración)
+15. [Documentación](#-documentación)
+16. [Hoja de ruta](#-hoja-de-ruta)
+17. [Equipo](#-equipo)
 
 ---
 
-## Sobre el proyecto
+## 🧩 El problema
 
-Estrés, ansiedad, falta de motivación y desorganización afectan a muchos jóvenes por sus responsabilidades académicas y personales. Existen aplicaciones que miden emociones, hábitos o diario **por separado**, y plataformas académicas que solo gestionan notas y matrículas, pero faltaba una herramienta que lo unificara.
+Estrés, ansiedad, falta de motivación y desorganización afectan a muchos jóvenes. Muchas veces el colegio se entera **tarde**: las señales (varios días de ánimo bajo, poco sueño, dejar de entrar a clase) existen, pero están dispersas y nadie las junta.
 
-**Serena reúne ambas cosas en un solo lugar y conecta al estudiante con psicología y orientación:**
+Las herramientas que existen resuelven **una sola parte**:
 
-| | |
-|---|---|
-| 🧑‍🎓 **Estudiante** | Registra cómo se siente, cómo duerme y sus hábitos; consulta sus notas y asistencia. |
-| 🧠 **Psicología y orientación** | Reciben alertas tempranas y acompañan por chat, citas y encuestas. |
-| 🏫 **Docentes y secretaría** | Gestionan matrículas, notas, asistencia, horarios, certificados e informes. |
-| 🏛️ **Coordinación y rectoría** | Ven informes agregados, sin datos individuales de bienestar. |
+| Tipo | Ejemplos | Qué les falta |
+|---|---|---|
+| Apps de bienestar | Daylio, Habitica, Reflectly | Son individuales: nadie en el colegio puede acompañar, y no tienen nada académico. |
+| Plataformas académicas | Master2000, Sinaí, Phidias, Q10 | Gestionan notas y matrícula, pero no el bienestar emocional ni las alertas tempranas. |
 
-Está pensada para toda la institución **desde grado sexto**, es **gratuita** (PHP y MySQL libres, hosting gratuito) y funciona en celular, tablet y computador.
+## 💡 La solución
 
-## Demostración en vivo
+**Serena reúne las dos cosas y conecta al estudiante con psicología y orientación a tiempo.**
 
-🔗 **https://serena.infinityfreeapp.com/**
+- El **estudiante** registra cómo se siente, cómo duerme y sus hábitos, y consulta sus notas, asistencia y horario.
+- **Psicología y orientación** reciben **alertas tempranas** y acompañan por chat, citas y encuestas.
+- **Docentes y secretaría académica** gestionan matrícula, notas, asistencia, horarios, boletines y certificados.
+- **Familias, directivos y la Secretaría de Educación** ven lo que les corresponde, ni más ni menos.
 
-Serena funcionando en un servidor real. Para presentar todas las funciones con una sola cuenta existe un **modo demostración**: una cuenta maestra entra con cualquiera de los 11 roles sobre un colegio ficticio aparte, que se puede restablecer en un clic (ver [`docs/notas-de-desarrollo/LEEME_DEMO.txt`](docs/notas-de-desarrollo/LEEME_DEMO.txt)).
+Funciona para **varios colegios a la vez**, desde **grado sexto**, en celular, tablet y computador, y no le cuesta nada a la institución.
 
-## Qué incluye
+---
+
+## 📊 Serena en números
+
+<div align="center">
+
+| 11 | 110 | 69 | 125 | 4 | $0 |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| roles, cada uno con su panel | tablas en la base de datos | informes en PDF y CSV | capturas en el manual de ayuda | métodos de verificación en 2 pasos | costo para la institución |
+
+</div>
+
+---
+
+## 📸 Capturas
+
+<table>
+<tr>
+<td width="50%"><img src="public/assets/img/ayuda/est-inicio-1.jpg" alt="Inicio del estudiante"><br><sub><b>Inicio del estudiante:</b> análisis de la semana, hábitos, metas y sueño.</sub></td>
+<td width="50%"><img src="public/assets/img/ayuda/est-habitos-1.jpg" alt="Hábitos"><br><sub><b>Hábitos:</b> rachas que se celebran con confeti y sonido.</sub></td>
+</tr>
+<tr>
+<td><img src="public/assets/img/ayuda/psi-alertas-1.jpg" alt="Alertas tempranas"><br><sub><b>Alertas tempranas:</b> psicología ve a quién buscar primero.</sub></td>
+<td><img src="public/assets/img/ayuda/psi-panel-1.jpg" alt="Panel de psicología"><br><sub><b>Panel de psicología:</b> tendencia emocional institucional.</sub></td>
+</tr>
+<tr>
+<td><img src="public/assets/img/ayuda/doc-seguimiento-1.jpg" alt="Seguimiento del docente"><br><sub><b>Planilla del docente:</b> notas por período, grupo y asignatura, con dictado por voz.</sub></td>
+<td><img src="public/assets/img/ayuda/est-notas-1.jpg" alt="Boletín de notas"><br><sub><b>Boletín:</b> lo que ven estudiantes y familias.</sub></td>
+</tr>
+<tr>
+<td><img src="public/assets/img/ayuda/adm-informes-1.jpg" alt="Informes"><br><sub><b>69 informes</b> con formato institucional.</sub></td>
+<td><img src="public/assets/img/ayuda/sup-comparativo-1.jpg" alt="Comparativo de colegios"><br><sub><b>Secretaría de Educación:</b> comparativo de colegios, solo con cifras agregadas.</sub></td>
+</tr>
+</table>
+
+> Todas las capturas usan el **colegio de demostración**, con datos ficticios.
+
+---
+
+## 🧰 Qué incluye
 
 ### 💛 Bienestar emocional
 
 | Módulo | Qué hace |
 |---|---|
-| **Emociones** | Registro varias veces al día, con nota y momento del día. |
-| **Sueño** | Horas, calidad y su efecto en el ánimo. |
-| **Diario** | Texto e imágenes, protegido con PIN. |
-| **Hábitos y metas** | Rachas, subtareas e insignias. |
-| **Estadísticas** | Gráficos por periodo e informe en PDF. |
-| **Alertas tempranas** | Aviso tras días seguidos de ánimo bajo. |
-| **Chat y citas** | Contacto directo con psicología u orientación. |
-| **Apoyo** | Encuestas, ejercicios de respiración y líneas de ayuda. |
+| **Emociones** | Registro varias veces al día, con intensidad, momento y nota; cada emoción tiene su color. |
+| **Sueño** | Horas y calidad, y su relación con el ánimo. |
+| **Diario** | Texto, etiquetas e imágenes, protegido con PIN. Solo lo lee el estudiante. |
+| **Hábitos y metas** | Rachas, subtareas, insignias y celebraciones. |
+| **Estadísticas** | Mapa del ánimo, gráficos por período e informe en PDF. |
+| **Alertas tempranas** | Por días seguidos de ánimo bajo, por inactividad o por el botón de ayuda urgente. |
+| **Chat y citas** | Dos canales: emocional (psicología y orientación) y académico (docente de grupo). Agenda con disponibilidad real. |
+| **Apoyo** | Encuestas, respiración guiada, recursos y líneas de ayuda (Línea 106 y 123). |
+| **Pulso de grupo** | Pregunta anónima del docente para sentir el clima del salón. |
 
 ### 📚 Gestión académica
 
 | Módulo | Qué hace |
 |---|---|
-| **Matrícula** | Inscripción web, matrícula y renovación por año lectivo. |
-| **Notas** | Actividades, logros, planilla de seguimiento y boletín (con dictado por voz). |
-| **Asistencia** | Lista por clase y alerta de ausentismo. |
-| **Horarios** | Franjas y grupos, con detección de cruces. |
-| **Hoja de vida** | Matrícula, desarrollo, observador y convivencia (Ley 1620). |
-| **Certificados** | Con código QR verificable en línea, sin iniciar sesión. |
-| **Informes** | Catálogo de informes en PDF, CSV o impresión. |
-| **SIMAT y SIMPADE** | Revisión y exportación de reportes. |
+| **Inscripción y matrícula** | Formulario web para familias, revisión, matrícula, renovación y promoción de año. |
+| **Evaluación** | Sistema institucional configurable: estructura de la planilla y escalas numéricas o descriptivas. |
+| **Notas** | Planilla del docente con actividades y logros, dictado por voz y boletín por período. |
+| **Asistencia** | Lista por clase, reporte y alerta de ausentismo. |
+| **Horarios** | Franjas, grupos y docentes, con detección de cruces. |
+| **Hoja de vida** | Datos, familia, salud, observador, convivencia (Ley 1620) y aula de apoyo (PIAR). |
+| **Certificados** | Con código QR que cualquiera puede verificar en línea sin iniciar sesión. |
+| **Informes** | 69 informes con logo, DANE, resolución y firmas, en PDF, CSV o impresión. |
+| **SIMAT y SIMPADE** | Revisión, conciliación y exportación para los sistemas del Ministerio. |
+| **Servicios** | Restaurante escolar y cartera (cargos y pagos). |
 
-### 🗺️ Varios colegios y asistente de IA
+### 👨‍👩‍👧 Familias y comunidad
 
-- **Varios colegios:** capa de Secretaría de Educación (semáforo, comparativos, reportes, comunicados) y superadmin de plataforma, siempre con cifras agrupadas. Cada colegio está aislado de los demás.
-- **Asistente «Pregúntale a Serena»** y análisis en informes de psicología y encuestas mediante OpenRouter (modelos gratuitos). Los datos se anonimizan antes de enviarse. Es opcional: sin clave, Serena sigue funcionando.
-- **Centro de ayuda integrado** por rol (web, PDF y HTML descargables, buscador y asistente): ver [`docs/AYUDA.md`](docs/AYUDA.md).
+- **Cuentas de familia desde la hoja de vida:** al guardar a la madre, el padre o el acudiente se crea su cuenta. Si el acudiente es la misma persona que la madre o el padre, **no se duplica**.
+- **Una persona, una cuenta:** una docente que también es madre entra con la misma cuenta y elige el rol. Si su documento está en **varios colegios**, elige la institución.
+- **Comunicados** de la Secretaría de Educación a rectores y administradores.
 
-## Los 11 roles
+### 🗺️ Plataforma
 
-Cada rol tiene su propio panel y menú.
+- **Varios colegios** aislados entre sí, con una capa de **Secretaría de Educación** (semáforo, comparativos, reportes, traslados y comunicados) y un **superadmin** de plataforma.
+- **Asistente «Pregúntale a Serena»** y análisis de informes con IA (OpenRouter, modelos gratuitos). Es opcional, y los datos se anonimizan antes de enviarse.
+- **Centro de ayuda** por rol, con buscador, temas frecuentes, asistente y manual descargable en PDF y HTML.
+
+---
+
+## 🔄 Del registro al acompañamiento
+
+```mermaid
+flowchart LR
+    A["🧑‍🎓 Estudiante<br/>registra emociones,<br/>sueño y hábitos"] --> B{"¿Varios días<br/>difíciles o<br/>ayuda urgente?"}
+    B -- No --> C["📈 Estadísticas<br/>y análisis semanal"]
+    B -- Sí --> D["🔔 Alerta temprana"]
+    D --> E["🧠 Psicología y orientación<br/>chat · citas · seguimiento"]
+    E --> F["🌱 Apoyo<br/>encuestas · respiración<br/>líneas de ayuda"]
+    D -. cifras agregadas .-> G["🏛️ Coordinación,<br/>rectoría y Secretaría"]
+```
+
+---
+
+## 👥 Los 11 roles y quién ve qué
 
 | Rol | Para qué sirve |
 |---|---|
-| `estudiante` | Registra su bienestar y consulta notas y asistencia. |
-| `acudiente` | Sigue a sus hijos. |
-| `docente` | Toma lista y califica. |
-| `psicologo` | Recibe alertas y acompaña por chat, citas y encuestas. |
-| `orientador` | Igual que psicología, desde orientación escolar. |
-| `coordinador` | Convivencia, informes agregados y seguimiento académico. |
-| `rector` | Informes agregados de la institución. |
-| `secretaria_academica` | Matricula y emite certificados. |
-| `administrador` | Administra usuarios, grupos y configuración del colegio. |
-| `secretaria` | Secretaría de Educación: vista de varios colegios. |
-| `superadmin` | Administración de toda la plataforma. |
+| `estudiante` | Registra su bienestar y consulta notas, asistencia y horario. |
+| `acudiente` | Familia: boletines, asistencia, horario y hoja de vida de sus hijos. |
+| `docente` | Toma lista, califica, planea y lanza el pulso de grupo. |
+| `psicologo` | Atiende alertas, chatea, agenda citas y hace seguimientos. |
+| `orientador` | Igual que psicología, solo con los grupos a su cargo. |
+| `coordinador` | Convivencia, asistencia, horarios y reportes. |
+| `rector` | Visión institucional. |
+| `secretaria_academica` | Inscripciones, matrículas, boletines, certificados y SIMAT. |
+| `administrador` | Usuarios, grupos, plan académico y configuración del colegio. |
+| `secretaria` | Secretaría de Educación: varios colegios, solo cifras agregadas. |
+| `superadmin` | Toda la plataforma: colegios, secretarías, respaldos y salud del sistema. |
 
-## Seguridad y privacidad
+**Privacidad por diseño:** cada persona ve solo lo que necesita para acompañar.
 
-- ✅ **Consentimiento explícito** de tratamiento de datos al registrarse (Ley 1581 de 2012).
-- 🔐 **Verificación en 2 pasos:** app autenticadora, correo, WhatsApp o rostro; secretos cifrados con AES-256-GCM.
-- 🛡️ **Acceso seguro:** sentencias preparadas (PDO), tokens CSRF y control de acceso por rol.
-- ⏱️ **Límite de intentos:** 5 fallidos bloquean la cuenta 15 minutos.
-- 📓 **Diario con PIN**, sesiones activas visibles y bitácora de auditoría de cambios sensibles.
-- 🕶️ Los informes para coordinación y rectoría son **agregados y sin datos individuales**.
+| Información | Estudiante | Familia | Docentes | Psicología y orientación | Coordinación y rectoría | Administración | Secretaría de Educación |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Emociones y sueño | ✅ | — | — | ✅ * | 📊 cifras | — | 📊 cifras |
+| Diario | ✅ | — | — | — | — | — | — |
+| Notas, asistencia y horario | ✅ | ✅ | de sus grupos | ✅ * | ✅ | ✅ | — |
+| Salud, convivencia y aula de apoyo | — | — | alergias y contactos | ✅ * | ✅ | — | — |
 
-## Tecnología
+<sub>* El orientador ve solo los grupos a su cargo. En los comparativos y en el pulso de grupo, los promedios se ocultan cuando hay muy pocas respuestas, para que nadie pueda ser identificado. Cada vez que alguien abre una hoja de vida queda registrado quién y cuándo.</sub>
+
+---
+
+## 🔐 Seguridad y privacidad
+
+| Capa | Cómo |
+|---|---|
+| **Consentimiento** | Aceptación explícita del tratamiento de datos al registrarse (Ley 1581 de 2012). |
+| **Verificación en 2 pasos** | App autenticadora, correo, WhatsApp o rostro. Secretos cifrados con AES-256-GCM. |
+| **Inyección y XSS** | Sentencias preparadas (PDO) en todas las consultas y salida escapada. |
+| **CSRF** | Token en cada formulario y en cada API JSON. |
+| **Control de acceso** | Por rol en cada página **y** por estudiante (el docente solo ve sus grupos, el orientador los suyos). |
+| **Fuerza bruta** | 5 intentos fallidos bloquean 15 minutos (inicio de sesión, PIN del diario y verificación en 2 pasos). |
+| **Contraseñas** | bcrypt; recuperación con token de un solo uso, guardado como hash, que vence en 1 hora. |
+| **Sesiones** | Cookies `HttpOnly` y `SameSite`, sesiones activas visibles y cierre remoto. |
+| **Auditoría** | Bitácora de cambios sensibles y registro de cada consulta a una hoja de vida. |
+| **Archivos privados** | `src/`, `sql/`, `tools/` y `docs/` bloqueados al navegador; respaldos y subidas fuera de `public/`. |
+
+---
+
+## ✨ Experiencia y accesibilidad
+
+- **Color por módulo y por emoción:** Emociones coral, Sueño índigo, Hábitos verde… y cada rol del personal con su tono.
+- **Movimiento con intención:** tarjetas que entran, cifras que cuentan, barras que se llenan y confeti al cumplir metas.
+- **Sonidos sintetizados** con Web Audio, sin archivos: cada emoción suena a una nota de una escala pentatónica. Se silencian con un botón.
+- **Accesible:** respeta *reducir movimiento*, ofrece alto contraste, texto grande y modo oscuro, se usa con teclado y tiene dictado por voz.
+- **Responsive** de celular a computador.
+
+---
+
+## 🏗️ Arquitectura
+
+```mermaid
+flowchart TB
+    subgraph Navegador
+        UI["Páginas por rol<br/>HTML · CSS · JS"]
+    end
+    subgraph "public/ (único acceso web)"
+        P["estudiante/ · docente/ · psicologo/ …<br/>api/ (JSON) · parciales/ · tareas/ (cron)"]
+    end
+    subgraph "src/ (bloqueado al navegador)"
+        H["helpers/<br/>auth · csrf · correo · IA · PDF"]
+        M["modelos/<br/>una clase por entidad (PDO)"]
+        I["informes/<br/>69 generadores"]
+    end
+    DB[("MySQL<br/>110 tablas")]
+    EXT["Servicios opcionales<br/>Brevo · reCAPTCHA · OpenRouter"]
+    UI --> P --> H & M & I
+    M --> DB
+    H --> EXT
+```
+
+Cada página valida la sesión y el rol, llama a los modelos y pinta la vista. Fue una decisión consciente para un equipo de dos personas sin framework. **Todas** las consultas filtran por el colegio de la sesión.
+
+<details>
+<summary><b>Modelo de datos (tablas principales)</b></summary>
+
+```mermaid
+erDiagram
+    COLEGIOS ||--o{ USUARIOS : tiene
+    ROLES ||--o{ USUARIOS : "rol principal"
+    USUARIOS ||--o{ USUARIO_ROLES : "roles adicionales"
+    COLEGIOS ||--o{ GRADOS : tiene
+    GRADOS ||--o{ GRUPOS : tiene
+    GRUPOS ||--o{ USUARIOS : "estudiantes"
+    USUARIOS ||--o{ PERSONAL_GRUPOS : "grupos a cargo"
+    USUARIOS ||--o{ ACUDIENTES_ESTUDIANTES : "familia de"
+    USUARIOS ||--o{ ESTADO_EMOCIONAL : registra
+    USUARIOS ||--o{ HABITOS : tiene
+    USUARIOS ||--o{ METAS : tiene
+    USUARIOS ||--o{ ALERTAS_TEMPRANAS : genera
+    ANIOS_LECTIVOS ||--o{ PERIODOS : tiene
+    USUARIOS ||--o{ MATRICULAS : "matriculado en"
+    GRUPOS ||--o{ ASIGNACIONES_ACADEMICAS : "clases de"
+```
+
+</details>
+
+---
+
+## 🛠️ Tecnología y decisiones
 
 | Capa | Herramientas |
 |---|---|
-| **Backend** | PHP 8.1+ (sin frameworks), PDO |
-| **Base de datos** | MySQL 8 |
-| **Frontend** | HTML, CSS y JavaScript, diseño responsive y modo oscuro |
-| **Correo** | API de Brevo (HTTPS) |
-| **IA (opcional)** | OpenRouter, modelos gratuitos |
+| **Backend** | PHP 8.1+ sin frameworks, PDO |
+| **Base de datos** | MySQL 8 / MariaDB |
+| **Frontend** | HTML, CSS y JavaScript sin librerías de interfaz; Chart.js, Leaflet y face-api.js puntuales |
+| **APIs del navegador** | Web Audio (sonidos), Web Speech (dictado) |
+| **Servicios** | Brevo (correo por HTTPS), reCAPTCHA v2, OpenRouter (IA opcional) |
 | **Hosting** | InfinityFree (gratuito) |
+| **Herramientas** | Git y GitHub, Playwright (capturas automáticas del manual) |
 
-> **Decisión técnica:** se eligió software libre con hosting gratuito (costo cero) y se descartó Firebase por su costo a gran escala para toda una institución.
+**Decisiones clave:**
+- **Software libre y hosting gratuito:** el costo para el colegio tenía que ser cero. Se descartó Firebase por su costo a gran escala para toda una institución.
+- **Sin framework:** el hosting gratuito solo ofrece PHP y MySQL, y así entendemos cada línea.
+- **Adaptados al hosting:** como no se puede fijar `public/` como raíz, la raíz redirige y un `.htaccess` blinda lo demás. Los correos van por la API de Brevo porque el puerto SMTP está bloqueado.
 
-## Estructura del repositorio
+---
+
+## 📁 Estructura del repositorio
 
 ```
 serena/
-├── index.php, .htaccess     Entrada del sitio
-├── public/                  Páginas y recursos accesibles desde el navegador
-│   ├── <rol>/               Pantallas de cada rol (estudiante, docente, administrador, …)
-│   ├── api/                 Endpoints JSON
-│   ├── parciales/           Encabezado y pie compartidos
-│   └── assets/              CSS, JavaScript e imágenes
-├── src/                     Lógica fuera del alcance del navegador
-│   ├── config/              Configuración (.env.example, conexión)
-│   ├── helpers/             Autenticación, CSRF, correo, IA, PDF, ayuda, …
-│   ├── modelos/, controladores/, informes/
-│   ├── ayuda/contenido.json Todo el texto del centro de ayuda
-│   └── respaldos/, uploads/ Carpetas de datos (vacías en el repositorio)
-├── sql/                     schema.sql, migraciones y datos
-├── tools/                   Utilidades (capturas automáticas de la ayuda)
-└── docs/                    Instalación, ayuda, presentación y notas de desarrollo
+├── index.php · .htaccess        Entrada del sitio (redirige a public/) y bloqueos
+├── public/                      Lo único accesible desde el navegador
+│   ├── <rol>/                   Pantallas de cada rol
+│   ├── api/                     Endpoints JSON
+│   ├── tareas/                  Tareas programadas (cron con secreto)
+│   ├── parciales/               Encabezado, menú y pie compartidos
+│   └── assets/                  CSS, JavaScript e imágenes (incl. las 125 capturas de la ayuda)
+├── src/                         Lógica, fuera del alcance del navegador
+│   ├── config/                  .env.example y conexión
+│   ├── modelos/ · helpers/ · informes/ · controladores/
+│   ├── ayuda/contenido.json     Todo el texto del centro de ayuda
+│   └── respaldos/ · uploads/    Datos (vacíos en el repositorio)
+├── sql/
+│   ├── instalacion_completa.sql Base completa para instalaciones nuevas
+│   ├── schema.sql               Esquema original
+│   └── migraciones/             Cambios incrementales (ver ORDEN.md)
+├── tools/                       crear_maestro.php · capturar_ayuda.py
+└── docs/                        Instalación, ayuda, presentación y notas de desarrollo
 ```
 
-## Instalación local
+---
 
-**Requisitos:** PHP 8.1+, MySQL 8+ y Apache con `mod_rewrite` (XAMPP o Laragon sirven).
+## 🚀 Instalación rápida
 
-1. **Copia** esta carpeta dentro de `htdocs` (XAMPP) o de la carpeta de proyectos de Laragon.
-2. **Crea la base:** en phpMyAdmin crea la base `serena` y ejecuta `sql/schema.sql` (ya incluye todas las tablas).
-3. **Configura las credenciales:** copia `src/config/.env.example` a `src/config/.env` y completa tus valores.
+```bash
+# 1. Base de datos: crea «serena» (utf8mb4) e importa sql/instalacion_completa.sql
+# 2. Configuración
+cp src/config/.env.example src/config/.env      # completa DB_* (y APP_URL en producción)
+# 3. Primera cuenta
+php tools/crear_maestro.php tu@correo.com "Tu Nombre" "Clave#Segura1"
+# 4. Abre http://localhost/serena/ y entra como Superadministrador
+```
 
-   | Variable | Para qué sirve |
-   |---|---|
-   | `DB_HOST`, `DB_NOMBRE`, `DB_USUARIO`, `DB_PASSWORD` | Conexión a MySQL (en XAMPP: `localhost`, `serena`, `root`, vacío). |
-   | `BREVO_API_KEY` | Correos (opcional). |
-   | `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY` | reCAPTCHA (opcional). |
-   | `OPENROUTER_API_KEY` | Inteligencia artificial (opcional). |
-   | `SERENA_2FA_KEY` | 64 caracteres hexadecimales para cifrar la verificación en 2 pasos (opcional). |
+📘 Guía completa (Laragon, XAMPP, InfinityFree, tareas programadas, verificación en 2 pasos y actualización): **[docs/INSTALACION.md](docs/INSTALACION.md)**
 
-   Sin las claves opcionales la plataforma funciona; solo se desactivan correo, reCAPTCHA e IA.
-4. **Abre el sitio:** idealmente apunta el document root a `public/`. Sin virtual host: `http://localhost/serena/public/`.
-5. **Inicia sesión** desde `login.php`. Las instrucciones completas están en [`docs/INSTALACION.md`](docs/INSTALACION.md).
+---
 
-### Migraciones y datos de demostración
+## 🎬 Modo demostración
 
-`sql/migraciones/` contiene los cambios de la base en orden numérico (útil si ya tenías una instalación anterior). Una base nueva solo necesita `schema.sql`. `004_datos_demo.sql` carga datos ficticios de ejemplo.
+La cuenta maestra crea en un clic un **colegio ficticio** con 24 estudiantes, notas, asistencia, horarios, alertas y registros de bienestar. Desde ahí puede **entrar con cualquiera de los 11 roles** y seguir un guion de presentación. Se restablece cuando quieras y nunca toca los datos reales.
 
-### ⚠️ Antes de publicar o desplegar
+---
 
-- **Nunca subas `src/config/.env`.** Contiene credenciales; el `.gitignore` ya lo excluye.
-- Cambia las contraseñas de las cuentas de prueba.
-- `src/respaldos/` y `src/uploads/` guardan datos personales de estudiantes (Ley 1581): no se versionan.
-
-## Documentación
+## 📚 Documentación
 
 | Documento | Contenido |
 |---|---|
-| [`docs/INSTALACION.md`](docs/INSTALACION.md) | Instalación paso a paso, 2FA y correo. |
+| [`docs/INSTALACION.md`](docs/INSTALACION.md) | Instalación, variables, tareas programadas, 2FA y actualización. |
+| [`sql/migraciones/ORDEN.md`](sql/migraciones/ORDEN.md) | Cómo aplicar las migraciones en una instalación existente. |
 | [`docs/AYUDA.md`](docs/AYUDA.md) | Cómo editar el centro de ayuda por rol. |
+| [`docs/GUIA_CAPTURAS.md`](docs/GUIA_CAPTURAS.md) | Regenerar automáticamente las capturas del manual. |
 | [`docs/Presentacion_Serena_SENA_final.pptx`](docs/Presentacion_Serena_SENA_final.pptx) | Presentación de la socialización de etapa productiva. |
-| [`docs/notas-de-desarrollo/`](docs/notas-de-desarrollo/) | Notas internas de cada fase del desarrollo. |
+| [`docs/notas-de-desarrollo/`](docs/notas-de-desarrollo/) | Notas de cada fase y registro de cambios. |
 
-## Equipo
+---
 
-Proyecto de etapa productiva del **Técnico en Desarrollo de Software, SENA**.
+## 🧭 Hoja de ruta
 
-| Aprendiz | Rol en el proyecto |
-|---|---|
-| **David Santiago Mosquera Mosquera** | Desarrollo de la plataforma |
-| **Ana Sofía Ángel Moncada** | Desarrollo de la plataforma y diseño del logo |
+- [ ] **Pruebas automáticas** (PHPUnit y navegador), para no depender solo de las pruebas manuales.
+- [ ] **Cifrado del diario** con una clave derivada del PIN del estudiante.
+- [ ] **Notificaciones push** y app instalable, para que las alertas lleguen más rápido.
+- [ ] **Migraciones automáticas** al desplegar.
+- [ ] **Pruebas de usabilidad** con estudiantes, docentes y personas con discapacidad.
+
+---
+
+## 🤝 Equipo
+
+Proyecto de etapa productiva del **Técnico en Desarrollo de Software (SENA)**, desarrollado en la **I.E. INEM José Félix de Restrepo**, Medellín.
+
+| | Aprendiz | Rol en el proyecto |
+|:---:|---|---|
+| 👨‍💻 | **David Santiago Mosquera Mosquera** · [@dasanmos](https://github.com/dasanmos) | Desarrollador full stack · Product Owner · Analista de requerimientos |
+| 🎨 | **Ana Sofía Ángel Moncada** | Gestora de proyectos · Diseñadora UI/UX (identidad visual y logo) |
+
+¿Quieres usar Serena en tu institución o colaborar? Abre un *issue* en este repositorio.
 
 ---
 

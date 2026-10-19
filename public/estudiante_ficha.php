@@ -8,12 +8,13 @@ require_once __DIR__ . '/../src/helpers/auditor.php';
 require_once __DIR__ . '/../src/helpers/colegio.php';
 require_once __DIR__ . '/../src/modelos/Expediente.php';
 require_once __DIR__ . '/../src/modelos/HojaVida.php';
+require_once __DIR__ . '/../src/modelos/CuentasFamilia.php';
 require_once __DIR__ . '/../src/modelos/Certificados.php';
 
 // Hoja de vida del estudiante (estructura del Sistema Académico Master2000). DATOS SENSIBLES DE MENORES:
 // cada pestaña y cada acción se validan con HojaVida::permisos() y el acceso al estudiante con
 // Expediente::puedeAccederEstudiante(). Los permisos por rol están documentados en LEEME_HOJA_VIDA.txt.
-requiereRol('estudiante', 'acudiente', 'docente', 'coordinador', 'rector', 'administrador', 'secretaria_academica', 'psicologo', 'orientador', 'secretaria', 'superadmin');
+requiereRol('estudiante', 'acudiente', 'docente', 'coordinador', 'rector', 'administrador', 'secretaria_academica', 'psicologo', 'orientador', 'superadmin');
 $rol = (string) $_SESSION['rol'];
 $usuarioId = (int) $_SESSION['usuario_id'];
 $colegioId = colegioParaConsulta();
@@ -93,7 +94,24 @@ if ($permitido && $_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'hv_familiar':
             $seccion = 'matricula'; $sub = 'familia';
             if (!$perm['edita_datos']) { $f['error'] = $denegado; break; }
-            $res(HojaVida::guardarFamiliar($pdo, $estId, (string) ($_POST['parentesco'] ?? ''), $_POST, $usuarioId), 'Datos del familiar guardados.');
+            $parFam = (string) ($_POST['parentesco'] ?? '');
+            $errFam = CuentasFamilia::validarAntesDeGuardar($pdo, $estId, $parFam, $_POST)
+                ?: HojaVida::guardarFamiliar($pdo, $estId, $parFam, $_POST, $usuarioId);
+            if ($errFam !== '') { $f['error'] = $errFam; break; }
+            $f['exito'] = 'Datos del familiar guardados.';
+            // Cuenta de familia: la crea o vincula el personal del colegio. Si quien guarda es el propio
+            // acudiente (ventana de actualización), solo se guardan los datos: no se le entregan
+            // credenciales de otra persona.
+            if (!$perm['acudiente']) {
+                try {
+                    $cta = CuentasFamilia::sincronizar($pdo, $colegioId, $estId, $parFam);
+                    if ($cta['mensaje'] !== '') { $f['exito'] .= ' ' . $cta['mensaje']; }
+                    $f['credenciales_familia'] = $cta['credenciales'];
+                } catch (Throwable $ex) {
+                    error_log('CuentasFamilia: ' . $ex->getMessage());
+                    $f['error'] = 'Los datos se guardaron, pero no se pudo crear la cuenta de familia: ' . $ex->getMessage();
+                }
+            }
             break;
         case 'hv_previo_agregar':
         case 'hv_previo_eliminar':
@@ -299,6 +317,20 @@ define('HV_CARGADO', true);
 
 <?php if ($flash && $flash['error']): ?><p class="mensaje mensaje-error" role="alert"><?= $e($flash['error']) ?></p><?php endif; ?>
 <?php if ($flash && $flash['exito']): ?><p class="mensaje mensaje-exito" role="status"><?= $e($flash['exito']) ?></p><?php endif; ?>
+<?php if ($flash && !empty($flash['credenciales_familia'])): $cr = $flash['credenciales_familia']; ?>
+    <div class="acad-credenciales">
+        <h2>Cuenta de familia creada (se muestra una sola vez)</h2>
+        <p><strong><?= $e($cr['etiqueta']) ?>:</strong> <?= $e($cr['nombre']) ?><br>
+            <?php if ($cr['correo_interno']): ?>
+                Inicia sesión con su documento: <code><?= $e($cr['documento']) ?></code>
+            <?php else: ?>
+                Usuario: <code><?= $e($cr['correo']) ?></code><?= $cr['documento'] !== '' ? ' (o su documento <code>' . $e($cr['documento']) . '</code>)' : '' ?>
+            <?php endif; ?>
+            · Contraseña temporal: <code><?= $e($cr['password']) ?></code></p>
+        <p class="texto-suave">Entrégala de forma privada y pídele cambiarla en Mi perfil al ingresar. Con esta cuenta ve los boletines, la asistencia, el horario y la hoja de vida del estudiante.</p>
+        <button type="button" class="boton-secundario" onclick="window.print()">Imprimir</button>
+    </div>
+<?php endif; ?>
 
 <?php if ($est === null): ?>
     <div class="estado-vacio"><p><?= $rol === 'acudiente' && !$hijos ? 'Todavía no tienes estudiantes vinculados.' : ($esPersonal ? 'Elige un estudiante desde <a href="' . $e(BASE_URL) . '/estudiantes.php">Estudiantes</a>. (Si ya lo hiciste, no tienes permiso para abrir a ese estudiante.)' : 'No tienes permiso para ver esta hoja de vida.') ?></p></div>

@@ -8,14 +8,24 @@ require_once __DIR__ . '/../modelos/Grupo.php';
 require_once __DIR__ . '/../modelos/Usuario.php';
 
 // Regla de negocio única y centralizada de la funcionalidad "Ver como usuario":
-// - Cualquier rol distinto de "estudiante": permitido.
+// - Psicólogo, orientador, administrador, superadmin y secretaría: NUNCA (ver ROLES_NO_SUPLANTABLES).
+// - Resto de roles distintos de "estudiante": permitido.
 // - Rol "estudiante": SOLO el usuario cuyo correo coincide con CORREO_ESTUDIANTE_PRUEBA.
 // Esta función es la que de verdad protege la restricción (no la lista que se muestra
 // en pantalla) — se vuelve a llamar en el servidor cada vez que se intenta activar una
 // vista, así que aunque alguien manipule el usuario_id enviado por POST, esta regla
 // sigue evaluándose contra el usuario real que hay en la base de datos.
+// Roles que NUNCA se pueden suplantar:
+// - psicólogo y orientador: sus notas de sesión son privadas incluso entre colegas; entrar
+//   "como" ellos le daría al administrador acceso a información clínica de menores.
+// - otro administrador, superadmin o secretaría: sería escalar o mover privilegios.
+const ROLES_NO_SUPLANTABLES = ['psicologo', 'orientador', 'administrador', 'superadmin', 'secretaria'];
+
 function puedeVerComo(array $usuarioObjetivo): bool
 {
+    if (in_array($usuarioObjetivo['rol'] ?? '', ROLES_NO_SUPLANTABLES, true)) {
+        return false;
+    }
     if (($usuarioObjetivo['rol'] ?? '') !== 'estudiante') {
         return true;
     }

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../../src/config/conexion.php';
+require_once __DIR__ . '/../../src/modelos/RolesUsuario.php';
 require_once __DIR__ . '/../../src/helpers/auth.php';
 require_once __DIR__ . '/../../src/helpers/csrf.php';
 require_once __DIR__ . '/../../src/helpers/auditor.php';
@@ -58,6 +59,9 @@ require __DIR__ . '/../parciales/encabezado.php';
 <?php if (isset($_GET['actualizado'])): ?>
     <p class="mensaje mensaje-exito">Usuario actualizado.</p>
 <?php endif; ?>
+<?php if (isset($_GET['rol_agregado'])): ?>
+    <p class="mensaje mensaje-exito">Esa persona ya tenía cuenta: se le agregó el nuevo rol. Conserva su contraseña y, al iniciar sesión, elegirá con qué rol entrar.</p>
+<?php endif; ?>
 <?php if (isset($_GET['eliminado'])): ?>
     <p class="mensaje mensaje-exito">Usuario eliminado. Sus registros (emociones, hábitos, metas, etc.) también se borraron.</p>
 <?php endif; ?>
@@ -112,7 +116,8 @@ require __DIR__ . '/../parciales/encabezado.php';
             <tr>
                 <td data-etiqueta="Nombre"><?= htmlspecialchars($u['nombre']) ?></td>
                 <td data-etiqueta="Correo"><?= htmlspecialchars($u['correo']) ?></td>
-                <td data-etiqueta="Rol"><span class="badge-rol badge-rol-<?= htmlspecialchars($u['rol']) ?>"><?= htmlspecialchars(ucfirst($u['rol'])) ?></span></td>
+                <td data-etiqueta="Rol"><span class="badge-rol badge-rol-<?= htmlspecialchars($u['rol']) ?>"><?= htmlspecialchars(ucfirst($u['rol'])) ?></span>
+                    <?php foreach (RolesUsuario::adicionales($pdo, (int) $u['id']) as $rx): ?> <span class="badge-rol badge-rol-<?= htmlspecialchars($rx) ?>" title="Rol adicional">+ <?= htmlspecialchars(ucfirst($rx)) ?></span><?php endforeach; ?></td>
                 <td data-etiqueta="Estado"><span class="pill <?= $u['activo'] ? 'pill-exito' : 'pill-neutro' ?>"><?= $u['activo'] ? 'Activo' : 'Inactivo' ?></span></td>
                 <td data-etiqueta="" style="display:flex;gap:6px;flex-wrap:wrap">
                     <a href="<?= BASE_URL ?>/administrador/usuario_editar.php?id=<?= $u['id'] ?>" class="boton-secundario">Editar</a>

@@ -339,8 +339,9 @@ function demoSembrarModulos(PDO $pdo, array $c): string
         if (!$tiene('encuestas') || !$tiene('preguntas_encuesta') || !$tiene('opciones_pregunta') || !$tiene('respuestas_encuesta')) {
             return '';
         }
-        $pdo->prepare('INSERT INTO encuestas (creador_id, titulo, descripcion, grupo_id, fecha_cierre) VALUES (?,?,?,?,?)')
-            ->execute([$psico, 'Clima escolar y bienestar', 'Cuéntanos cómo te sientes en el colegio. Tus respuestas ayudan a mejorar.', $c['grupos']['Sexto A']['id'], date('Y-m-d H:i:s', strtotime('+10 days'))]);
+        // colegio_id es obligatorio desde la migración multicolegio: sin él, la demo quedaba sin encuestas.
+        $pdo->prepare('INSERT INTO encuestas (colegio_id, creador_id, titulo, descripcion, grupo_id, fecha_cierre) VALUES (?,?,?,?,?,?)')
+            ->execute([(int) $c['colegio'], $psico, 'Clima escolar y bienestar', 'Cuéntanos cómo te sientes en el colegio. Tus respuestas ayudan a mejorar.', $c['grupos']['Sexto A']['id'], date('Y-m-d H:i:s', strtotime('+10 days'))]);
         $enc = (int) $pdo->lastInsertId();
         $ipq = $pdo->prepare('INSERT INTO preguntas_encuesta (encuesta_id, texto, tipo) VALUES (?,?,?)');
         $ipq->execute([$enc, '¿Qué tan seguro te sientes en el colegio? (1 a 10)', 'escala']);

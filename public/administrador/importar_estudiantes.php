@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
 
             $generada = empty($password);
             if (!$generada && !validarPassword($password)) {
-                $omitidos[] = "Fila {$fila} ({$nombre}): la contraseña no cumple los requisitos (8-12 caracteres, mayúscula, minúscula, número y carácter especial).";
+                $omitidos[] = "Fila {$fila} ({$nombre}): la contraseña no cumple los requisitos (8 a 64 caracteres, mayúscula, minúscula, número y carácter especial).";
                 continue;
             }
             $pass = $generada ? generarPasswordTemporalValida() : $password;
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
                     . "Correo: {$correo}\nContraseña temporal: {$pass}\n\n"
                     . "Te recomendamos cambiarla apenas inicies sesión.\n\n— Serena";
 
-                $enlaceLogin = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . (defined('BASE_URL') ? BASE_URL : '') . '/login.php';
+                $enlaceLogin = urlAbsoluta('/login.php');
                 $cuerpoHtml = "<p>Hola <strong>" . htmlspecialchars($nombre) . "</strong>,</p>"
                     . "<p>Se creó tu cuenta en Serena. Estos son tus datos de acceso:</p>"
                     . "<table role='presentation' cellpadding='0' cellspacing='0' style='width:100%;margin:16px 0;background:#F5F3EC;border-radius:10px;'>"

@@ -5,6 +5,11 @@ require_once __DIR__ . '/../../src/helpers/auth.php';
 require_once __DIR__ . '/../../src/helpers/csrf.php';
 require_once __DIR__ . '/../../src/modelos/AlertaTemprana.php';
 requiereRol('psicologo','orientador');
+// El orientador tiene su propia bandeja filtrada por sus grupos; esta lista es de todo el colegio.
+if ($_SESSION['rol'] === 'orientador') {
+    header('Location: ' . BASE_URL . '/orientador/alertas.php');
+    exit;
+}
 $uid = (int)$_SESSION['usuario_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (int)($_POST['alerta_id'] ?? 0)) {
     verificarTokenCSRF($_POST['csrf_token'] ?? '');

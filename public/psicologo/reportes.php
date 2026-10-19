@@ -204,7 +204,7 @@ require __DIR__ . '/../parciales/encabezado.php';
 
 <?php
 $chartJsLocal2 = __DIR__ . '/../assets/js/vendor/chart.min.js';
-$chartJsSrc2 = is_file($chartJsLocal2) ? BASE_URL . '/assets/js/vendor/chart.min.js' : 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js';
+$chartJsSrc2 = is_file($chartJsLocal2) ? BASE_URL . '/assets/js/vendor/chart.min.js' : 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
 ?>
 <?php if (!empty($comparativaGrados)): ?>
 <script src="<?= $chartJsSrc2 ?>"></script>

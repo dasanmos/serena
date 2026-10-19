@@ -8,10 +8,8 @@ src/config/.clave_2fa
 # además su propio .gitignore por si se copian fuera de este árbol.
 src/respaldos/*
 !src/respaldos/.gitignore
-!src/respaldos/.gitkeep
 src/uploads/diario/*
 !src/uploads/diario/.gitignore
-!src/uploads/diario/.gitkeep
 
 # Archivos de sistema operativo / editor
 .DS_Store
@@ -20,14 +18,13 @@ Thumbs.db
 .idea/
 .perfil_capturas/
 
-# Cualquier variante de .env con credenciales (solo .env.example se sube)
+# Cualquier variante de .env con credenciales (p. ej. 1.env, .env.produccion)
 src/config/*.env
+!src/config/.env.example
 src/config/.env.*
 !src/config/.env.example
+src/uploads/evidencias/*
+!src/uploads/evidencias/.gitignore
 src/uploads/fotos_estudiantes/*
 !src/uploads/fotos_estudiantes/.gitignore
 !src/uploads/fotos_estudiantes/.htaccess
-!src/uploads/fotos_estudiantes/.gitkeep
-src/uploads/evidencias/*
-!src/uploads/evidencias/.gitignore
-!src/uploads/evidencias/.gitkeep

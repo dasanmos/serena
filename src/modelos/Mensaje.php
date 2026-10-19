@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
 class Mensaje
 {
     // Roles con los que un estudiante puede iniciar conversación EMOCIONAL. Solo
@@ -32,6 +33,10 @@ class Mensaje
         // Multi-colegio: solo se puede conversar dentro del mismo colegio (el superadmin, sin colegio, no chatea).
         if ($infoA['colegio_id'] === null || $infoB['colegio_id'] === null
             || (int) $infoA['colegio_id'] !== (int) $infoB['colegio_id']) {
+            return null;
+        }
+        // El acudiente no tiene bandeja de chat: abrirle una conversación la dejaría huérfana.
+        if ($infoA['rol'] === 'acudiente' || $infoB['rol'] === 'acudiente') {
             return null;
         }
         $hayEstudiante = ($infoA['rol'] === 'estudiante' || $infoB['rol'] === 'estudiante');
@@ -130,7 +135,7 @@ class Mensaje
         $c = $pdo->prepare(
             "SELECT u.id, u.nombre, r.nombre AS rol
              FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
-             WHERE r.nombre != 'estudiante' AND r.nombre != 'superadmin' AND u.id != :uid AND u.activo = 1
+             WHERE r.nombre NOT IN ('estudiante', 'superadmin', 'acudiente', 'secretaria') AND u.id != :uid AND u.activo = 1
                AND u.colegio_id = (SELECT colegio_id FROM usuarios WHERE id = :uidcol)
                AND u.id NOT IN (
                    SELECT IF(usuario_a_id=:uid2, usuario_b_id, usuario_a_id) FROM conversaciones
@@ -148,7 +153,7 @@ class Mensaje
         $c = $pdo->prepare(
             "SELECT u.id, u.nombre, r.nombre AS rol
              FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id
-             WHERE r.nombre IN ('psicologo','orientador') AND u.activo = 1
+             WHERE (r.nombre IN ('psicologo','orientador')" . RolesUsuario::sqlAdicional($pdo, 'u', 'psicologo') . RolesUsuario::sqlAdicional($pdo, 'u', 'orientador') . ") AND u.activo = 1
                AND u.colegio_id = (SELECT colegio_id FROM usuarios WHERE id = :uidcol)
                AND u.id NOT IN (
                    SELECT IF(usuario_a_id=:uid1, usuario_b_id, usuario_a_id) FROM conversaciones

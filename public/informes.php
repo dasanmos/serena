@@ -109,7 +109,7 @@ require __DIR__ . '/parciales/encabezado.php';
         <?php endif; ?>
     </p>
 <?php endif; ?>
-<?php if (!Informes::tablaExiste($pdo, 'informes_generados')): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/038_informes.sql</code>: sin ella no hay bitácora de informes ni los informes de refuerzos, restaurante, cartera y caracterización.</p><?php endif; ?>
+<?php if (!Informes::tablaExiste($pdo, 'informes_generados')): ?><p class="mensaje mensaje-aviso">Falta aplicar <code>sql/migraciones/040_informes.sql</code>: sin ella no hay bitácora de informes ni los informes de refuerzos, restaurante, cartera y caracterización.</p><?php endif; ?>
 
 <?php if ($def !== null): ?>
 <section class="inf-panel">

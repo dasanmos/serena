@@ -6,7 +6,7 @@ function validarCorreo(string $correo): bool
     return (bool) filter_var($correo, FILTER_VALIDATE_EMAIL);
 }
 
-// Regla de contraseña de Serena: 8 a 12 caracteres, al menos una mayúscula,
+// Regla de contraseña de Serena: 8 a 64 caracteres, al menos una mayúscula,
 // una minúscula, un dígito y un carácter especial. Se centraliza aquí el
 // regex para que backend y frontend (requisitosPassword.js) describan
 // exactamente los mismos requisitos.

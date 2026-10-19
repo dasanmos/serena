@@ -9,7 +9,7 @@ require_once __DIR__ . '/../src/modelos/HojaVida.php';
 
 // Sirve una imagen de evidencia SOLO si esta persona puede abrir al estudiante y ver ese tipo de registro.
 // Los archivos viven en src/uploads/evidencias (no son públicos) y nunca se sirven por su nombre.
-requiereRol('estudiante', 'acudiente', 'docente', 'coordinador', 'rector', 'administrador', 'secretaria_academica', 'psicologo', 'orientador', 'secretaria', 'superadmin');
+requiereRol('estudiante', 'acudiente', 'docente', 'coordinador', 'rector', 'administrador', 'secretaria_academica', 'psicologo', 'orientador', 'superadmin');
 $rol = (string) $_SESSION['rol'];
 $usuarioId = (int) $_SESSION['usuario_id'];
 $colegioId = colegioParaConsulta();

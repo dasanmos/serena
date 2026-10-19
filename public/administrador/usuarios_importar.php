@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/../../src/config/conexion.php';
+require_once __DIR__ . '/../../src/modelos/RolesUsuario.php';
 require_once __DIR__ . '/../../src/helpers/auth.php';
 require_once __DIR__ . '/../../src/helpers/csrf.php';
 require_once __DIR__ . '/../../src/helpers/correo.php';
@@ -43,10 +44,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
                 $omitidos[] = "Fila {$fila}: rol '{$rolTexto}' no existe (usa docente, orientador, psicologo, coordinador, rector o administrador).";
                 continue;
             }
-            $existe = $pdo->prepare('SELECT id FROM usuarios WHERE correo=:c LIMIT 1');
-            $existe->execute(['c' => $correo]);
-            if ($existe->fetch()) {
-                $omitidos[] = "Fila {$fila}: ya existe una cuenta con {$correo}.";
+            // La misma persona se reconoce primero por documento y luego por correo.
+            $persona = RolesUsuario::cuentaDeLaPersona($pdo, (int) colegioParaCrear(), $correo, Usuario::normalizarDocumento((string) $documentoTexto));
+            if (!empty($persona['conflicto'])) {
+                $omitidos[] = "Fila {$fila}: {$persona['conflicto']}";
+                continue;
+            }
+            $cuentaExistente = $persona['cuenta'] ?? null;
+            if ($cuentaExistente) {
+                // La misma persona con otro rol en este colegio: se le suma el rol (cuenta multirol).
+                if ((int) $cuentaExistente['colegio_id'] === (int) colegioParaCrear()
+                    && RolesUsuario::agregar($pdo, (int) $cuentaExistente['id'], $rolTexto, (int) $_SESSION['usuario_id']) === '') {
+                    $omitidos[] = "Fila {$fila}: {$cuentaExistente['nombre']} ya tenía cuenta (" . ($persona['por'] === 'documento' ? 'mismo documento' : 'mismo correo') . "); se le agregó el rol {$rolTexto}: conserva su contraseña y elegirá con qué rol entrar.";
+                } else {
+                    $omitidos[] = "Fila {$fila}: ya existe una cuenta con {$correo}.";
+                }
                 continue;
             }
 
@@ -62,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
 
             $generada = $password === '';
             if (!$generada && !validarPassword($password)) {
-                $omitidos[] = "Fila {$fila}: la contraseña de {$correo} no cumple los requisitos (8-12 caracteres, mayúscula, minúscula, número y carácter especial).";
+                $omitidos[] = "Fila {$fila}: la contraseña de {$correo} no cumple los requisitos (8 a 64 caracteres, mayúscula, minúscula, número y carácter especial).";
                 continue;
             }
             $pass = $generada ? generarPasswordTemporalValida() : $password;
@@ -93,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
             if ($generada) {
                 $textoPlano = "Hola {$nombre},\n\nSe creó tu cuenta de personal en Serena.\n\n"
                     . "Correo: {$correo}\nContraseña temporal: {$pass}\n\nTe recomendamos cambiarla apenas inicies sesión.\n\n— Serena";
-                $enlaceLogin = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . (defined('BASE_URL') ? BASE_URL : '') . '/login.php';
+                $enlaceLogin = urlAbsoluta('/login.php');
                 $cuerpoHtml = "<p>Hola <strong>" . htmlspecialchars($nombre) . "</strong>,</p>"
                     . "<p>Se creó tu cuenta de personal en Serena. Estos son tus datos de acceso:</p>"
                     . "<table role='presentation' cellpadding='0' cellspacing='0' style='width:100%;margin:16px 0;background:#F5F3EC;border-radius:10px;'>"

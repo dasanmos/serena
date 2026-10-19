@@ -44,7 +44,7 @@ require __DIR__ . '/../parciales/encabezado.php';
 
 <?php if ($totalAlertas > 0):
     $chartJsLocal = __DIR__ . '/../assets/js/vendor/chart.min.js';
-    $chartJsSrc = is_file($chartJsLocal) ? BASE_URL . '/assets/js/vendor/chart.min.js' : 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js';
+    $chartJsSrc = is_file($chartJsLocal) ? BASE_URL . '/assets/js/vendor/chart.min.js' : 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
     ?>
     <script src="<?= $chartJsSrc ?>"></script>
     <script>

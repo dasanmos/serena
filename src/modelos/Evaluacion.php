@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/RolesUsuario.php';
 require_once __DIR__ . '/Academico.php';
 
 /**
@@ -373,7 +374,7 @@ class Evaluacion
 
     private static function esDocenteDelColegio(PDO $pdo, int $docenteId, int $colegioId): bool
     {
-        $q = $pdo->prepare("SELECT 1 FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id WHERE u.id = ? AND u.colegio_id = ? AND u.activo = 1 AND r.nombre = 'docente'");
+        $q = $pdo->prepare("SELECT 1 FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id WHERE u.id = ? AND u.colegio_id = ? AND u.activo = 1 AND (r.nombre = 'docente'" . RolesUsuario::sqlAdicional($pdo, 'u', 'docente') . ")");
         $q->execute([$docenteId, $colegioId]);
         return (bool) $q->fetchColumn();
     }

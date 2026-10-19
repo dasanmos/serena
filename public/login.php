@@ -28,6 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Confirma que no eres un robot.';
     } else {
         $resultado = AuthControlador::login($pdo, trim($_POST['correo'] ?? ''), $_POST['password'] ?? '');
+        if ($resultado['exito'] && !empty($resultado['elegir_colegio'])) {
+            header('Location: ' . BASE_URL . '/elegir_colegio.php');
+            exit;
+        }
         if ($resultado['exito'] && !empty($resultado['requiere_2fa'])) {
             header('Location: ' . BASE_URL . '/verificacion_2pasos.php');
             exit;
@@ -52,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/base.css?v=<?= assetVersion('/assets/css/base.css') ?>">
     <link rel="stylesheet" href="assets/css/login.css?v=<?= assetVersion('/assets/css/login.css') ?>">
-    <link rel="stylesheet" href="assets/css/login_pro.css?v=<?= assetVersion('/assets/css/login_pro.css') ?>">
     <meta name="theme-color" content="#E8B923">
     <link rel="apple-touch-icon" href="assets/img/logo/icon-192.png">
     <script>window.SERENA_BASE_URL = <?= json_encode(BASE_URL) ?>;</script>

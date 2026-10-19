@@ -64,6 +64,7 @@ if ($logueado) {
         <a href="index.php" class="ayuda-publica-marca"><img src="assets/img/logo/logo.png" alt=""><span>Serena</span></a>
         <div class="ayuda-publica-acciones">
             <button type="button" class="boton-tema" id="boton-tema" aria-pressed="false" aria-label="Modo oscuro" title="Cambiar a modo oscuro">🌙</button>
+            <a href="index.php" class="ayuda-enlace">Inicio</a>
             <a href="login.php" class="ayuda-boton ayuda-boton-sec">Iniciar sesión</a>
             <a href="registro.php" class="ayuda-boton">Crear cuenta</a>
         </div>
@@ -71,6 +72,7 @@ if ($logueado) {
     <main class="ayuda-publica-main">
         <?= $bloque ?>
     </main>
+    <footer class="ayuda-publica-pie">Serena, proyecto educativo. Desarrollado por <a href="https://github.com/dasanmos" target="_blank" rel="noopener noreferrer">@dasanmos en GitHub</a>.</footer>
     <script src="assets/js/base.js?v=<?= assetVersion('/assets/js/base.js') ?>"></script>
     <script src="assets/js/ayuda.js?v=<?= assetVersion('/assets/js/ayuda.js') ?>"></script>
     <script src="assets/js/ayuda_ia.js?v=<?= assetVersion('/assets/js/ayuda_ia.js') ?>"></script>

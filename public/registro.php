@@ -76,7 +76,6 @@ if ($colegio !== null) {
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/base.css?v=<?= assetVersion('/assets/css/base.css') ?>">
     <link rel="stylesheet" href="assets/css/login.css?v=<?= assetVersion('/assets/css/login.css') ?>">
-    <link rel="stylesheet" href="assets/css/login_pro.css?v=<?= assetVersion('/assets/css/login_pro.css') ?>">
     <meta name="theme-color" content="#E8B923">
     <link rel="apple-touch-icon" href="assets/img/logo/icon-192.png">
     <script>window.SERENA_BASE_URL = <?= json_encode(BASE_URL) ?>;</script>
@@ -170,7 +169,7 @@ if ($colegio !== null) {
     <script src="assets/js/requisitosPassword.js?v=<?= assetVersion('/assets/js/requisitosPassword.js') ?>"></script>
     <script>
         // Medidor de fortaleza puramente visual/orientativo — la validación real de
-        // formato (8-12 caracteres, mayúscula, minúscula, número y especial) la hace
+        // formato (8 a 64 caracteres, mayúscula, minúscula, número y especial) la hace
         // el atributo pattern y, sobre todo, el backend; esto no bloquea el envío.
         (function () {
             var campo = document.getElementById('password');
